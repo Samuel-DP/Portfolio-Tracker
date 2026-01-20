@@ -51,6 +51,11 @@ public class VistaTransaccionVentaController implements Initializable {
     @FXML
     private void onAgregarVenta(ActionEvent event) {
         
+        Validaciones v = new Validaciones();
+        if (!v.validarCampos(cb_moneda, dp_fecha, txt_cantidad, txt_precio, txt_notas )) {
+            return;
+        }
+        
         String activo = (String) cb_moneda.getValue();
         double unidades = Double.parseDouble(txt_cantidad.getText());
         double precioPorMoneda = Double.parseDouble(txt_precio.getText());

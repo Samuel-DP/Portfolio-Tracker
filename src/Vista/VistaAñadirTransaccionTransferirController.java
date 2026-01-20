@@ -1,5 +1,6 @@
 package Vista;
 
+import Controlador.Validaciones;
 import Controlador.VistaAñadirTransaccionController;
 import Modelo.Transaccion;
 import java.net.URL;
@@ -29,6 +30,7 @@ public class VistaAñadirTransaccionTransferirController implements Initializabl
     private DatePicker dp_fecha;
     @FXML
     private TextField txt_notas;
+    
 
     private VistaAñadirTransaccionController parent;
     
@@ -44,6 +46,8 @@ public class VistaAñadirTransaccionTransferirController implements Initializabl
 
     @FXML
     private void onTransferir(ActionEvent event) {
+        
+        // ME HE QUEDADO VALIDANDO LAS TRANSFERENCIAS
         
         String activo = cb_moneda.getValue();
         String tipo = cb_transferencia.getValue();

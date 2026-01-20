@@ -63,7 +63,13 @@ public class VistaAñadirTransaccionController implements Initializable {
     @FXML
     private void onVender(ActionEvent event) throws IOException {
         
-        ventas();             
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Vista/vistaTransaccionVenta.fxml")); 
+        Parent vista = loader.load();
+        
+        VistaTransaccionVentaController ctrlVenta = loader.getController();
+        ctrlVenta.setParentController(this); // Aqui conecto hijo con Padre
+        
+        contenidoTransacciones.getChildren().setAll(vista);
     }
     
     @FXML
@@ -89,20 +95,8 @@ public class VistaAñadirTransaccionController implements Initializable {
         ctrlCompra.setParentController(this); // Aqui conecto hijo con Padre
         
         contenidoTransacciones.getChildren().setAll(vista);
-    }
-    
-    public void ventas() throws IOException{
-        
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Vista/vistaTransaccionVenta.fxml")); 
-        Parent vista = loader.load();
-        
-        VistaTransaccionVentaController ctrlVenta = loader.getController();
-        ctrlVenta.setParentController(this); // Aqui conecto hijo con Padre
-        
-        contenidoTransacciones.getChildren().setAll(vista);
         
     }
 
-    
     
 }
