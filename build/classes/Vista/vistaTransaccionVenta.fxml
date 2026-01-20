@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="401.0" prefWidth="722.0" style="-fx-background-color: #424a55;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controlador.VistaTransaccionVentaController">
+   <children>
+      <ChoiceBox fx:id="cb_moneda" layoutX="61.0" layoutY="60.0" prefHeight="25.0" prefWidth="595.0" style="-fx-background-color: #3e4349; -fx-text-fill: white;" />
+      <Label layoutX="61.0" layoutY="29.0" prefHeight="17.0" prefWidth="123.0" text="Seleccionar moneda" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <DatePicker fx:id="dp_fecha" layoutX="62.0" layoutY="196.0" prefHeight="25.0" prefWidth="270.0" style="-fx-background-color: #424a55;" styleClass="input-dark" stylesheets="@DatePicker.css" />
+      <Button fx:id="btn_agregarVenta" layoutX="66.0" layoutY="348.0" mnemonicParsing="false" onAction="#onAgregarVenta" prefHeight="25.0" prefWidth="595.0" style="-fx-background-color: #2256fb;" text="Agregar venta" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Label layoutX="62.0" layoutY="242.0" prefHeight="17.0" prefWidth="88.0" text="Total recibido" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <TextField fx:id="txt_total_gastado" disable="true" editable="false" layoutX="64.0" layoutY="268.0" prefHeight="25.0" prefWidth="595.0" style="-fx-background-color: #3e4349; -fx-text-fill: white;" text="\$">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="txt_cantidad" layoutX="62.0" layoutY="130.0" prefHeight="25.0" prefWidth="270.0" style="-fx-background-color: #3e4349; -fx-text-fill: white;" />
+      <TextField fx:id="txt_precio" layoutX="389.0" layoutY="130.0" prefHeight="25.0" prefWidth="270.0" style="-fx-background-color: #3e4349; -fx-text-fill: white;" />
+      <Label layoutX="62.0" layoutY="105.0" prefHeight="17.0" prefWidth="88.0" text="Cantidad" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="389.0" layoutY="105.0" prefHeight="17.0" prefWidth="123.0" text="Precio por moneda" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="62.0" layoutY="168.0" prefHeight="17.0" prefWidth="88.0" text="Fecha y hora" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <TextField fx:id="txt_notas" layoutX="389.0" layoutY="196.0" prefHeight="25.0" prefWidth="270.0" style="-fx-background-color: #3e4349; -fx-text-fill: white;" />
+      <Label layoutX="397.0" layoutY="168.0" prefHeight="17.0" prefWidth="88.0" text="Notas" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

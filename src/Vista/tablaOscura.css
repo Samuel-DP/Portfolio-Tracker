@@ -1,0 +1,85 @@
+/* Fondo general del TableView */
+.table-view {
+    -fx-background-color:  #3e4349;
+    -fx-text-background-color: white;
+    -fx-border-color: transparent;
+}
+
+/* Fondo de las celdas */
+.table-row-cell {
+    -fx-background-color: #3e4349;
+    -fx-text-fill: white;
+}
+
+.table-row-cell:filled:hover {
+    -fx-background-color: #2c2c2c;
+}
+
+/* Texto de las celdas */
+.table-cell {
+    -fx-text-fill: white;
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Encabezados de las columnas */
+.table-view .column-header-background {
+    -fx-background-color: #111111;
+}
+
+.table-view .column-header, 
+.table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-color: #3e4349;
+    
+    -fx-border-width: 1 0 1 0;       /* arriba y abajo */
+    -fx-border-color: #3a3a3a;       /* color de línea */
+    
+}
+
+/* Líneas de separación */
+.table-view .table-row-cell {
+    -fx-border-color: #333333;
+    -fx-border-width: 0.2px;
+}
+
+/* elimina la linea vertical de mi tabla */
+.table-row-cell:selected {
+    -fx-background-insets: 0;   
+    -fx-padding: 0;            
+    -fx-border-width: 0;        
+}
+
+/* Quitar borde vertical de las celdas */
+.table-view .table-cell {
+    -fx-border-width: 0 0 1 0;   /* solo línea horizontal abajo */
+    -fx-border-color: #3a3a3a;   /* color horizontal */
+}
+
+.table-view .scroll-bar .track {
+    -fx-background-color: #3e4349;
+}
+
+.table-view .scroll-bar .thumb {
+    -fx-background-color: #333333;
+}
+
+.table-view .scroll-bar .increment-arrow,
+.table-view .scroll-bar .decrement-arrow {
+    -fx-shape: "";                     /* elimina la figura de la flecha */
+    -fx-background-color: transparent;
+}
+
+/* Para quitar el cuadradito de arriba del scrol bar */
+.table-view .scroll-bar:vertical .increment-button,
+.table-view .scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;   
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+    -fx-pref-height: 0;
+    -fx-min-height: 0;
+    -fx-max-height: 0;
+}
+
+
