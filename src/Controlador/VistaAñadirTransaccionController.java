@@ -2,7 +2,6 @@
 package Controlador;
 
 import Modelo.Transaccion;
-import Vista.VistaAñadirTransaccionTransferirController;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;

@@ -11,7 +11,7 @@
 
 <AnchorPane id="AnchorPane" prefHeight="401.0" prefWidth="722.0" style="-fx-background-color: #424a55;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controlador.VistaTransaccionCompraController">
    <children>
-      <ChoiceBox fx:id="cb_moneda" layoutX="60.0" layoutY="59.0" prefHeight="25.0" prefWidth="595.0" style="-fx-background-color: #3e4349; -fx-text-fill: white;" />
+      <ChoiceBox fx:id="cb_moneda" layoutX="60.0" layoutY="59.0" prefHeight="25.0" prefWidth="595.0" style="-fx-background-color: #3e4349; -fx-text-fill: white; -fx-mark-color: white;" stylesheets="@choiceBox.css" />
       <Label layoutX="60.0" layoutY="28.0" prefHeight="17.0" prefWidth="123.0" text="Seleccionar moneda" textFill="WHITE">
          <font>
             <Font name="System Bold" size="12.0" />

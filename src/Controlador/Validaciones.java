@@ -76,6 +76,59 @@ public class Validaciones {
         return true;
 
     }
+    
+    public boolean validarTransferir(
+        ChoiceBox<String> cb_moneda,
+        ChoiceBox<String> cb_transferencia,
+        TextField txt_cantidad,
+        TextField txt_notas,
+        DatePicker dp_fecha
+            
+    ){
+        
+        if (cb_moneda.getValue() == null ) {
+            mostrarError("Moneda", "Selecciona una moneda");
+            return false;
+        }
+        
+        if (cb_transferencia.getValue() == null) {
+            mostrarError("Transferencia", "Selecciona un tipo de transferencia");
+            return false;
+        }
+        
+        String cTxt = txt_cantidad.getText();
+        if(cTxt == null || cTxt.isBlank() ){
+            mostrarError("Cantidad", "La cantidad no puede esta vacia");
+            return false;
+        }
+        
+        double cantidad;
+        
+        try {
+            cantidad = Double.parseDouble(cTxt.trim().replace(",", "."));        
+        }catch (NumberFormatException e){
+            mostrarError("Cantidad", "Introduce un nº valido (ej: 1.5).");
+            return false;
+        }
+        
+        if(cantidad <= 0){
+            mostrarError("Cantidad", "La cantidad debe ser mayor que 0");
+            return false;
+        }
+        
+        String notas = txt_notas.getText();
+        if(notas != null && notas.length() > 200){
+            mostrarError("Notas", "Las notas no pueden superar los 200 caracteres");
+            return false;
+        }
+        
+        if (dp_fecha.getValue() == null) {
+            mostrarError("Fecha", "Selecciona una fecha");
+            return false;
+        }
+        
+        return true;
+    }
 
     private void mostrarError(String campo, String mensaje) {
 
