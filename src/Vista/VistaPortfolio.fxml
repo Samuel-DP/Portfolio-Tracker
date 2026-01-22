@@ -9,9 +9,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="837.0" prefWidth="1182.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controlador.VistaPortfolioController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="691.0" prefWidth="1520.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controlador.VistaPortfolioController">
    <children>
-      <Pane fx:id="PanelHorizontal" layoutX="135.0" layoutY="-3.0" prefHeight="101.0" prefWidth="1051.0" style="-fx-background-color: #3e4349;">
+      <Pane fx:id="PanelHorizontal" layoutX="135.0" layoutY="-3.0" prefHeight="101.0" prefWidth="1386.0" style="-fx-background-color: #3e4349;">
          <children>
             <Button fx:id="btn_vista_general" layoutX="14.0" layoutY="38.0" mnemonicParsing="false" onAction="#OnVistaGeneral" prefHeight="25.0" prefWidth="150.0" style="-fx-background-color: #2256fb;" text="Vista general" textFill="WHITE">
                <font>
@@ -29,7 +29,7 @@
                </cursor></Button>
          </children>
       </Pane>
-      <Pane fx:id="PanelVertical" layoutY="-3.0" prefHeight="843.0" prefWidth="135.0" style="-fx-background-color: #3e4349;">
+      <Pane fx:id="PanelVertical" layoutY="-3.0" prefHeight="697.0" prefWidth="135.0" style="-fx-background-color: #3e4349;">
          <children>
             <Button fx:id="btn_crear_cartera" layoutX="10.0" layoutY="281.0" mnemonicParsing="false" onAction="#onCrearCartera" prefHeight="25.0" prefWidth="113.0" style="-fx-background-color: #2256fb;" text="    Crear cartera" textFill="WHITE">
                <font>
@@ -53,7 +53,7 @@
                   <Image url="@../Imagenes/estadisticas.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="75.0" fitWidth="80.0" layoutX="29.0" layoutY="751.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="75.0" fitWidth="80.0" layoutX="29.0" layoutY="600.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Imagenes/PTBueno.png" />
                </image>
@@ -68,7 +68,7 @@
             </Button>
          </children>
       </Pane>
-      <Pane fx:id="contenidoPortfolio" layoutX="135.0" layoutY="98.0" prefHeight="741.0" prefWidth="1051.0" style="-fx-background-color: #3e4349;">
+      <Pane fx:id="contenidoPortfolio" layoutX="135.0" layoutY="98.0" prefHeight="596.0" prefWidth="1386.0" style="-fx-background-color: #3e4349;">
          <children>
             <Accordion layoutX="90.0" layoutY="57.0" />
             <Label layoutX="20.0" layoutY="125.0" prefHeight="17.0" prefWidth="84.0" textFill="#d7d7d7">

@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="770.0" prefWidth="1520.0" style="-fx-background-color: #3e4349;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controlador.VistaMercadosController">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="691.0" prefWidth="1520.0" style="-fx-background-color: #3e4349;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controlador.VistaMercadosController">
    <children>
       <Pane layoutX="3.0" prefHeight="103.0" prefWidth="1509.0" style="-fx-background-color: #3e4349;">
          <children>
@@ -57,7 +57,7 @@
             </ImageView>
          </children>
       </Pane>
-      <StackPane layoutY="154.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="561.0" prefWidth="1520.0">
+      <StackPane layoutY="123.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="561.0" prefWidth="1520.0">
          <children>
             <TableView fx:id="tablaCrypto" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="464.0" prefWidth="1520.0" stylesheets="@tablaOscura.css">
                <columns>

@@ -15,7 +15,7 @@ public class PortfolioTracker extends Application {
         
         primaryStage.setTitle("Portfolio Tracker");
         primaryStage.setScene(new Scene(root));
-        primaryStage.setResizable(false); // elimino el boton de maximizar
+        // primaryStage.setResizable(false); // elimino el boton de maximizar
         primaryStage.show();  
                 
     }

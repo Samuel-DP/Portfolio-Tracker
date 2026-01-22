@@ -82,4 +82,43 @@
     -fx-max-height: 0;
 }
 
+/* ===== ScrollBar HORIZONTAL (inferior) ===== */
+
+/* fondo general de la barra horizontal */
+.table-view .scroll-bar:horizontal {
+    -fx-background-color: #3e4349;
+}
+
+/* track y thumb horizontal */
+.table-view .scroll-bar:horizontal .track {
+    -fx-background-color: #3e4349;
+}
+
+.table-view .scroll-bar:horizontal .thumb {
+    -fx-background-color: #333333;
+}
+
+/* quitar flechas/botones de la barra horizontal */
+.table-view .scroll-bar:horizontal .increment-arrow,
+.table-view .scroll-bar:horizontal .decrement-arrow {
+    -fx-shape: "";
+    -fx-background-color: transparent;
+}
+
+.table-view .scroll-bar:horizontal .increment-button,
+.table-view .scroll-bar:horizontal .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+
+    -fx-pref-width: 0;
+    -fx-min-width: 0;
+    -fx-max-width: 0;
+}
+
+/* ===== Esquina entre scroll vertical y horizontal (el cuadrito) ===== */
+.table-view .corner {
+    -fx-background-color: #3e4349;
+}
+
 

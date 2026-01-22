@@ -16,11 +16,11 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="651.0" prefWidth="1124.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controlador.VistaPortfolioGeneralController">
+<AnchorPane id="AnchorPane" prefHeight="596.0" prefWidth="1386.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controlador.VistaPortfolioGeneralController">
    <children>
-      <Pane fx:id="contenidoPortfolio" prefHeight="651.0" prefWidth="1124.0" style="-fx-background-color: #3e4349;">
+      <Pane fx:id="contenidoPortfolio" prefHeight="596.0" prefWidth="1386.0" style="-fx-background-color: #3e4349;">
          <children>
-            <TableView blendMode="OVERLAY" layoutX="-1.0" layoutY="459.0" prefHeight="191.0" prefWidth="1124.0">
+            <TableView blendMode="OVERLAY" layoutX="-1.0" layoutY="426.0" prefHeight="168.0" prefWidth="1386.0">
                <columns>
                   <TableColumn prefWidth="75.0" text="Nombre" />
                   <TableColumn prefWidth="75.0" text="Precio" />
@@ -34,7 +34,7 @@
                </columns>
             </TableView>
             <Accordion layoutX="90.0" layoutY="57.0" />
-            <Label layoutX="20.0" layoutY="14.0" prefHeight="17.0" prefWidth="84.0" text="My Portfolio " textFill="WHITE">
+            <Label layoutX="36.0" layoutY="6.0" prefHeight="17.0" prefWidth="84.0" text="My Portfolio " textFill="WHITE">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
@@ -44,42 +44,42 @@
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <Label layoutX="14.0" layoutY="431.0" prefHeight="17.0" prefWidth="84.0" text="Activos" textFill="WHITE">
+            <Label layoutX="14.0" layoutY="403.0" prefHeight="17.0" prefWidth="84.0" text="Activos" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <Label layoutX="409.0" layoutY="187.0" prefHeight="17.0" prefWidth="84.0" text="Asignacion" textFill="WHITE">
+            <Label layoutX="407.0" layoutY="160.0" prefHeight="17.0" prefWidth="84.0" text="Asignacion" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <Button layoutX="159.0" layoutY="183.0" mnemonicParsing="false" style="-fx-background-color: #48536e;" text="7d" textFill="#d7d7d7">
+            <Button layoutX="157.0" layoutY="156.0" mnemonicParsing="false" style="-fx-background-color: #48536e;" text="7d" textFill="#d7d7d7">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Button>
-            <Button layoutX="118.0" layoutY="183.0" mnemonicParsing="false" style="-fx-background-color: #48536e;" text="24h" textFill="#d7d7d7">
+            <Button layoutX="116.0" layoutY="156.0" mnemonicParsing="false" style="-fx-background-color: #48536e;" text="24h" textFill="#d7d7d7">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Button>
-            <Button layoutX="195.0" layoutY="183.0" mnemonicParsing="false" style="-fx-background-color: #48536e;" text="30d" textFill="#d7d7d7">
+            <Button layoutX="193.0" layoutY="156.0" mnemonicParsing="false" style="-fx-background-color: #48536e;" text="30d" textFill="#d7d7d7">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Button>
-            <Button layoutX="239.0" layoutY="183.0" mnemonicParsing="false" style="-fx-background-color: #48536e;" text="90d" textFill="#d7d7d7">
+            <Button layoutX="237.0" layoutY="156.0" mnemonicParsing="false" style="-fx-background-color: #48536e;" text="90d" textFill="#d7d7d7">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Button>
-            <Button layoutX="287.0" layoutY="183.0" mnemonicParsing="false" style="-fx-background-color: #48536e;" text="Todo" textFill="#d7d7d7">
+            <Button layoutX="285.0" layoutY="156.0" mnemonicParsing="false" style="-fx-background-color: #48536e;" text="Todo" textFill="#d7d7d7">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Button>
-            <Label layoutX="42.0" layoutY="187.0" prefHeight="17.0" prefWidth="84.0" text="Historial" textFill="WHITE">
+            <Label layoutX="40.0" layoutY="160.0" prefHeight="17.0" prefWidth="84.0" text="Historial" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
@@ -89,7 +89,7 @@
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <Pane fx:id="prueba" layoutX="731.0" layoutY="41.0" prefHeight="101.0" prefWidth="206.0" styleClass="prueba" stylesheets="@style.css">
+            <Pane fx:id="prueba" layoutX="744.0" layoutY="33.0" prefHeight="101.0" prefWidth="206.0" styleClass="prueba" stylesheets="@style.css">
                <children>
                   <Label layoutX="10.0" layoutY="79.0" prefHeight="17.0" prefWidth="187.0" text="Con mejor rendimiento histórico" textFill="#d7d7d7">
                      <font>
@@ -98,7 +98,7 @@
                   </Label>
                </children>
             </Pane>
-            <Pane fx:id="prueba1" layoutX="499.0" layoutY="41.0" prefHeight="101.0" prefWidth="206.0" styleClass="prueba" stylesheets="@style.css">
+            <Pane fx:id="prueba1" layoutX="512.0" layoutY="33.0" prefHeight="101.0" prefWidth="206.0" styleClass="prueba" stylesheets="@style.css">
                <children>
                   <Label layoutX="17.0" layoutY="78.0" prefHeight="17.0" prefWidth="156.0" text="Total de ganacias/perdidas" textFill="#d7d7d7">
                      <font>
@@ -112,7 +112,7 @@
                   </Label>
                </children>
             </Pane>
-            <Pane fx:id="prueba11" layoutX="258.0" layoutY="41.0" prefHeight="101.0" prefWidth="214.0" styleClass="prueba" stylesheets="@style.css">
+            <Pane fx:id="prueba11" layoutX="271.0" layoutY="33.0" prefHeight="101.0" prefWidth="214.0" styleClass="prueba" stylesheets="@style.css">
                <children>
                   <Label layoutX="17.0" layoutY="78.0" prefHeight="17.0" prefWidth="156.0" text="Cambio de cartera en 24 h" textFill="#d7d7d7">
                      <font>
@@ -126,7 +126,7 @@
                   </Label>
                </children>
             </Pane>
-            <Pane fx:id="prueba2" layoutX="23.0" layoutY="41.0" prefHeight="101.0" prefWidth="206.0" styleClass="prueba" stylesheets="@style.css">
+            <Pane fx:id="prueba2" layoutX="36.0" layoutY="33.0" prefHeight="101.0" prefWidth="206.0" styleClass="prueba" stylesheets="@style.css">
                <children>
                   <Label layoutX="14.0" layoutY="79.0" prefHeight="17.0" prefWidth="84.0" text="Saldo actual" textFill="WHITE">
                      <font>
@@ -149,7 +149,7 @@
                   </ImageView>
                </children>
             </Pane>
-            <Pane fx:id="prueba3" layoutX="40.0" layoutY="221.0" prefHeight="177.0" prefWidth="298.0" styleClass="prueba" stylesheets="@style.css">
+            <Pane fx:id="prueba3" layoutX="36.0" layoutY="193.0" prefHeight="177.0" prefWidth="298.0" styleClass="prueba" stylesheets="@style.css">
                <children>
                   <LineChart layoutX="14.0" layoutY="13.0" prefHeight="152.0" prefWidth="270.0">
                      <xAxis>
@@ -161,7 +161,7 @@
                   </LineChart>
                </children>
             </Pane>
-            <Pane fx:id="prueba31" layoutX="409.0" layoutY="221.0" prefHeight="177.0" prefWidth="298.0" styleClass="prueba" stylesheets="@style.css">
+            <Pane fx:id="prueba31" layoutX="405.0" layoutY="193.0" prefHeight="177.0" prefWidth="298.0" styleClass="prueba" stylesheets="@style.css">
                <children>
                   <PieChart layoutX="56.0" layoutY="13.0" prefHeight="152.0" prefWidth="177.0" />
                   <ImageView fitHeight="75.0" fitWidth="45.0" layoutX="118.0" layoutY="66.0" pickOnBounds="true" preserveRatio="true">
