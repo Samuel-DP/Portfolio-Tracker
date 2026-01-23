@@ -8,6 +8,8 @@
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaRegistroController.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VPrincipalController.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaMercadosController.java</file>
+            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaAccionesController.java</file>
+            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaCryptoController.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaPortfolioController.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaPortfolioGeneralController.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaTransaccionesController.java</file>
@@ -18,7 +20,6 @@
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/Validaciones.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Modelo/Transaccion.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Modelo/Stock.java</file>
-            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Vista/choiceBox.css</file>
         </group>
     </open-files>
 </project-private>

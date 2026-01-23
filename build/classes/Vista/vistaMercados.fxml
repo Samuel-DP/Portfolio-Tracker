@@ -9,14 +9,13 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="691.0" prefWidth="1520.0" style="-fx-background-color: #3e4349;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controlador.VistaMercadosController">
    <children>
       <Pane layoutX="3.0" prefHeight="103.0" prefWidth="1509.0" style="-fx-background-color: #3e4349;">
          <children>
-            <Button fx:id="btnFavoritos" layoutX="1127.0" layoutY="38.0" mnemonicParsing="false" onAction="#onFavoritos" prefHeight="25.0" prefWidth="150.0" style="-fx-background-color: #2256fb;" text="Favoritos" textFill="WHITE">
+            <Button fx:id="btnFavoritos" layoutX="1120.0" layoutY="38.0" mnemonicParsing="false" onAction="#onFavoritos" prefHeight="25.0" prefWidth="150.0" style="-fx-background-color: #2256fb;" text="Favoritos" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
@@ -24,7 +23,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button fx:id="btnAcciones" layoutX="680.0" layoutY="40.0" mnemonicParsing="false" onAction="#onAcciones" prefHeight="25.0" prefWidth="150.0" style="-fx-background-color: #2256fb;" text="Acciones" textFill="WHITE">
+            <Button fx:id="btnAcciones" layoutX="673.0" layoutY="40.0" mnemonicParsing="false" onAction="#onAcciones" prefHeight="25.0" prefWidth="150.0" style="-fx-background-color: #2256fb;" text="Acciones" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
@@ -32,7 +31,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button fx:id="btnCrypto" layoutX="247.0" layoutY="38.0" mnemonicParsing="false" onAction="#onCrypto" prefHeight="25.0" prefWidth="150.0" style="-fx-background-color: #2256fb;" text="Crypto" textFill="WHITE">
+            <Button fx:id="btnCrypto" layoutX="240.0" layoutY="38.0" mnemonicParsing="false" onAction="#onCrypto" prefHeight="25.0" prefWidth="150.0" style="-fx-background-color: #2256fb;" text="Crypto" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
@@ -40,26 +39,26 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <ImageView fitHeight="18.0" fitWidth="18.0" layoutX="1134.0" layoutY="42.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="18.0" fitWidth="18.0" layoutX="1127.0" layoutY="42.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Imagenes/estrella.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="25.0" fitWidth="18.0" layoutX="253.0" layoutY="43.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="25.0" fitWidth="18.0" layoutX="246.0" layoutY="43.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Imagenes/bitcoin.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="18.0" fitWidth="18.0" layoutX="686.0" layoutY="45.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="18.0" fitWidth="18.0" layoutX="679.0" layoutY="45.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Imagenes/nvidia.png" />
                </image>
             </ImageView>
          </children>
       </Pane>
-      <StackPane layoutY="123.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="561.0" prefWidth="1520.0">
+      <AnchorPane fx:id="contenidoMercados" layoutX="3.0" layoutY="110.0" prefHeight="581.0" prefWidth="1509.0" style="-fx-background-color: #3e4349;">
          <children>
-            <TableView fx:id="tablaCrypto" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="464.0" prefWidth="1520.0" stylesheets="@tablaOscura.css">
+            <TableView fx:id="tablaCrypto" layoutY="27.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="540.0" prefWidth="1509.0" stylesheets="@tablaOscura.css">
                <columns>
                   <TableColumn fx:id="colSimbolo" prefWidth="75.0" text="Símbolo" />
                   <TableColumn fx:id="colNombre" prefWidth="155.0" text="Nombre" />
@@ -69,23 +68,13 @@
                   <TableColumn fx:id="col7d" prefWidth="143.0" text="7 d %" />
                   <TableColumn fx:id="colMarketCap" prefWidth="252.0" text="Capitalización de mercado" />
                   <TableColumn fx:id="colVolumen" prefWidth="175.0" text="Volumen (24 h)" />
-                  <TableColumn fx:id="colSupply" minWidth="0.0" prefWidth="233.0" text="Suministro circulante" />
+                  <TableColumn fx:id="colSupply" minWidth="0.0" prefWidth="239.0" text="Suministro circulante" />
                </columns>
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
             </TableView>
-            <TableView fx:id="tablaAcciones" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0">
-               <columns>
-                  <TableColumn fx:id="colTicker" prefWidth="250.0" text="Ticker" />
-                  <TableColumn fx:id="colEmpresa" prefWidth="250.0" text="Empresa" />
-                  <TableColumn fx:id="colPrecioAccion" prefWidth="250.0" text="Precio" />
-                  <TableColumn fx:id="colAcc24h" minWidth="0.0" prefWidth="250.0" text="\%24h" />
-                  <TableColumn fx:id="colAccVolumen" prefWidth="250.0" text="Volumen" />
-                  <TableColumn fx:id="colAccMarketCap" minWidth="0.0" prefWidth="269.0" text="Market Cap" />
-               </columns>
-            </TableView>
          </children>
-      </StackPane>
+      </AnchorPane>
    </children>
 </AnchorPane>

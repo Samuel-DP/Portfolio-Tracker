@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="AnchorPane" prefHeight="561.0" prefWidth="1520.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controlador.VistaAccionesController">
+   <children>
+      <TableView fx:id="tablaAcciones" layoutY="-1.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="567.0" prefWidth="1520.0" stylesheets="@tablaOscura.css">
+         <columns>
+            <TableColumn fx:id="colTicker" prefWidth="250.0" text="Ticker" />
+            <TableColumn fx:id="colEmpresa" prefWidth="250.0" text="Empresa" />
+            <TableColumn fx:id="colPrecioAccion" prefWidth="250.0" text="Precio" />
+            <TableColumn fx:id="colAcc24h" minWidth="0.0" prefWidth="250.0" text="\%24h" />
+            <TableColumn fx:id="colAccVolumen" prefWidth="250.0" text="Volumen" />
+            <TableColumn fx:id="colAccMarketCap" minWidth="0.0" prefWidth="269.0" text="Market Cap" />
+         </columns>
+      </TableView>
+   </children>
+</AnchorPane>
