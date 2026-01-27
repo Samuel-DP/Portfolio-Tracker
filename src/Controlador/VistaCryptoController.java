@@ -6,7 +6,11 @@ import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -51,6 +55,16 @@ public class VistaCryptoController implements Initializable {
 
     private final ObservableList<Crypto> datosCrypto = FXCollections.observableArrayList();
 
+    // Cache simple en memoria
+    private static ObservableList<Crypto> cacheCrypto = FXCollections.observableArrayList();
+    private static long cacheTimestampMs = 0;
+
+    // Ajuste de tiempo: para volver a llamar a la API 30s / 60s ...
+    private static final long CACHE_TTL_MS = 60_000;
+
+    // Para evitar 2 llamadas a la vez si el usuario entra rápido
+    private static volatile boolean cargando = false;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -74,65 +88,130 @@ public class VistaCryptoController implements Initializable {
         aplicarFormatoAbreviado(colSupply);
 
         tablaCrypto.setItems(datosCrypto);
-        
+
         cargarTop10Criptos();
 
     }
 
-    // AREGLAR LAS LLAMADAS CAD 4 LLAMADAS ME PETA , ME SALE EXCEPCION 
-    
+    // Creo un gestor de hilos y utilizo un solo hilo para no crear 200 threads si cambio de vista
+    private static final ExecutorService API_EXECUTOR
+            = Executors.newSingleThreadExecutor(r -> {
+                Thread t = new Thread(r);
+                t.setDaemon(true);
+                t.setName("coingecko-api-thread");
+                return t;
+            });
+
     private void cargarTop10Criptos() {
-        
+
+        long ahora = System.currentTimeMillis();
+
+        // Si hay cache fresca, la uso y NO llamo a la API
+        if (!cacheCrypto.isEmpty() && (ahora - cacheTimestampMs) < CACHE_TTL_MS) {
+            datosCrypto.setAll(cacheCrypto);
+            return;
+        }
+
+        //  Evito llamadas duplicadas si ya se esta cargando
+        if (cargando) {
+            // Si hay algo en cache lo muéstro mientras
+            if (!cacheCrypto.isEmpty()) {
+                datosCrypto.setAll(cacheCrypto);
+            }
+            return;
+        }
+
+        cargando = true;
+
         Task<ObservableList<Crypto>> task = new Task<>() {
             @Override
             protected ObservableList<Crypto> call() throws Exception {
-
-                String url = "https://api.coingecko.com/api/v3/coins/markets"
-                        + "?vs_currency=usd"
-                        + "&order=market_cap_desc"
-                        + "&per_page=30"
-                        + "&page=1"
-                        + "&sparkline=false"
-                        + "&price_change_percentage=1h,24h,7d";
-
-                HttpClient client = HttpClient.newHttpClient();
-                HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
-
-                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-                JSONArray array = new JSONArray(response.body());
-
-                ObservableList<Crypto> lista = FXCollections.observableArrayList();
-
-                for (int i = 0; i < array.length(); i++) {
-                    JSONObject obj = array.getJSONObject(i);
-
-                    String symbol = obj.getString("symbol").toUpperCase();
-                    String name = obj.getString("name");
-                    double price = obj.getDouble("current_price");
-                    double change1h = obj.optDouble("price_change_percentage_1h_in_currency", 0);
-                    double change24h = obj.optDouble("price_change_percentage_24h_in_currency", 0);
-                    double change7d = obj.optDouble("price_change_percentage_7d_in_currency", 0);
-                    double marketCap = obj.getDouble("market_cap");
-                    double volume24h = obj.getDouble("total_volume");
-                    double supply = obj.optDouble("circulating_supply", 0);
-
-                    lista.add(new Crypto(symbol, name, price, change1h, change24h, change7d, marketCap, volume24h, supply));
-                }
-
-                return lista;
+                return fetchListaDesdeCoinGecko(); 
             }
         };
-
+        
+        // Si todo va bien
         task.setOnSucceeded(e -> {
-            datosCrypto.setAll(task.getValue());
-        });
+            ObservableList<Crypto> lista = task.getValue();
 
+            // Actualizo tabla
+            datosCrypto.setAll(lista);
+
+            // Guardo cache
+            cacheCrypto.setAll(lista);
+            cacheTimestampMs = System.currentTimeMillis();
+
+            cargando = false;
+        });
+        
+        // Si algo falla
         task.setOnFailed(e -> {
-            task.getException().printStackTrace();
+            Throwable ex = task.getException();
+            ex.printStackTrace();
+
+            // MUY IMPORTANTE, No vaciar la tabla.
+            // Si tenog cache, me aseguro de que se vea.
+            if (!cacheCrypto.isEmpty()) {
+                datosCrypto.setAll(cacheCrypto);
+            }
+            // Si no hay cache y tampoco datos previos, la tabla se quedará como esté.
+
+            cargando = false;
         });
 
-        new Thread(task).start();
+        API_EXECUTOR.submit(task);
+    }
+
+    private ObservableList<Crypto> fetchListaDesdeCoinGecko() throws Exception {
+
+        String url = "https://api.coingecko.com/api/v3/coins/markets"
+                + "?vs_currency=usd"
+                + "&order=market_cap_desc"
+                + "&per_page=30"
+                + "&page=1"
+                + "&sparkline=false"
+                + "&price_change_percentage=1h,24h,7d";
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url))
+                .header("Accept", "application/json")
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        int status = response.statusCode();
+        String body = response.body() == null ? "" : response.body().trim();
+
+        if (status != 200) {
+            if (status == 429) {
+                throw new RuntimeException("Rate limit (429): demasiadas llamadas a CoinGecko.");
+            }
+            throw new RuntimeException("HTTP " + status + ". Body: " + (body.length() > 200 ? body.substring(0, 200) : body));
+        }
+
+        JSONArray array = new JSONArray(body);
+        ObservableList<Crypto> lista = FXCollections.observableArrayList();
+
+        for (int i = 0; i < array.length(); i++) {
+            JSONObject obj = array.getJSONObject(i);
+
+            String symbol = obj.optString("symbol", "").toUpperCase();
+            String name = obj.optString("name", "N/A");
+            double price = obj.optDouble("current_price", 0);
+
+            double change1h = obj.optDouble("price_change_percentage_1h_in_currency", 0);
+            double change24h = obj.optDouble("price_change_percentage_24h_in_currency", 0);
+            double change7d = obj.optDouble("price_change_percentage_7d_in_currency", 0);
+
+            double marketCap = obj.optDouble("market_cap", 0);
+            double volume24h = obj.optDouble("total_volume", 0);
+            double supply = obj.optDouble("circulating_supply", 0);
+
+            lista.add(new Crypto(symbol, name, price, change1h, change24h, change7d, marketCap, volume24h, supply));
+        }
+
+        return lista;
     }
 
     private void aplicarFormatoPorcentaje(TableColumn<Crypto, Double> columna) {
