@@ -55,16 +55,6 @@ public class VistaCryptoController implements Initializable {
 
     private final ObservableList<Crypto> datosCrypto = FXCollections.observableArrayList();
 
-    // Cache simple en memoria
-    private static ObservableList<Crypto> cacheCrypto = FXCollections.observableArrayList();
-    private static long cacheTimestampMs = 0;
-
-    // Ajuste de tiempo: para volver a llamar a la API 30s / 60s ...
-    private static final long CACHE_TTL_MS = 60_000;
-
-    // Para evitar 2 llamadas a la vez si el usuario entra rápido
-    private static volatile boolean cargando = false;
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -91,7 +81,7 @@ public class VistaCryptoController implements Initializable {
 
         cargarTop10Criptos();
 
-    }
+    } 
 
     // Creo un gestor de hilos y utilizo un solo hilo para no crear 200 threads si cambio de vista
     private static final ExecutorService API_EXECUTOR
@@ -102,6 +92,16 @@ public class VistaCryptoController implements Initializable {
                 return t;
             });
 
+    // Cache simple en memoria
+    private static ObservableList<Crypto> cacheCrypto = FXCollections.observableArrayList();
+    private static long cacheTimestampMs = 0;
+
+    // Ajuste de tiempo: para volver a llamar a la API 30s / 60s ...
+    private static final long CACHE_TTL_MS = 60_000;
+
+    // Para evitar 2 llamadas a la vez si el usuario entra rápido
+    private static volatile boolean cargando = false;
+    
     private void cargarTop10Criptos() {
 
         long ahora = System.currentTimeMillis();
