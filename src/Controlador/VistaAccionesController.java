@@ -71,12 +71,14 @@ public class VistaAccionesController implements Initializable {
                 return t;
             });
 
+    // ME HE QUEDADO INTENTANOD ENTENDER ESTE CODIGO Y PONERLO PARECIDO AL DE CRYPTO
+    
     // Cache
     private static ObservableList<Stock> cacheStocks = FXCollections.observableArrayList();
     private static long cacheQuoteTsMs = 0;
     private static final long QUOTE_TTL_MS = 60_000; // 60s
 
-    // Cache de perfiles por ticker (larga)
+    // Cache de perfiles por ticker 
     private static final Map<String, StockProfile> profileCache = new ConcurrentHashMap<>();
     private static final long PROFILE_TTL_MS = 24 * 60 * 60 * 1000L; // 24h
 
@@ -106,7 +108,7 @@ public class VistaAccionesController implements Initializable {
             return;
         }
 
-        // Evita doble carga
+        // Evito doble carga
         if (cargando) {
             if (!cacheStocks.isEmpty()) {
                 datosStock.setAll(cacheStocks);
@@ -259,6 +261,7 @@ public class VistaAccionesController implements Initializable {
         return new QuoteData(price, change24h);
     }
 
+    // Simplifico los mensajes de errores
     private static String recortar(String s, int max) {
         if (s == null) {
             return "";
