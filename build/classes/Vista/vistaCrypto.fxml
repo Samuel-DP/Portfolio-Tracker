@@ -9,15 +9,16 @@
    <children>
       <TableView fx:id="tablaCrypto" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="561.0" prefWidth="1520.0" stylesheets="@tablaOscura.css">
          <columns>
-            <TableColumn fx:id="colSimbolo" prefWidth="75.0" text="Símbolo" />
-            <TableColumn fx:id="colNombre" prefWidth="155.0" text="Nombre" />
-            <TableColumn fx:id="colPrecio" prefWidth="154.0" text="Precio" />
-            <TableColumn fx:id="col1h" prefWidth="184.0" text="Porcentaje en 1h" />
-            <TableColumn fx:id="col24h" prefWidth="147.0" text="24 h %" />
-            <TableColumn fx:id="col7d" prefWidth="143.0" text="7 d %" />
-            <TableColumn fx:id="colMarketCap" prefWidth="252.0" text="Capitalización de mercado" />
-            <TableColumn fx:id="colVolumen" prefWidth="175.0" text="Volumen (24 h)" />
-            <TableColumn fx:id="colSupply" minWidth="0.0" prefWidth="239.0" text="Suministro circulante" />
+            <TableColumn fx:id="colFav" prefWidth="75.0" />
+            <TableColumn fx:id="colSimbolo" prefWidth="150.0" text="Símbolo" />
+            <TableColumn fx:id="colNombre" prefWidth="150.0" text="Nombre" />
+            <TableColumn fx:id="colPrecio" prefWidth="150.0" text="Precio" />
+            <TableColumn fx:id="col1h" prefWidth="150.0" text="Porcentaje en 1h" />
+            <TableColumn fx:id="col24h" prefWidth="130.0" text="24 h %" />
+            <TableColumn fx:id="col7d" prefWidth="130.0" text="7 d %" />
+            <TableColumn fx:id="colMarketCap" prefWidth="200.0" text="Capitalización de mercado" />
+            <TableColumn fx:id="colVolumen" prefWidth="200.0" text="Volumen (24 h)" />
+            <TableColumn fx:id="colSupply" minWidth="0.0" prefWidth="182.0" text="Suministro circulante" />
          </columns>
          <opaqueInsets>
             <Insets />

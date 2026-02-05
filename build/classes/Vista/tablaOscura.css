@@ -18,7 +18,7 @@
 /* Texto de las celdas */
 .table-cell {
     -fx-text-fill: white;
-    -fx-alignment: CENTER_LEFT;
+    -fx-alignment: CENTER;
 }
 
 /* Encabezados de las columnas */
@@ -119,6 +119,36 @@
 /* ===== Esquina entre scroll vertical y horizontal (el cuadrito) ===== */
 .table-view .corner {
     -fx-background-color: #3e4349;
+}
+
+/* CSS para la estrella de favoritos */
+
+/* Toggle de favoritos dentro de la tabla */
+.toggle-button.fav-toggle {
+    -fx-background-color: #3e4349;
+    -fx-border-color: transparent;
+    -fx-background-radius: 6;
+    -fx-padding: 2 6 2 6;
+}
+
+/* Hover */
+.toggle-button.fav-toggle:hover {
+    -fx-background-color: #4a5056;
+}
+
+/* Cuando está seleccionado */
+.toggle-button.fav-toggle:selected {
+    -fx-background-color: #3e4349;
+}
+
+/* Estrella apagada */
+.toggle-button.fav-toggle {
+    -fx-text-fill: #9aa0a6; /* gris suave */
+}
+
+/* Estrella activa */
+.toggle-button.fav-toggle:selected {
+    -fx-text-fill: #ffcc00; /* amarillo estrella */
 }
 
 

@@ -8,7 +8,7 @@
    <children>
       <TableView fx:id="tablaFavoritos" prefHeight="561.0" prefWidth="1520.0" stylesheets="@tablaOscura.css">
          <columns>
-            <TableColumn fx:id="colFav" prefWidth="75.0" text="#" />
+            <TableColumn fx:id="colFav" prefWidth="75.0" />
             <TableColumn fx:id="colTipo" prefWidth="230.0" text="Tipo" />
             <TableColumn fx:id="colSimbolTicker" prefWidth="230.0" text="Simbolo/Ticker" />
             <TableColumn fx:id="colNombre" minWidth="0.0" prefWidth="230.0" text="Nombre/Empresa" />

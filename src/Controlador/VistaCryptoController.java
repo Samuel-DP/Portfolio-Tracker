@@ -1,6 +1,7 @@
 package Controlador;
 
 import Modelo.Crypto;
+import Modelo.Favoritos;
 import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpClient;
@@ -27,12 +28,6 @@ import org.json.JSONObject;
 public class VistaCryptoController implements Initializable {
 
     @FXML
-    private Button btnFavoritos;
-    @FXML
-    private Button btnAcciones;
-    @FXML
-    private Button btnCrypto;
-    @FXML
     private TableView<Crypto> tablaCrypto;
     @FXML
     private TableColumn<Crypto, String> colSimbolo;
@@ -52,6 +47,8 @@ public class VistaCryptoController implements Initializable {
     private TableColumn<Crypto, Double> colVolumen;
     @FXML
     private TableColumn<Crypto, Double> colSupply;
+    @FXML
+    private TableColumn<Crypto, Void> colFav;
 
     private final ObservableList<Crypto> datosCrypto = FXCollections.observableArrayList();
 
@@ -81,7 +78,55 @@ public class VistaCryptoController implements Initializable {
 
         cargarTop10Criptos();
 
-    } 
+        
+        // Para añadir favoritos
+        colFav.setCellFactory(tc -> new TableCell<>() {
+            private final javafx.scene.control.ToggleButton btn = new javafx.scene.control.ToggleButton();
+
+            {
+                btn.getStyleClass().add("fav-toggle");
+                btn.setFocusTraversable(false);
+
+                btn.setOnAction(e -> {
+                    Crypto row = getTableView().getItems().get(getIndex());
+
+                    Modelo.Favoritos fav = new Modelo.Favoritos(
+                            "CRYPTO",
+                            row.getSymbol(),
+                            row.getName(),
+                            row.getPrice(),
+                            row.getChange24h(), 
+                            row.getMarketCap(), 
+                            true
+                    );
+
+                    Modelo.FavoritesService.toggle(fav);
+
+                    boolean isFav = Modelo.FavoritesService.isFavorite("CRYPTO", row.getSymbol());
+                    btn.setSelected(isFav);
+                    btn.setText(isFav ? "★" : "☆");
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty) {
+                    setGraphic(null);
+                    return;
+                }
+
+                Crypto row = getTableView().getItems().get(getIndex());
+                boolean isFav = Modelo.FavoritesService.isFavorite("CRYPTO", row.getSymbol());
+
+                btn.setSelected(isFav);
+                btn.setText(isFav ? "★" : "☆");
+                setGraphic(btn);
+            }
+        });
+
+    }
 
     // Creo un gestor de hilos y utilizo un solo hilo para no crear 200 threads si cambio de vista
     private static final ExecutorService API_EXECUTOR
@@ -101,7 +146,7 @@ public class VistaCryptoController implements Initializable {
 
     // Para evitar 2 llamadas a la vez si el usuario entra rápido
     private static volatile boolean cargando = false;
-    
+
     private void cargarTop10Criptos() {
 
         long ahora = System.currentTimeMillis();
@@ -126,10 +171,10 @@ public class VistaCryptoController implements Initializable {
         Task<ObservableList<Crypto>> task = new Task<>() {
             @Override
             protected ObservableList<Crypto> call() throws Exception {
-                return fetchListaDesdeCoinGecko(); 
+                return fetchListaDesdeCoinGecko();
             }
         };
-        
+
         // Si todo va bien
         task.setOnSucceeded(e -> {
             ObservableList<Crypto> lista = task.getValue();
@@ -143,7 +188,7 @@ public class VistaCryptoController implements Initializable {
 
             cargando = false;
         });
-        
+
         // Si algo falla
         task.setOnFailed(e -> {
             Throwable ex = task.getException();

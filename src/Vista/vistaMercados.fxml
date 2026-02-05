@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -56,25 +53,6 @@
             </ImageView>
          </children>
       </Pane>
-      <AnchorPane fx:id="contenidoMercados" layoutX="3.0" layoutY="110.0" prefHeight="581.0" prefWidth="1509.0" style="-fx-background-color: #3e4349;">
-         <children>
-            <TableView fx:id="tablaCrypto" layoutY="27.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="540.0" prefWidth="1509.0" stylesheets="@tablaOscura.css">
-               <columns>
-                  <TableColumn fx:id="colSimbolo" prefWidth="75.0" text="Símbolo" />
-                  <TableColumn fx:id="colNombre" prefWidth="155.0" text="Nombre" />
-                  <TableColumn fx:id="colPrecio" prefWidth="154.0" text="Precio" />
-                  <TableColumn fx:id="col1h" prefWidth="184.0" text="Porcentaje en 1h" />
-                  <TableColumn fx:id="col24h" prefWidth="147.0" text="24 h %" />
-                  <TableColumn fx:id="col7d" prefWidth="143.0" text="7 d %" />
-                  <TableColumn fx:id="colMarketCap" prefWidth="252.0" text="Capitalización de mercado" />
-                  <TableColumn fx:id="colVolumen" prefWidth="175.0" text="Volumen (24 h)" />
-                  <TableColumn fx:id="colSupply" minWidth="0.0" prefWidth="239.0" text="Suministro circulante" />
-               </columns>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-            </TableView>
-         </children>
-      </AnchorPane>
+      <AnchorPane fx:id="contenidoMercados" layoutX="3.0" layoutY="110.0" prefHeight="581.0" prefWidth="1509.0" style="-fx-background-color: #3e4349;" />
    </children>
 </AnchorPane>

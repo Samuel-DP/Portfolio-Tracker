@@ -39,6 +39,8 @@ public class VistaAccionesController implements Initializable {
     private TableColumn<Stock, Double> colAcc24h;
     @FXML
     private TableColumn<Stock, Double> colAccMarketCap;
+    @FXML
+    private TableColumn<Stock, Void> colFav;
 
     private final ObservableList<Stock> datosStock = FXCollections.observableArrayList();
 
@@ -57,6 +59,52 @@ public class VistaAccionesController implements Initializable {
 
         cargarAcciones();
 
+        colFav.setCellFactory(tc -> new TableCell<>() {
+            private final javafx.scene.control.ToggleButton btn = new javafx.scene.control.ToggleButton();
+
+            {
+                btn.getStyleClass().add("fav-toggle");
+                btn.setFocusTraversable(false);
+
+                btn.setOnAction(e -> {
+                    Stock row = getTableView().getItems().get(getIndex());
+
+                    Modelo.Favoritos fav = new Modelo.Favoritos(
+                            "STOCK",
+                            row.getTicker(),
+                            row.getCompany(),
+                            row.getPrice(),
+                            row.getChange24h(), 
+                            row.getMarketCap(),
+                            true
+                    );
+
+                    Modelo.FavoritesService.toggle(fav);
+
+                    boolean isFav = Modelo.FavoritesService.isFavorite("STOCK", row.getTicker());
+                    btn.setSelected(isFav);
+                    btn.setText(isFav ? "★" : "☆");
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty) {
+                    setGraphic(null);
+                    return;
+                }
+
+                Stock row = getTableView().getItems().get(getIndex());
+                boolean isFav = Modelo.FavoritesService.isFavorite("STOCK", row.getTicker());
+
+                btn.setSelected(isFav);
+                btn.setText(isFav ? "★" : "☆");
+                setGraphic(btn);
+            }
+        });
+
     }
 
     private static final String FINNHUB_KEY = vGlobales.getApiKey();
@@ -72,7 +120,6 @@ public class VistaAccionesController implements Initializable {
             });
 
     // ME HE QUEDADO INTENTANOD ENTENDER ESTE CODIGO Y PONERLO PARECIDO AL DE CRYPTO
-    
     // Cache
     private static ObservableList<Stock> cacheStocks = FXCollections.observableArrayList();
     private static long cacheQuoteTsMs = 0;

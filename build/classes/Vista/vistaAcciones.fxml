@@ -8,11 +8,12 @@
    <children>
       <TableView fx:id="tablaAcciones" layoutY="-1.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="566.0" prefWidth="1520.0" stylesheets="@tablaOscura.css">
          <columns>
+            <TableColumn fx:id="colFav" prefWidth="75.0" />
             <TableColumn fx:id="colTicker" prefWidth="290.0" text="Ticker" />
             <TableColumn fx:id="colEmpresa" prefWidth="290.0" text="Empresa" />
             <TableColumn fx:id="colPrecioAccion" prefWidth="290.0" text="Precio" />
             <TableColumn fx:id="colAcc24h" minWidth="0.0" prefWidth="290.0" text="\%24h" />
-            <TableColumn fx:id="colAccMarketCap" minWidth="0.0" prefWidth="356.0" text="Market Cap" />
+            <TableColumn fx:id="colAccMarketCap" minWidth="0.0" prefWidth="283.0" text="Market Cap" />
          </columns>
       </TableView>
    </children>

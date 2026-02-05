@@ -45,27 +45,27 @@ public class VistaFavoritosController implements Initializable {
         colMarketCap.setCellValueFactory(new PropertyValueFactory<>("marketCap"));
         
         colFav.setCellValueFactory(cd -> new javafx.beans.property.SimpleStringProperty(""));
-
-
-        // De momento cargamos datos de ejemplo para comprobar que se ve:
-        data.add(new Favoritos("CRYPTO", "BTC", "Bitcoin", 82243.0, -6.41, 1645480000000.0, true));
-        data.add(new Favoritos("STOCK", "AAPL", "Apple Inc", 258.28, 0.72, 0.0, false));
-
-        tablaFavoritos.setItems(data);
+        
+        tablaFavoritos.setItems(Modelo.FavoritesService.getFavoritos());
 
         // Dentro de la colFav metemos el toogle de favoritos
         colFav.setCellFactory(tc -> new TableCell<>() {
             private final ToggleButton btn = new ToggleButton();
 
             {
+                btn.getStyleClass().add("fav-toggle");
                 btn.setFocusTraversable(false);
                 btn.setOnAction(e -> {
                     Favoritos row = getTableView().getItems().get(getIndex());
+                    
+                    boolean selected = btn.isSelected();
                     row.setFavorito(btn.isSelected());
-                    btn.setText(btn.isSelected() ? "★" : "☆");
+                    btn.setText(btn.isSelected() ? "★" : "☆"); // 
 
                     // si lo desmarco de favoritos, lo quito de la lista
-                    if (!row.isFavorito()) data.remove(row);
+                    if (!selected){
+                        Modelo.FavoritesService.remove(row.getTipo(), row.getSimboloTicker());
+                    }
                 });
             }
 
