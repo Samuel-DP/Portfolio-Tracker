@@ -10,6 +10,7 @@
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaMercadosController.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaAccionesController.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaCryptoController.java</file>
+            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaFavoritosController.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaPortfolioController.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaPortfolioGeneralController.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaTransaccionesController.java</file>
@@ -20,10 +21,11 @@
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/Validaciones.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Modelo/Transaccion.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Modelo/Stock.java</file>
-            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Modelo/vGlobales.java</file>
-            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaFavoritosController.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Modelo/Favoritos.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Modelo/Crypto.java</file>
+            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Modelo/FavoritesService.java</file>
+            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Modelo/vGlobales.java</file>
+            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Dao/ConexionDB.java</file>
         </group>
     </open-files>
 </project-private>

@@ -10,6 +10,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane id="AnchorPane" prefHeight="429.0" prefWidth="629.0" style="-fx-background-color: #424a55;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controlador.LoginController">
@@ -28,8 +29,13 @@
             <Image url="@../Imagenes/PTBueno.png" />
          </image>
       </ImageView>
-      <TextField layoutX="206.0" layoutY="209.0" prefHeight="25.0" prefWidth="248.0" promptText="Email Address" />
-      <PasswordField layoutX="206.0" layoutY="268.0" prefHeight="25.0" prefWidth="248.0" promptText="Password" />
+      <TextField fx:id="txt_email" layoutX="206.0" layoutY="209.0" prefHeight="25.0" prefWidth="248.0" promptText="Email Address" />
+      <StackPane layoutX="206.0" layoutY="268.0" prefHeight="25.0" prefWidth="248.0">
+         <children>
+            <TextField fx:id="txt_passw_visible" />
+            <PasswordField fx:id="txt_passw" prefHeight="25.0" prefWidth="248.0" promptText="Password" />
+         </children>
+      </StackPane>
       <Button fx:id="btnLogin" layoutX="206.0" layoutY="325.0" mnemonicParsing="false" onAction="#onLogin" prefHeight="25.0" prefWidth="248.0" style="-fx-cursor: hand; -fx-background-color: #2256fb;" text="Login" textFill="WHITE">
           <font>
             <Font name="System Bold" size="12.0" />
@@ -67,7 +73,7 @@
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <Button layoutX="461.0" layoutY="268.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="29.0" style="-fx-background-color: #424a55;">
+      <Button fx:id="btn_ocultar" layoutX="461.0" layoutY="268.0" mnemonicParsing="false" onAction="#togglePassword" prefHeight="25.0" prefWidth="29.0" style="-fx-background-color: #424a55;">
          <graphic>
             <ImageView fitHeight="20.0" fitWidth="37.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -78,5 +84,10 @@
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
+      <Label fx:id="lbl_errorCredenciales" layoutX="206.0" layoutY="296.0" prefHeight="17.0" prefWidth="248.0" textFill="#fc0202">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
