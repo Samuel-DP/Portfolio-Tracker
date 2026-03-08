@@ -13,10 +13,9 @@
 
 <Pane prefHeight="429.0" prefWidth="659.0" style="-fx-background-color: #424a55;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controlador.VistaRegistroController">
    <children>
-      <TextField layoutX="157.0" layoutY="148.0" prefHeight="25.0" prefWidth="377.0" promptText="Enter Email Address" />
-      <PasswordField layoutX="157.0" layoutY="250.0" prefHeight="25.0" prefWidth="377.0" promptText="Create Password" />
-      <PasswordField layoutX="158.0" layoutY="197.0" prefHeight="25.0" prefWidth="377.0" promptText="Choose Username" />
-      <Button layoutX="157.0" layoutY="363.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="377.0" style="-fx-cursor: hand; -fx-background-color: #2256fb;" text="Sign up for free" textFill="WHITE">
+      <TextField fx:id="txt_email" layoutX="157.0" layoutY="148.0" prefHeight="25.0" prefWidth="377.0" promptText="Enter Email Address" />
+      <PasswordField fx:id="txt_passw" layoutX="157.0" layoutY="250.0" prefHeight="25.0" prefWidth="377.0" promptText="Create Password" />
+      <Button fx:id="btn_registrarse" layoutX="157.0" layoutY="363.0" mnemonicParsing="false" onAction="#registrarUsuario" prefHeight="25.0" prefWidth="377.0" style="-fx-cursor: hand; -fx-background-color: #2256fb;" text="Sign up for free" textFill="WHITE">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
@@ -39,7 +38,7 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <PasswordField layoutX="157.0" layoutY="299.0" prefHeight="25.0" prefWidth="377.0" promptText="Confirm Password" />
+      <PasswordField fx:id="txt_confirm_passw" layoutX="157.0" layoutY="299.0" prefHeight="25.0" prefWidth="377.0" promptText="Confirm Password" />
       <ImageView fitHeight="17.0" fitWidth="26.0" layoutX="125.0" layoutY="152.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../Imagenes/sobre.png" />
@@ -60,5 +59,11 @@
             <Image url="@../Imagenes/cerrar%20(1).png" />
          </image>
       </ImageView>
+      <TextField fx:id="txt_nombre" layoutX="157.0" layoutY="197.0" prefHeight="25.0" prefWidth="377.0" promptText="Enter Username" />
+      <Label fx:id="lbl_error" layoutX="157.0" layoutY="334.0" prefHeight="17.0" prefWidth="377.0" textFill="RED">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
    </children>
 </Pane>

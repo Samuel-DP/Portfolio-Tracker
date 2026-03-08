@@ -6,9 +6,9 @@ import java.sql.SQLException;
 
 public class ConexionDB {
 
-    Connection conexion = null;
+    public static Connection conexion = null;
 
-    public Connection getConexion(String url, String usuario, String password) {
+    public static Connection getConexion(String url, String usuario, String password) {
 
         try {
 
@@ -20,6 +20,7 @@ public class ConexionDB {
 
         } catch (Exception ex) {
             System.out.println("Error de conexion " + ex.getMessage());
+            ex.printStackTrace();   
         }
 
         return conexion;
@@ -36,4 +37,3 @@ public class ConexionDB {
 
 }
    
-// ME HE QUEDAO HACIENDO LA CONEXION A LA DB 
