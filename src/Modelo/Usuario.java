@@ -1,9 +1,6 @@
 
 package Modelo;
 
-import java.util.Objects;
-
-
 public class Usuario {
     
     private int id;

@@ -65,8 +65,8 @@ public class VistaRegistroController implements Initializable {
 
         String email = txt_email.getText().trim();
         String username = txt_nombre.getText().trim();
-        String password = txt_passw.getText().trim();
-        String confirmPassword = txt_confirm_passw.getText().trim();
+        String password = txt_passw.getText();
+        String confirmPassword = txt_confirm_passw.getText();
 
         if (email.isEmpty() || username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
 
@@ -110,14 +110,19 @@ public class VistaRegistroController implements Initializable {
         boolean insertado = UsuarioDAO.insertarUsuario(usuario);
         
         if (insertado) {
+            
             System.out.println("Usuario creado correctamente");
             lbl_error.setStyle("-fx-text-fill: green;");
             lbl_error.setText("✔ Usuario registrado correctamente");
             lbl_error.setVisible(true);
+            limpiarCampos();
+            
         } else {
+            
             lbl_error.setStyle("-fx-text-fill: red;");
             lbl_error.setText("⚠ No se pudo registrar el usuario");
             lbl_error.setVisible(true);
+            
         }
 
     }
@@ -133,6 +138,13 @@ public class VistaRegistroController implements Initializable {
 
     }
     
-    //ME HE QUEDADO AÑADIENDO EL USUARIO DE REGISTRO NO TERMINA DE FUCNIONA NO SE ME AÑADE SEGUIR MIRANDO, ACCIONES ESTA FALLANDO HOY TMBN
+    public void limpiarCampos(){
+        
+        txt_email.setText("");
+        txt_nombre.setText("");
+        txt_passw.setText("");
+        txt_confirm_passw.setText("");
+    }
+    
 
 }

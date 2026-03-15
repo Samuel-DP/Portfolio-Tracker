@@ -20,7 +20,6 @@ public class ConexionDB {
 
         } catch (Exception ex) {
             System.out.println("Error de conexion " + ex.getMessage());
-            ex.printStackTrace();   
         }
 
         return conexion;

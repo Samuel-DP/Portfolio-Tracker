@@ -1,7 +1,7 @@
 package Controlador;
 
-import Dao.ConexionDB;
-import Modelo.vGlobales;
+import Dao.UsuarioDAO;
+import Modelo.Usuario;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import java.io.IOException;
@@ -18,6 +18,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class LoginController implements Initializable {
 
@@ -50,42 +51,62 @@ public class LoginController implements Initializable {
     @FXML
     private void onLogin(ActionEvent event) throws IOException {
 
-        ConexionDB conexion = new ConexionDB();
-
         lbl_errorCredenciales.setVisible(false);
         txt_email.setStyle(null);
         txt_passw.setStyle(null);
 
-        vGlobales.USER = txt_email.getText();
-        vGlobales.PASSWORD = txt_passw.getText();
+        String datoLogin = txt_email.getText().trim(); // puede ser email o username
+        String password = txt_passw.getText();
 
-        if (conexion.getConexion(vGlobales.getCadena(), vGlobales.USER, vGlobales.PASSWORD) != null) {
+        if (datoLogin.isEmpty() || password.isEmpty()) {
+            lbl_errorCredenciales.setText("⚠ No puede haber campos vacíos");
+            lbl_errorCredenciales.setVisible(true);
 
-            // Carga la vista principal
-            Parent vistaPrincipal = FXMLLoader.load(getClass().getResource("/Vista/vistaPrincipal.fxml"));
+            if (datoLogin.isEmpty()) {
+                txt_email.setStyle("-fx-border-color: red;");
+            }
+            if (password.isEmpty()) {
+                txt_passw.setStyle("-fx-border-color: red;");
+            }
+            return;
+        }
 
-            // Obtiene la ventana donde esta el login 
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Usuario usuario = UsuarioDAO.obtenerUsuarioPorEmailOUsername(datoLogin);
 
-            // Cambia la escena de login --> vistaPrincipal
-            stage.setScene(new Scene(vistaPrincipal));
-
-            // Centra la ventana en la pantalla 
-            stage.centerOnScreen();
-
-        } else {
-
-            lbl_errorCredenciales.setText("⚠ Email o contraseña incorrectos");
+        if (usuario == null) {
+            lbl_errorCredenciales.setText("⚠ Usuario no encontrado");
             lbl_errorCredenciales.setVisible(true);
 
             txt_email.setStyle("-fx-border-color: red;");
             txt_passw.setStyle("-fx-border-color: red;");
-
-            txt_email.setText("");
-            txt_passw.setText("");
-
+            txt_email.clear();
+            txt_passw.clear();
+            return;
         }
 
+        if (!usuario.IsActive()) {
+            lbl_errorCredenciales.setText("⚠ Usuario inactivo");
+            lbl_errorCredenciales.setVisible(true);
+            return;
+        }
+
+        // Compruebo la contraseña con BCrypt
+        boolean passwordCorrecta = BCrypt.checkpw(password, usuario.getPasswordHash());
+
+        if (passwordCorrecta) {
+            Parent vistaPrincipal = FXMLLoader.load(getClass().getResource("/Vista/vistaPrincipal.fxml"));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(vistaPrincipal));
+            stage.centerOnScreen();
+        } else {
+            lbl_errorCredenciales.setText("⚠ Email/usuario o contraseña incorrectos");
+            lbl_errorCredenciales.setVisible(true);
+
+            txt_email.setStyle("-fx-border-color: red;");
+            txt_passw.setStyle("-fx-border-color: red;");
+            txt_email.clear();
+            txt_passw.clear();
+        }
     }
 
     @FXML
