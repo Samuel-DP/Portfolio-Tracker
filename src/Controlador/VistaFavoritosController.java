@@ -83,7 +83,8 @@ public class VistaFavoritosController implements Initializable {
             }
         });
         
-        // Inicio favoritos , me he quedado metienndole el CSS al toogle
+        // Me he quedado empezando a añadir los favoritos a de cada usuario a mi DB, de momento solo se guarda en memoria, tengo que 
+        // hacer que para cada usuario se me guarden sus respectivos favs
 
     }
 }

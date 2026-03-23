@@ -1,23 +1,38 @@
-
 package Modelo;
 
+import Dao.FavoritosDAO;
 import java.util.HashSet;
 import java.util.Set;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+public class FavoritesService {
 
-public class FavoritesService { 
-    
     private static final ObservableList<Favoritos> favoritos = FXCollections.observableArrayList();
-    private static final Set<String> keys = new HashSet<>(); // evita ducplicados
-    
-    private static String key(String tipo, String simbolo){
+
+    private static final Set<String> keys = new HashSet<>();
+
+    private static String key(String tipo, String simbolo) {
         return tipo + ":" + simbolo;
     }
-    
+
     public static ObservableList<Favoritos> getFavoritos() {
         return favoritos;
+    }
+
+    public static synchronized void loadForCurrentUser() {
+        favoritos.clear();
+        keys.clear();
+
+        Integer usuarioId = vGlobales.getUsuarioIdActual();
+        if (usuarioId == null) {
+            return;
+        }
+
+        for (Favoritos fav : FavoritosDAO.obtenerFavoritosPorUsuario(usuarioId)) {
+            favoritos.add(fav);
+            keys.add(key(fav.getTipo(), fav.getSimboloTicker()));
+        }
     }
 
     public static boolean isFavorite(String tipo, String simbolo) {
@@ -26,15 +41,19 @@ public class FavoritesService {
 
     public static void add(Favoritos fav) {
         String k = key(fav.getTipo(), fav.getSimboloTicker());
+
         if (keys.add(k)) {
             favoritos.add(fav);
+            persistIfUserLoaded(() -> FavoritosDAO.guardarFavorito(vGlobales.getUsuarioIdActual(), fav));
         }
     }
 
     public static void remove(String tipo, String simbolo) {
         String k = key(tipo, simbolo);
+
         if (keys.remove(k)) {
             favoritos.removeIf(f -> f.getTipo().equals(tipo) && f.getSimboloTicker().equals(simbolo));
+            persistIfUserLoaded(() -> FavoritosDAO.eliminarFavorito(vGlobales.getUsuarioIdActual(), tipo, simbolo));
         }
     }
 
@@ -45,5 +64,11 @@ public class FavoritesService {
             add(fav);
         }
     }
-    
+
+    private static void persistIfUserLoaded(Runnable action) {
+        if (vGlobales.getUsuarioIdActual() != null) {
+            action.run();
+        }
+    }
+
 }
