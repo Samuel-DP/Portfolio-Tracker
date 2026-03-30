@@ -53,6 +53,17 @@ public class Favoritos {
     public void setFavorito(boolean favorito) {
         this.favorito = favorito;
     }
-    
+
+    public void setPrecio(double precio) {
+        this.precio = precio;
+    }
+
+    public void setPorcentaje24h(double porcentaje24h) {
+        this.porcentaje24h = porcentaje24h;
+    }
+
+    public void setMarketCap(double marketCap) {
+        this.marketCap = marketCap;
+    }
     
 }

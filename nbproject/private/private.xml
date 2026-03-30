@@ -28,6 +28,8 @@
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Modelo/vGlobales.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Dao/ConexionDB.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Modelo/ConfigDB.java</file>
+            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Modelo/Usuario.java</file>
+            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Dao/FavoritosDAO.java</file>
         </group>
     </open-files>
 </project-private>

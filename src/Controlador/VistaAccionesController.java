@@ -175,7 +175,7 @@ public class VistaAccionesController implements Initializable {
                 }
 
                 String[] tickers = {"AAPL", "MSFT", "AMZN", "GOOGL", "TSLA", "NVDA", "RACE", "BLK",
-                    "V", "MA", "MSTR", "ASML", "ASTS", "NVO", "JD", "KOS", "GLNG", "PBR", "VAL"};
+                    "V", "MA", "MSTR", "ASML", "ASTS"};
 
                 HttpClient client = HttpClient.newBuilder()
                         .connectTimeout(Duration.ofSeconds(8))
