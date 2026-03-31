@@ -1,26 +1,53 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package Controlador;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
-/**
- * FXML Controller class
- *
- * @author samue
- */
 public class VistaNuevaCarteraController implements Initializable {
 
-    /**
-     * Initializes the controller class.
-     */
+    @FXML
+    private TextField txtNombrePortfolio;
+    @FXML
+    private ChoiceBox<String> cbEmojis;
+    @FXML
+    private Button btnCrear;
+
+    private VistaPortfolioController vistaPortfolioController;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
-    
+
+        cbEmojis.setItems(FXCollections.observableArrayList("📊", "💼", "📈", "💰", "🚀"));
+        cbEmojis.setValue("📊");
+
+    }
+
+    public void setVistaPortfolioController(VistaPortfolioController vistaPortfolioController) {
+        this.vistaPortfolioController = vistaPortfolioController;
+    }
+
+    @FXML
+    private void onCrearPortfolio() {
+        String nombre = txtNombrePortfolio.getText() == null ? "" : txtNombrePortfolio.getText().trim();
+        String emoji = cbEmojis.getValue();
+
+        if (nombre.isEmpty()) {
+            return;
+        }
+
+        if (vistaPortfolioController != null) {
+            vistaPortfolioController.agregarPortfolio(emoji, nombre);
+        }
+
+        Stage stage = (Stage) btnCrear.getScene().getWindow();
+        stage.close();
+    }
+
 }

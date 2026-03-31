@@ -2,6 +2,7 @@ package Controlador;
 
 import Dao.UsuarioDAO;
 import Modelo.FavoritesService;
+import Modelo.PortfolioService;
 import Modelo.Usuario;
 import Modelo.vGlobales;
 import javafx.event.ActionEvent;
@@ -96,9 +97,14 @@ public class LoginController implements Initializable {
         boolean passwordCorrecta = BCrypt.checkpw(password, usuario.getPasswordHash());
 
         if (passwordCorrecta) {
-            // Guardo el id del usuario logeado y cargo sus favs desdeº º la DB
+            // Guardo el id del usuario logeado 
             vGlobales.setUsuarioIdActual(usuario.getId());
+            
+            //Cargo los favs del usuario
             FavoritesService.loadForCurrentUser();
+            
+            // Cargo el portfolio del usuario
+            PortfolioService.loadForCurrentUser();
             
             Parent vistaPrincipal = FXMLLoader.load(getClass().getResource("/Vista/vistaPrincipal.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

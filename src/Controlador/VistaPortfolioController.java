@@ -1,8 +1,11 @@
-
 package Controlador;
 
+import Modelo.PortfolioItem;
+import Modelo.PortfolioService;
+import Modelo.vGlobales;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,10 +16,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
 
 public class VistaPortfolioController implements Initializable {
 
@@ -32,47 +36,73 @@ public class VistaPortfolioController implements Initializable {
     private Button btn_vista_general;
     @FXML
     private Button btn_crear_cartera;
+    @FXML
+    private ScrollPane scrollPortfolios;
+    @FXML
+    private VBox vboxPortfolios;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
             cargarVistaGeneral();
+            PortfolioService.loadForCurrentUser();
+            refrescarVistaPortfolios();
         } catch (IOException ex) {
             Logger.getLogger(VistaPortfolioController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }    
+    }
 
     @FXML
     private void onTransacciones(ActionEvent event) throws IOException {
-    
+
         Parent vistaTransacciones = FXMLLoader.load(getClass().getResource("/Vista/vistaTransacciones.fxml"));
-        
+
         // Meto dentro de mi panel de contenidoPortfolio mi vistaTransacciones
         contenidoPortfolio.getChildren().setAll(vistaTransacciones);
-        
+
     }
 
     @FXML
-    private void OnVistaGeneral(ActionEvent event) throws IOException { 
+    private void OnVistaGeneral(ActionEvent event) throws IOException {
         cargarVistaGeneral();
     }
-    
-    private void cargarVistaGeneral() throws IOException{
-        
-         Parent vistaGeneralPortfolio = FXMLLoader.load(getClass().getResource("/Vista/vistaPortfolioGeneral.fxml"));
-         
-         contenidoPortfolio.getChildren().setAll(vistaGeneralPortfolio);
-      
+
+    private void cargarVistaGeneral() throws IOException {
+
+        Parent vistaGeneralPortfolio = FXMLLoader.load(getClass().getResource("/Vista/vistaPortfolioGeneral.fxml"));
+
+        contenidoPortfolio.getChildren().setAll(vistaGeneralPortfolio);
+
+    }
+
+    public void agregarPortfolio(String emoji, String nombre) {
+        PortfolioService.add(emoji, nombre);
+        refrescarVistaPortfolios();
+    }
+
+    private void refrescarVistaPortfolios() {
+        vboxPortfolios.getChildren().clear();
+        for (PortfolioItem portfolio : PortfolioService.getPortfolios()) {
+            Button botonPortfolio = new Button(portfolio.getEtiquetaCompleta());
+            botonPortfolio.setPrefHeight(25.0);
+            botonPortfolio.setPrefWidth(113.0);
+            botonPortfolio.setStyle("-fx-background-color: #2256fb;");
+            botonPortfolio.setTextFill(javafx.scene.paint.Color.WHITE);
+            botonPortfolio.setWrapText(true);
+            vboxPortfolios.getChildren().add(botonPortfolio);
+        }
     }
 
     @FXML
     private void onCrearCartera(ActionEvent event) throws IOException {
-        
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Vista/vistaNuevaCartera.fxml")); // Defino mi vista de la ventana emergente
         Parent root = loader.load();
-        
+
         VistaNuevaCarteraController controlador = loader.getController(); // Me permite comunicarme con la ventana modal
         
+        controlador.setVistaPortfolioController(this);
+
         Scene scena = new Scene(root);
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL); // Ventana Emergente, me bloquea lo que tenog por debajo
@@ -81,5 +111,5 @@ public class VistaPortfolioController implements Initializable {
         stage.showAndWait();
     }
     
-    
+
 }
