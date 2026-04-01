@@ -29,12 +29,11 @@
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Modelo/ConfigDB.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Modelo/Usuario.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Dao/FavoritosDAO.java</file>
-            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Modelo/Portfolio.java</file>
-            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Dao/PortfolioDAO.java</file>
+            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Dao/PortfoliosDAO.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaPortfolioController.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaNuevaCarteraController.java</file>
-            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Modelo/GestorPortfolios.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Modelo/PortfolioItem.java</file>
+            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Modelo/PortfolioService.java</file>
         </group>
     </open-files>
 </project-private>

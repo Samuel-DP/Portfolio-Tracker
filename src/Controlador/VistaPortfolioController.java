@@ -6,6 +6,7 @@ import Modelo.vGlobales;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,9 +16,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -82,14 +87,44 @@ public class VistaPortfolioController implements Initializable {
 
     private void refrescarVistaPortfolios() {
         vboxPortfolios.getChildren().clear();
+
         for (PortfolioItem portfolio : PortfolioService.getPortfolios()) {
+            HBox filaPortfolio = new HBox(4);
+
             Button botonPortfolio = new Button(portfolio.getEtiquetaCompleta());
             botonPortfolio.setPrefHeight(25.0);
-            botonPortfolio.setPrefWidth(113.0);
             botonPortfolio.setStyle("-fx-background-color: #2256fb;");
             botonPortfolio.setTextFill(javafx.scene.paint.Color.WHITE);
             botonPortfolio.setWrapText(true);
-            vboxPortfolios.getChildren().add(botonPortfolio);
+            botonPortfolio.setMaxWidth(Double.MAX_VALUE);
+            HBox.setHgrow(botonPortfolio, Priority.ALWAYS);
+
+            if (!portfolio.isEsDefault()) {
+                Button btnEliminar = new Button("🗑");
+                btnEliminar.setPrefHeight(25.0);
+                btnEliminar.setPrefWidth(25.0);
+                btnEliminar.setStyle("-fx-background-color:  #3e4349;");
+                btnEliminar.setTextFill(javafx.scene.paint.Color.WHITE);
+                btnEliminar.setOnAction(e -> confirmarYEliminarPortfolio(portfolio));
+                filaPortfolio.getChildren().addAll(botonPortfolio, btnEliminar);
+            } else {
+                filaPortfolio.getChildren().add(botonPortfolio);
+            }
+
+            vboxPortfolios.getChildren().add(filaPortfolio);
+        }
+    }
+
+    private void confirmarYEliminarPortfolio(PortfolioItem portfolio) {
+        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmacion.setTitle("Eliminar portfolio");
+        confirmacion.setHeaderText("¿Seguro que quieres eliminar este portfolio?");
+        confirmacion.setContentText(portfolio.getEtiquetaCompleta());
+
+        Optional<ButtonType> resultado = confirmacion.showAndWait();
+        if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
+            PortfolioService.remove(portfolio);
+            refrescarVistaPortfolios();
         }
     }
 
@@ -100,7 +135,7 @@ public class VistaPortfolioController implements Initializable {
         Parent root = loader.load();
 
         VistaNuevaCarteraController controlador = loader.getController(); // Me permite comunicarme con la ventana modal
-        
+
         controlador.setVistaPortfolioController(this);
 
         Scene scena = new Scene(root);
@@ -110,6 +145,5 @@ public class VistaPortfolioController implements Initializable {
         stage.setScene(scena);
         stage.showAndWait();
     }
-    
 
 }

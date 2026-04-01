@@ -41,4 +41,23 @@ public class PortfolioService {
             portfolios.add(portfolioCreado);
         }
     }
+
+    public static boolean remove(PortfolioItem portfolio) {
+        if (portfolio == null || portfolio.isEsDefault()) {
+            return false;
+        }
+
+        Integer usuarioId = vGlobales.getUsuarioIdActual();
+        if (usuarioId == null) {
+            return false;
+        }
+
+        boolean eliminado = PortfoliosDAO.eliminarPortfolio(usuarioId, portfolio.getId());
+        if (eliminado) {
+            portfolios.removeIf(p -> p.getId() == portfolio.getId());
+        }
+
+        return eliminado;
+    }
+
 }
