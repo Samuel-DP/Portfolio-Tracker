@@ -16,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 public class VistaTransaccionVentaController implements Initializable {
@@ -36,6 +37,8 @@ public class VistaTransaccionVentaController implements Initializable {
     private TextField txt_notas;
 
     private VistaAñadirTransaccionController parent;
+    @FXML
+    private Label lbl_errorTransaccion;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -77,6 +80,14 @@ public class VistaTransaccionVentaController implements Initializable {
         // Recalculo cuando cambie cantidad o precio
         txt_cantidad.textProperty().addListener((obs, oldV, newV) -> recalcularTotal());
         txt_precio.textProperty().addListener((obs, oldV, newV) -> recalcularTotal());
+        
+        Validaciones v = new Validaciones();
+        cb_moneda.getEditor().setOnKeyTyped(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, dp_fecha, txt_cantidad, txt_precio, txt_notas));
+        cb_moneda.setOnMouseClicked(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, dp_fecha, txt_cantidad, txt_precio, txt_notas));
+        txt_cantidad.setOnKeyTyped(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, dp_fecha, txt_cantidad, txt_precio, txt_notas));
+        txt_precio.setOnKeyTyped(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, dp_fecha, txt_cantidad, txt_precio, txt_notas));
+        txt_notas.setOnKeyTyped(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, dp_fecha, txt_cantidad, txt_precio, txt_notas));
+        dp_fecha.setOnAction(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, dp_fecha, txt_cantidad, txt_precio, txt_notas));
     }
 
     public void setParentController(VistaAñadirTransaccionController parent) {
@@ -87,7 +98,7 @@ public class VistaTransaccionVentaController implements Initializable {
     private void onAgregarVenta(ActionEvent event) {
 
         Validaciones v = new Validaciones();
-        if (!v.validarCampos(cb_moneda, dp_fecha, txt_cantidad, txt_precio, txt_notas)) {
+         if (!v.validarCampos(cb_moneda, dp_fecha, txt_cantidad, txt_precio, txt_notas, lbl_errorTransaccion)) {
             return;
         }
 

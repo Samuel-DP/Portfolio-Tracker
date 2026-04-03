@@ -18,6 +18,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 public class VistaAñadirTransaccionTransferirController implements Initializable {
@@ -36,6 +37,8 @@ public class VistaAñadirTransaccionTransferirController implements Initializabl
     private TextField txt_notas;
 
     private VistaAñadirTransaccionController parent;
+    @FXML
+    private Label lbl_errorTransaccion;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -75,6 +78,15 @@ public class VistaAñadirTransaccionTransferirController implements Initializabl
         });
 
         cb_transferencia.getItems().addAll("Transferencia entrante", "Transferencia saliente");
+        
+        Validaciones v = new Validaciones();
+        cb_moneda.getEditor().setOnKeyTyped(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, cb_transferencia, txt_cantidad, txt_notas, dp_fecha));
+        cb_moneda.setOnMouseClicked(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, cb_transferencia, txt_cantidad, txt_notas, dp_fecha));
+        cb_transferencia.setOnAction(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, cb_transferencia, txt_cantidad, txt_notas, dp_fecha));
+        txt_cantidad.setOnKeyTyped(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, cb_transferencia, txt_cantidad, txt_notas, dp_fecha));
+        txt_notas.setOnKeyTyped(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, cb_transferencia, txt_cantidad, txt_notas, dp_fecha));
+        dp_fecha.setOnAction(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, cb_transferencia, txt_cantidad, txt_notas, dp_fecha));
+        
     }
 
     public void setParentController(VistaAñadirTransaccionController parent) {
@@ -84,9 +96,8 @@ public class VistaAñadirTransaccionTransferirController implements Initializabl
     @FXML
     private void onTransferir(ActionEvent event) {
 
-        // ME HE QUEDADO VALIDANDO LAS TRANSFERENCIAS
         Validaciones v = new Validaciones();
-        if (!v.validarTransferir(cb_moneda, cb_transferencia, txt_cantidad, txt_notas, dp_fecha)) {
+        if (!v.validarTransferir(cb_moneda, cb_transferencia, txt_cantidad, txt_notas, dp_fecha, lbl_errorTransaccion)) {
             return;
         }
 

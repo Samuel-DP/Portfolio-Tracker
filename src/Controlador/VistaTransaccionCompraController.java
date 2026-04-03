@@ -15,6 +15,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 public class VistaTransaccionCompraController implements Initializable {
@@ -36,6 +37,8 @@ public class VistaTransaccionCompraController implements Initializable {
     private VistaAñadirTransaccionController parent;
     @FXML
     private Button btn_agregarCompra;
+    @FXML
+    private Label lbl_errorTransaccion;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -77,6 +80,15 @@ public class VistaTransaccionCompraController implements Initializable {
         // Recalculo cuando cambie cantidad o precio
         txt_cantidad.textProperty().addListener((obs, oldV, newV) -> recalcularTotal());
         txt_precio.textProperty().addListener((obs, oldV, newV) -> recalcularTotal());
+        
+        Validaciones v = new Validaciones();
+        cb_moneda.getEditor().setOnKeyTyped(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, dp_fecha, txt_cantidad, txt_precio, txt_notas));
+        cb_moneda.setOnMouseClicked(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, dp_fecha, txt_cantidad, txt_precio, txt_notas));
+        txt_cantidad.setOnKeyTyped(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, dp_fecha, txt_cantidad, txt_precio, txt_notas));
+        txt_precio.setOnKeyTyped(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, dp_fecha, txt_cantidad, txt_precio, txt_notas));
+        txt_notas.setOnKeyTyped(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, dp_fecha, txt_cantidad, txt_precio, txt_notas));
+        dp_fecha.setOnAction(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, dp_fecha, txt_cantidad, txt_precio, txt_notas));
+        
 
     }
 
@@ -88,7 +100,7 @@ public class VistaTransaccionCompraController implements Initializable {
     private void onAgregarCompra(ActionEvent event) {
 
         Validaciones v = new Validaciones();
-        if (!v.validarCampos(cb_moneda, dp_fecha, txt_cantidad, txt_precio, txt_notas)) {
+        if (!v.validarCampos(cb_moneda, dp_fecha, txt_cantidad, txt_precio, txt_notas, lbl_errorTransaccion)) {
             return;
         }
 
@@ -136,5 +148,5 @@ public class VistaTransaccionCompraController implements Initializable {
 
 }
 
-// he cambiado el chechkbox cb_moneda, por un vbox + textfield + listview para poder hacer un buscador de activos y que me muestre un desplegable
+// Me he quedado validando los errores en transacciones. tengo que mirar porque si selecciono desde mi comboBox se me cambia el color de los textfield en transacciones
 
