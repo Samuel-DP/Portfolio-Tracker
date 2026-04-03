@@ -2,22 +2,22 @@
 package Controlador;
 
 import javafx.scene.control.Alert;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 
 
 public class Validaciones {
     
-    public boolean validarCampos(
-            ChoiceBox<String> cb_moneda, 
-            DatePicker dp_fecha, 
-            TextField txt_cantidad, 
-            TextField txt_precio, 
+     public boolean validarCampos(
+            ComboBox<String> cb_moneda,
+            DatePicker dp_fecha,
+            TextField txt_cantidad,
+            TextField txt_precio,
             TextField txt_notas
     ) {
 
-        if (cb_moneda.getValue() == null) {
+        if (cb_moneda.getValue() == null || cb_moneda.getValue().isBlank()) {
             mostrarError("Moneda", "Selecciona una moneda");
             return false;
         }
@@ -78,8 +78,8 @@ public class Validaciones {
     }
     
     public boolean validarTransferir(
-        ChoiceBox<String> cb_moneda,
-        ChoiceBox<String> cb_transferencia,
+        ComboBox<String> cb_moneda,
+        ComboBox<String> cb_transferencia,
         TextField txt_cantidad,
         TextField txt_notas,
         DatePicker dp_fecha
