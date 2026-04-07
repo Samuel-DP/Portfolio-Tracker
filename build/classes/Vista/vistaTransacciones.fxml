@@ -88,18 +88,5 @@
             <Image url="@../Imagenes/impuesto.png" />
          </image>
       </ImageView>
-      <Button fx:id="btn_eliminar_transaccion" layoutX="446.0" layoutY="68.0" mnemonicParsing="false" onAction="#OnEliminarTransacciones" prefHeight="25.0" prefWidth="150.0" style="-fx-background-color: #2256fb;" text="Eliminar transacción" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-      </Button>
-      <Button layoutX="636.0" layoutY="68.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="150.0" style="-fx-background-color: #2256fb;" text="Actualizar transacción" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font>
-      </Button>
    </children>
 </Pane>

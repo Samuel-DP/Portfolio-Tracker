@@ -14,13 +14,20 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -50,6 +57,8 @@ public class VistaTransaccionesController implements Initializable {
     private TableColumn<Transaccion, Double> colImporte;
     @FXML
     private TableColumn<Transaccion, String> colNotas;
+    @FXML
+    private TableColumn<Transaccion, Void> colAcciones;
 
     private ObservableList<Transaccion> data = FXCollections.observableArrayList();
 
@@ -62,6 +71,7 @@ public class VistaTransaccionesController implements Initializable {
         colPrecioPorMoneda.setCellValueFactory(new PropertyValueFactory<>("precioPorMoneda"));
         colImporte.setCellValueFactory(new PropertyValueFactory<>("importe"));
         colNotas.setCellValueFactory(new PropertyValueFactory<>("notas"));
+        configurarColumnaAcciones();
 
         tbl_transacciones.setItems(data);
 
@@ -78,18 +88,16 @@ public class VistaTransaccionesController implements Initializable {
 
     }
 
-    @FXML
-    private void OnEliminarTransacciones(ActionEvent event) {
-        Transaccion seleccionada = tbl_transacciones.getSelectionModel().getSelectedItem();
+    private void eliminarTransaccion(Transaccion transaccion) {
         Integer usuarioId = vGlobales.getUsuarioIdActual();
 
-        if (seleccionada == null || usuarioId == null || seleccionada.getId() <= 0) {
+        if (transaccion == null || usuarioId == null || transaccion.getId() <= 0) {
             return;
         }
 
-        boolean eliminado = TransaccionesDAO.eliminarTransaccion(usuarioId, seleccionada.getId());
+        boolean eliminado = TransaccionesDAO.eliminarTransaccion(usuarioId, transaccion.getId());
         if (eliminado) {
-            data.remove(seleccionada);
+            data.remove(transaccion);
         }
     }
 
@@ -135,4 +143,67 @@ public class VistaTransaccionesController implements Initializable {
         data.addAll(TransaccionesDAO.obtenerTransaccionesPorPortfolio(portfolioId));
     }
 
+    private void configurarColumnaAcciones() {
+        Image iconoEditar = new Image(getClass().getResourceAsStream("/Imagenes/lapiz.png"));
+        Image iconoEliminar = new Image(getClass().getResourceAsStream("/Imagenes/basura.png"));
+
+        colAcciones.setCellFactory(col -> new TableCell<Transaccion, Void>() {
+            private final Button btnEditar = crearBotonAccion(iconoEditar, "Editar");
+            private final Button btnEliminar = crearBotonAccion(iconoEliminar, "Eliminar");
+            private final HBox contenedor = new HBox(10, btnEditar, btnEliminar);
+
+            {
+                contenedor.setAlignment(Pos.CENTER);
+                btnEditar.setOnAction(event -> {
+                    Transaccion transaccion = getTableView().getItems().get(getIndex());
+                    tbl_transacciones.getSelectionModel().select(transaccion);
+                });
+
+                btnEliminar.setOnAction(event -> {
+                    Transaccion transaccion = getTableView().getItems().get(getIndex());
+                    if (confirmarEliminacion(transaccion)) {
+                        eliminarTransaccion(transaccion);
+                    }
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : contenedor);
+            }
+        });
+    }
+
+    private Button crearBotonAccion(Image icono, String tooltip) {
+        ImageView imageView = new ImageView(icono);
+        imageView.setFitHeight(16);
+        imageView.setFitWidth(16);
+        imageView.setPreserveRatio(true);
+
+        Button boton = new Button();
+        boton.setGraphic(imageView);
+        boton.setCursor(Cursor.HAND);
+        boton.setStyle("-fx-background-color: transparent; -fx-padding: 2;");
+        boton.setAccessibleText(tooltip);
+        return boton;
+    }
+
+    private boolean confirmarEliminacion(Transaccion transaccion) {
+        if (transaccion == null) {
+            return false;
+        }
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmar eliminación");
+        alert.setHeaderText("¿Seguro que quieres eliminar esta transacción?");
+
+        return alert.showAndWait()
+                .filter(buttonType -> buttonType == ButtonType.OK)
+                .isPresent();
+    }
+
 }
+
+
+// Me he quedado haciendo la ventana modal de actualizar cuando le doy al boton de mi lapicero e intentando entender bien esta ultima implementacion
