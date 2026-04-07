@@ -30,13 +30,14 @@
       </Button>
       <TableView fx:id="tbl_transacciones" layoutX="2.0" layoutY="233.0" prefHeight="354.0" prefWidth="1386.0" stylesheets="@tablaOscura.css">
         <columns>
-          <TableColumn fx:id="colTipo" prefWidth="180.0" text="Tipo" />
-          <TableColumn fx:id="colFecha" prefWidth="180.0" text="Fecha" />
-            <TableColumn fx:id="colActivos" prefWidth="180.0" text="Activos" />
-            <TableColumn fx:id="colUnidades" prefWidth="180.0" text="Unidades" />
-            <TableColumn fx:id="colPrecioPorMoneda" prefWidth="180.0" text="Precio por moneda" />
-            <TableColumn fx:id="colImporte" prefWidth="180.0" text="Importe" />
-            <TableColumn fx:id="colNotas" prefWidth="303.0" text="Notas" />
+          <TableColumn fx:id="colTipo" prefWidth="170.0" text="Tipo" />
+          <TableColumn fx:id="colFecha" prefWidth="170.0" text="Fecha" />
+            <TableColumn fx:id="colActivos" prefWidth="170.0" text="Activos" />
+            <TableColumn fx:id="colUnidades" prefWidth="170.0" text="Unidades" />
+            <TableColumn fx:id="colPrecioPorMoneda" prefWidth="170.0" text="Precio por moneda" />
+            <TableColumn fx:id="colImporte" prefWidth="170.0" text="Importe" />
+            <TableColumn fx:id="colNotas" minWidth="0.0" prefWidth="266.0" text="Notas" />
+            <TableColumn fx:id="colAcciones" prefWidth="100.0" text="Acciones" />
         </columns>
       </TableView>
       <ImageView fitHeight="17.0" fitWidth="17.0" layoutX="271.0" layoutY="72.0" pickOnBounds="true" preserveRatio="true">

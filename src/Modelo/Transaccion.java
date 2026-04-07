@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 public class Transaccion {
     
+    private final int id;
     private final String tipo;
     private final LocalDateTime fecha;
     private final String activo;
@@ -15,6 +16,7 @@ public class Transaccion {
     
     
     public Transaccion(String tipo, LocalDateTime fecha, String activo, double unidades, double precioPorMoneda, double importe, String notas){
+        this.id = 0;
         this.tipo = tipo;
         this.fecha = fecha;
         this.activo = activo;
@@ -26,13 +28,28 @@ public class Transaccion {
     
     // COnstructor parametrizado para Transaccion Transferencia
     public Transaccion(String tipo, LocalDateTime fecha, String activo, double unidades, String notas){
+        this.id = 0;
         this.tipo = tipo;
         this.fecha = fecha;
         this.activo = activo;
+        this.precioPorMoneda = 0;
+        this.importe = 0;
         this.unidades = unidades;
         this.notas = notas;
     }
     
+    public Transaccion(int id, String tipo, LocalDateTime fecha, String activo, double unidades, double precioPorMoneda, double importe, String notas){
+        this.id = id;
+        this.tipo = tipo;
+        this.fecha = fecha;
+        this.activo = activo;
+        this.unidades = unidades;
+        this.precioPorMoneda = precioPorMoneda;
+        this.importe = importe;
+        this.notas = notas;
+    }
+    
+    public int getId() { return id; }
     public String getTipo() { return tipo; }
     public LocalDateTime getFecha() { return fecha; }
     public String getActivo() { return activo; }
