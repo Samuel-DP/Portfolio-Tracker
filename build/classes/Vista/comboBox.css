@@ -47,3 +47,7 @@
 .combo-box-popup .scroll-bar .track {
     -fx-background-color: #3e4349;
 }
+
+.combo-box .list-cell {
+    -fx-text-fill: white;
+}

@@ -19,7 +19,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <TextField fx:id="txtNombrePortfolio" layoutX="128.0" layoutY="124.0" prefHeight="53.0" prefWidth="320.0" style="-fx-background-color: #3e4349;" />
+      <TextField fx:id="txtNombrePortfolio" layoutX="128.0" layoutY="124.0" prefHeight="53.0" prefWidth="320.0" styleClass="text-field" stylesheets="@TextField.css" />
       <ChoiceBox fx:id="cbEmojis" layoutX="42.0" layoutY="124.0" prefHeight="53.0" prefWidth="72.0" />
       <Button fx:id="btnCrear" layoutX="42.0" layoutY="216.0" mnemonicParsing="false" onAction="#onCrearPortfolio" prefHeight="53.0" prefWidth="407.0" style="-fx-background-color: #2256fb;" text="Crear" textFill="WHITE">
          <font>

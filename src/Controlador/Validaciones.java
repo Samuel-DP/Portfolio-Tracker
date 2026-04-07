@@ -20,27 +20,27 @@ public class Validaciones {
 
         if (cb_moneda.getValue() == null || cb_moneda.getValue().isBlank()) {
             mostrarError(lbl_error, "⚠ Selecciona una moneda");
-            cb_moneda.setStyle("-fx-border-color: red;");
+            marcarError(cb_moneda);
             return false;
         }
 
         if (dp_fecha.getValue() == null) {
             mostrarError(lbl_error, "⚠ Selecciona una fecha");
-            dp_fecha.setStyle("-fx-border-color: red;");
+            marcarError(dp_fecha);
             return false;
         }
 
         String cTxt = txt_cantidad.getText();
         if (cTxt == null || cTxt.isBlank()) {
             mostrarError(lbl_error, "⚠ La cantidad no puede estar vacía");
-            txt_cantidad.setStyle("-fx-border-color: red;");
+            marcarError(txt_cantidad);
             return false;
         }
 
         String pTxt = txt_precio.getText();
         if (pTxt == null || pTxt.isBlank()) {
             mostrarError(lbl_error, "⚠ El precio no puede estar vacío");
-            txt_precio.setStyle("-fx-border-color: red;");
+            marcarError(txt_precio);
             return false;
         }
 
@@ -51,7 +51,7 @@ public class Validaciones {
             unidades = Double.parseDouble(cTxt.trim().replace(",", "."));
         } catch (NumberFormatException e) {
             mostrarError(lbl_error, "⚠ Cantidad inválida (ej: 1.5)");
-            txt_cantidad.setStyle("-fx-border-color: red;");
+            marcarError(txt_cantidad);
             return false;
         }
 
@@ -59,26 +59,26 @@ public class Validaciones {
             precio = Double.parseDouble(pTxt.trim().replace(",", "."));
         } catch (NumberFormatException e) {
             mostrarError(lbl_error, "⚠ Precio inválido (ej: 2500)");
-            txt_precio.setStyle("-fx-border-color: red;");
+            marcarError(txt_precio);
             return false;
         }
 
         if (unidades <= 0) {
             mostrarError(lbl_error, "⚠ La cantidad debe ser mayor que 0");
-            txt_cantidad.setStyle("-fx-border-color: red;");
+            marcarError(txt_cantidad);
             return false;
         }
 
         if (precio <= 0) {
             mostrarError(lbl_error, "⚠ El precio debe ser mayor que 0");
-            txt_precio.setStyle("-fx-border-color: red;");
+            marcarError(txt_precio);
             return false;
         }
 
         String notas = txt_notas.getText();
         if (notas != null && notas.length() > 200) {
             mostrarError(lbl_error, "⚠ Las notas no pueden superar los 200 caracteres");
-            txt_notas.setStyle("-fx-border-color: red;");
+            marcarError(txt_notas);
             return false;
         }
 
@@ -99,20 +99,20 @@ public class Validaciones {
 
         if (cb_moneda.getValue() == null || cb_moneda.getValue().isBlank()) {
             mostrarError(lbl_error, "⚠ Selecciona una moneda");
-            cb_moneda.setStyle("-fx-border-color: red;");
+            marcarError(cb_moneda);
             return false;
         }
 
         if (cb_transferencia.getValue() == null || cb_transferencia.getValue().isBlank()) {
             mostrarError(lbl_error, "⚠ Selecciona un tipo de transferencia");
-            cb_transferencia.setStyle("-fx-border-color: red;");
+            marcarError(cb_transferencia);
             return false;
         }
 
         String cTxt = txt_cantidad.getText();
         if (cTxt == null || cTxt.isBlank()) {
             mostrarError(lbl_error, "⚠ La cantidad no puede estar vacía");
-            txt_cantidad.setStyle("-fx-border-color: red;");
+            marcarError(txt_cantidad);
             return false;
         }
 
@@ -122,26 +122,26 @@ public class Validaciones {
             cantidad = Double.parseDouble(cTxt.trim().replace(",", "."));
         } catch (NumberFormatException e) {
             mostrarError(lbl_error, "⚠ Cantidad inválida (ej: 1.5)");
-            txt_cantidad.setStyle("-fx-border-color: red;");
+            marcarError(txt_cantidad);
             return false;
         }
 
         if (cantidad <= 0) {
             mostrarError(lbl_error, "⚠ La cantidad debe ser mayor que 0");
-            txt_cantidad.setStyle("-fx-border-color: red;");
+            marcarError(txt_cantidad);
             return false;
         }
 
         String notas = txt_notas.getText();
         if (notas != null && notas.length() > 200) {
             mostrarError(lbl_error, "⚠ Las notas no pueden superar los 200 caracteres");
-            txt_notas.setStyle("-fx-border-color: red;");
+            marcarError(txt_notas);
             return false;
         }
 
         if (dp_fecha.getValue() == null) {
             mostrarError(lbl_error, "⚠ Selecciona una fecha");
-            dp_fecha.setStyle("-fx-border-color: red;");
+            marcarError(dp_fecha);
             return false;
         }
 
@@ -156,13 +156,45 @@ public class Validaciones {
 
         for (Object campo : campos) {
             if (campo instanceof TextField tf) {
-                tf.setStyle(null);
+                limpiarBordeError(tf);
             } else if (campo instanceof ComboBox<?> cb) {
-                cb.setStyle(null);
+                limpiarBordeError(cb);
             } else if (campo instanceof DatePicker dp) {
-                dp.setStyle(null);
+                limpiarBordeError(dp);
             }
         }
+    }
+
+    private void marcarError(javafx.scene.Node nodo) {
+        String style = nodo.getStyle();
+        style = style == null ? "" : style;
+
+        style = style
+                .replaceAll("-fx-border-color\\s*:[^;]*;?", "")
+                .replaceAll("-fx-border-width\\s*:[^;]*;?", "")
+                .trim();
+
+        if (!style.isEmpty() && !style.endsWith(";")) {
+            style += ";";
+        }
+
+        style += " -fx-border-color: red; -fx-border-width: 1;";
+        nodo.setStyle(style.trim());
+    }
+
+    private void limpiarBordeError(javafx.scene.Node nodo) {
+        String style = nodo.getStyle();
+        if (style == null || style.isBlank()) {
+            return;
+        }
+
+        String nuevo = style
+                .replaceAll("-fx-border-color\\s*:[^;]*;?", "")
+                .replaceAll("-fx-border-width\\s*:[^;]*;?", "")
+                .replaceAll("\\s{2,}", " ")
+                .trim();
+
+        nodo.setStyle(nuevo);
     }
 
     private void mostrarError(Label lbl_error, String mensaje) {

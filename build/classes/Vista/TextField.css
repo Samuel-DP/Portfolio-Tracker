@@ -1,0 +1,6 @@
+.text-field {
+    -fx-text-fill: white;
+    -fx-background-color: #3e4349;
+    -fx-prompt-text-fill: #aaaaaa;
+}
+
