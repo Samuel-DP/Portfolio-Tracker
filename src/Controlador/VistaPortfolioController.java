@@ -6,6 +6,7 @@ import Modelo.vGlobales;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -20,6 +21,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -45,6 +48,9 @@ public class VistaPortfolioController implements Initializable {
     private ScrollPane scrollPortfolios;
     @FXML
     private VBox vboxPortfolios;
+    
+    private static final Image ICONO_ELIMINAR = new Image(
+            Objects.requireNonNull(VistaPortfolioController.class.getResourceAsStream("/Imagenes/basura.png")));
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -100,11 +106,15 @@ public class VistaPortfolioController implements Initializable {
             HBox.setHgrow(botonPortfolio, Priority.ALWAYS);
 
             if (!portfolio.isEsDefault()) {
-                Button btnEliminar = new Button("🗑");
+                Button btnEliminar = new Button();
                 btnEliminar.setPrefHeight(25.0);
                 btnEliminar.setPrefWidth(25.0);
-                btnEliminar.setStyle("-fx-background-color:  #3e4349;");
-                btnEliminar.setTextFill(javafx.scene.paint.Color.WHITE);
+                btnEliminar.setStyle("-fx-background-color: #3e4349;");
+                ImageView iconoEliminar = new ImageView(ICONO_ELIMINAR);
+                iconoEliminar.setFitWidth(12.0);
+                iconoEliminar.setFitHeight(12.0);
+                iconoEliminar.setPreserveRatio(true);
+                btnEliminar.setGraphic(iconoEliminar);
                 btnEliminar.setOnAction(e -> confirmarYEliminarPortfolio(portfolio));
                 filaPortfolio.getChildren().addAll(botonPortfolio, btnEliminar);
             } else {

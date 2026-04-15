@@ -1,0 +1,20 @@
+/* ScrollPane oscuro sin borde ni fondo blanco */
+.scroll-pane-dark {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.scroll-pane-dark > .viewport {
+    -fx-background-color: #3e4349;
+}
+
+.scroll-pane-dark > .corner {
+    -fx-background-color: #3e4349;
+}
+
+.scroll-pane-dark .scroll-bar:vertical,
+.scroll-pane-dark .scroll-bar:horizontal {
+    -fx-background-color: #3e4349;
+}

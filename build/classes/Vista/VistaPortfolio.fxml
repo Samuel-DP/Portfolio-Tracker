@@ -51,9 +51,9 @@
                   <Image url="@../Imagenes/mas.png" />
                </image>
             </ImageView>
-            <ScrollPane fx:id="scrollPortfolios" layoutX="14.0" layoutY="163.0" prefHeight="161.0" prefWidth="113.0" style="-fx-background-color: #3e4349;">
+            <ScrollPane fx:id="scrollPortfolios" layoutX="14.0" layoutY="163.0" prefHeight="161.0" prefWidth="113.0" styleClass="scroll-pane-dark" stylesheets="@scrollPane.css">
                <content>
-                  <VBox fx:id="vboxPortfolios" prefHeight="159.0" prefWidth="111.0" spacing="10.0" style="-fx-background-color: #3e4349;" />
+                  <VBox fx:id="vboxPortfolios" prefHeight="159.0" prefWidth="111.0" spacing="10.0" style="-fx-background-color: #3e4349; -fx-border-color: transparent;" />
                </content>
             </ScrollPane>
          </children>

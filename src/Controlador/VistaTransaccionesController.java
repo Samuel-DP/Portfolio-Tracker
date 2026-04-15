@@ -206,4 +206,4 @@ public class VistaTransaccionesController implements Initializable {
 }
 
 
-// Me he quedado haciendo la ventana modal de actualizar cuando le doy al boton de mi lapicero e intentando entender bien esta ultima implementacion
+// Me he quedado haciendo la ventana modal de actualizar cuando le doy al boton de mi lapicero e intentando entender bien esta ultima implementación 
