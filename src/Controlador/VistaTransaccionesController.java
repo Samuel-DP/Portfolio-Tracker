@@ -157,6 +157,7 @@ public class VistaTransaccionesController implements Initializable {
                 btnEditar.setOnAction(event -> {
                     Transaccion transaccion = getTableView().getItems().get(getIndex());
                     tbl_transacciones.getSelectionModel().select(transaccion);
+                    editarTransaccion(transaccion);
                 });
 
                 btnEliminar.setOnAction(event -> {
@@ -203,7 +204,47 @@ public class VistaTransaccionesController implements Initializable {
                 .isPresent();
     }
 
+    private void editarTransaccion(Transaccion original) {
+        Integer usuarioId = vGlobales.getUsuarioIdActual();
+        if (original == null || usuarioId == null || original.getId() <= 0) {
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Vista/vistaAñadirTransaccion.fxml"));
+            Parent root = loader.load();
+
+            VistaAñadirTransaccionController controlador = loader.getController();
+            controlador.setTransaccionParaEditar(original);
+
+            Scene scena = new Scene(root);
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.setScene(scena);
+            stage.showAndWait();
+
+            Transaccion editada = controlador.getResultado();
+            if (editada == null) {
+                return;
+            }
+
+            Transaccion actualizada = TransaccionesDAO.actualizarTransaccion(usuarioId, original.getId(), editada);
+            if (actualizada == null) {
+                return;
+            }
+
+            int indice = data.indexOf(original);
+            if (indice >= 0) {
+                data.set(indice, actualizada);
+            }
+            tbl_transacciones.refresh();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
 
 
-// Me he quedado haciendo la ventana modal de actualizar cuando le doy al boton de mi lapicero e intentando entender bien esta ultima implementación 
+// He terminado la ventana modal de actualizar me falta hacer la parte del exportar a CSV 

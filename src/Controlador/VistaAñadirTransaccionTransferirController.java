@@ -42,7 +42,7 @@ public class VistaAñadirTransaccionTransferirController implements Initializabl
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
+
         ObservableList<String> activosDisponibles = FXCollections.observableArrayList(
                 "Bitcoin BTC", "Ethereum ETH", "Tether USDT", "XRP XRP", "BNB BNB", "USDC USDC", "Solana SOL", "TRON TRX",
                 "Figure Heloc FIGR_HELOC", "Dogecoin DOGE", "USDS USDS", "WhiteBIT Coin WBT", "LEO Token LEO", "Cardano ADA", "Bitcoin Cash BCH",
@@ -78,7 +78,7 @@ public class VistaAñadirTransaccionTransferirController implements Initializabl
         });
 
         cb_transferencia.getItems().addAll("Transferencia entrante", "Transferencia saliente");
-        
+
         Validaciones v = new Validaciones();
         cb_moneda.getEditor().setOnKeyTyped(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, cb_transferencia, txt_cantidad, txt_notas, dp_fecha));
         cb_moneda.setOnMouseClicked(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, cb_transferencia, txt_cantidad, txt_notas, dp_fecha));
@@ -86,11 +86,24 @@ public class VistaAñadirTransaccionTransferirController implements Initializabl
         txt_cantidad.setOnKeyTyped(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, cb_transferencia, txt_cantidad, txt_notas, dp_fecha));
         txt_notas.setOnKeyTyped(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, cb_transferencia, txt_cantidad, txt_notas, dp_fecha));
         dp_fecha.setOnAction(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, cb_transferencia, txt_cantidad, txt_notas, dp_fecha));
-        
+
     }
 
     public void setParentController(VistaAñadirTransaccionController parent) {
         this.parent = parent;
+    }
+
+    public void cargarTransaccion(Transaccion transaccion) {
+        if (transaccion == null) {
+            return;
+        }
+
+        cb_moneda.setValue(transaccion.getActivo());
+        cb_moneda.getEditor().setText(transaccion.getActivo());
+        cb_transferencia.setValue(transaccion.getTipo());
+        txt_cantidad.setText(String.valueOf(transaccion.getUnidades()));
+        dp_fecha.setValue(transaccion.getFecha().toLocalDate());
+        txt_notas.setText(transaccion.getNotas());
     }
 
     @FXML
@@ -103,7 +116,9 @@ public class VistaAñadirTransaccionTransferirController implements Initializabl
 
         String activo = cb_moneda.getValue();
         String tipo = cb_transferencia.getValue();
-        double cantidad = Double.parseDouble(txt_cantidad.getText());
+        String cantidadNormalizada = v.normalizarDecimal(txt_cantidad.getText());
+        txt_cantidad.setText(cantidadNormalizada);
+        double cantidad = Double.parseDouble(cantidadNormalizada);
         String notas = txt_notas.getText();
 
         LocalTime horaActual = LocalTime.now();

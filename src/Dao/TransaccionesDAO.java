@@ -124,6 +124,63 @@ public class TransaccionesDAO {
         return false;
     }
 
+    public static Transaccion actualizarTransaccion(int usuarioId, int transaccionId, Transaccion transaccion) {
+        String sql = "UPDATE T "
+                + "SET T.ACTIVO_ID = ?, "
+                + "T.TIPO_TRANSACCION = ?, "
+                + "T.TIPO_TRANSFERENCIA = ?, "
+                + "T.CANTIDAD = ?, "
+                + "T.PRECIO_UNITARIO = ?, "
+                + "T.IMPORTE_TOTAL = ?, "
+                + "T.FECHA_TRANSACCION = ?, "
+                + "T.NOTAS = ? "
+                + "FROM TRANSACCIONES T "
+                + "INNER JOIN PORTFOLIOS P ON P.ID = T.PORTFOLIO_ID "
+                + "WHERE T.ID = ? AND P.USUARIO_ID = ?";
+
+        try (Connection conn = ConexionDB.getConexion(vGlobales.getCadena(), ConfigDB.getUser(), ConfigDB.getPassword())) {
+            Integer activoId = obtenerOCrearActivoId(conn, transaccion.getActivo());
+            if (activoId == null) {
+                return null;
+            }
+
+            String tipoTransaccion = mapearTipoTransaccionDB(transaccion.getTipo());
+            String tipoTransferencia = mapearTipoTransferenciaDB(transaccion.getTipo());
+
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, activoId);
+                ps.setString(2, tipoTransaccion);
+                ps.setString(3, tipoTransferencia);
+                ps.setDouble(4, transaccion.getUnidades());
+                ps.setDouble(5, transaccion.getPrecioPorMoneda());
+                ps.setDouble(6, transaccion.getImporte());
+                ps.setTimestamp(7, Timestamp.valueOf(transaccion.getFecha()));
+                ps.setString(8, transaccion.getNotas());
+                ps.setInt(9, transaccionId);
+                ps.setInt(10, usuarioId);
+
+                int filas = ps.executeUpdate();
+                if (filas > 0) {
+                    return new Transaccion(
+                            transaccionId,
+                            transaccion.getTipo(),
+                            transaccion.getFecha(),
+                            transaccion.getActivo(),
+                            transaccion.getUnidades(),
+                            transaccion.getPrecioPorMoneda(),
+                            transaccion.getImporte(),
+                            transaccion.getNotas()
+                    );
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     private static Transaccion mapearTransaccion(ResultSet rs) throws SQLException {
         Timestamp ts = rs.getTimestamp("FECHA_TRANSACCION");
         LocalDateTime fecha = ts != null ? ts.toLocalDateTime() : LocalDateTime.now();

@@ -7,6 +7,13 @@ import javafx.scene.control.TextField;
 
 public class Validaciones {
 
+    public String normalizarDecimal(String valor) {
+        if (valor == null) {
+            return "";
+        }
+        return valor.trim().replace(",", ".");
+    }
+
     public boolean validarCampos(
             ComboBox<String> cb_moneda,
             DatePicker dp_fecha,
@@ -48,7 +55,7 @@ public class Validaciones {
         double precio;
 
         try {
-            unidades = Double.parseDouble(cTxt.trim().replace(",", "."));
+            unidades = Double.parseDouble(normalizarDecimal(cTxt));
         } catch (NumberFormatException e) {
             mostrarError(lbl_error, "⚠ Cantidad inválida (ej: 1.5)");
             marcarError(txt_cantidad);
@@ -56,7 +63,7 @@ public class Validaciones {
         }
 
         try {
-            precio = Double.parseDouble(pTxt.trim().replace(",", "."));
+            precio = Double.parseDouble(normalizarDecimal(cTxt));
         } catch (NumberFormatException e) {
             mostrarError(lbl_error, "⚠ Precio inválido (ej: 2500)");
             marcarError(txt_precio);
@@ -119,7 +126,7 @@ public class Validaciones {
         double cantidad;
 
         try {
-            cantidad = Double.parseDouble(cTxt.trim().replace(",", "."));
+            cantidad = Double.parseDouble(normalizarDecimal(cTxt));
         } catch (NumberFormatException e) {
             mostrarError(lbl_error, "⚠ Cantidad inválida (ej: 1.5)");
             marcarError(txt_cantidad);

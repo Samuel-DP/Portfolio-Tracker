@@ -80,7 +80,7 @@ public class VistaTransaccionCompraController implements Initializable {
         // Recalculo cuando cambie cantidad o precio
         txt_cantidad.textProperty().addListener((obs, oldV, newV) -> recalcularTotal());
         txt_precio.textProperty().addListener((obs, oldV, newV) -> recalcularTotal());
-        
+
         Validaciones v = new Validaciones();
         cb_moneda.getEditor().setOnKeyTyped(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, dp_fecha, txt_cantidad, txt_precio, txt_notas));
         cb_moneda.setOnMouseClicked(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, dp_fecha, txt_cantidad, txt_precio, txt_notas));
@@ -88,12 +88,25 @@ public class VistaTransaccionCompraController implements Initializable {
         txt_precio.setOnKeyTyped(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, dp_fecha, txt_cantidad, txt_precio, txt_notas));
         txt_notas.setOnKeyTyped(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, dp_fecha, txt_cantidad, txt_precio, txt_notas));
         dp_fecha.setOnAction(e -> v.limpiarError(lbl_errorTransaccion, cb_moneda, dp_fecha, txt_cantidad, txt_precio, txt_notas));
-        
 
     }
 
     public void setParentController(VistaAñadirTransaccionController parent) {
         this.parent = parent;
+    }
+
+    public void cargarTransaccion(Transaccion transaccion) {
+        if (transaccion == null) {
+            return;
+        }
+
+        cb_moneda.setValue(transaccion.getActivo());
+        cb_moneda.getEditor().setText(transaccion.getActivo());
+        dp_fecha.setValue(transaccion.getFecha().toLocalDate());
+        txt_cantidad.setText(String.valueOf(transaccion.getUnidades()));
+        txt_precio.setText(String.valueOf(transaccion.getPrecioPorMoneda()));
+        txt_notas.setText(transaccion.getNotas());
+        recalcularTotal();
     }
 
     @FXML
@@ -105,8 +118,13 @@ public class VistaTransaccionCompraController implements Initializable {
         }
 
         String activo = cb_moneda.getValue();
-        double unidades = Double.parseDouble(txt_cantidad.getText());
-        double precioPorMoneda = Double.parseDouble(txt_precio.getText());
+        String cantidadNormalizada = v.normalizarDecimal(txt_cantidad.getText());
+        String precioNormalizado = v.normalizarDecimal(txt_precio.getText());
+        txt_cantidad.setText(cantidadNormalizada);
+        txt_precio.setText(precioNormalizado);
+
+        double unidades = Double.parseDouble(cantidadNormalizada);
+        double precioPorMoneda = Double.parseDouble(precioNormalizado);
         String notas = txt_notas.getText();
 
         LocalTime horaActual = LocalTime.now();
@@ -132,8 +150,8 @@ public class VistaTransaccionCompraController implements Initializable {
 
         try {
             // Si usas coma decimal, esto lo soporta:
-            double cantidad = Double.parseDouble(cTxt.replace(",", "."));
-            double precio = Double.parseDouble(pTxt.replace(",", "."));
+            double cantidad = Double.parseDouble(new Validaciones().normalizarDecimal(cTxt));
+            double precio = Double.parseDouble(new Validaciones().normalizarDecimal(pTxt));
 
             double total = cantidad * precio;
 
