@@ -3,6 +3,9 @@ package Controlador;
 import Dao.TransaccionesDAO;
 import Modelo.Transaccion;
 import Modelo.vGlobales;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -21,6 +24,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -29,6 +33,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -37,9 +42,11 @@ public class VistaTransaccionesController implements Initializable {
     @FXML
     private Button btn_añadir_transaccion;
     @FXML
-    private Button btn_eliminar_transaccion;
+    private Button btn_exportar_csv;
     @FXML
     private Pane saldoActual;
+    @FXML
+    private Label lbl_saldo;
 
     @FXML
     private TableView<Transaccion> tbl_transacciones;
@@ -244,7 +251,72 @@ public class VistaTransaccionesController implements Initializable {
         }
     }
 
+    @FXML
+    private void onExportarCSV(ActionEvent event) {
+        if (data.isEmpty()) {
+            mostrarAlerta(Alert.AlertType.INFORMATION, "Sin datos", "No hay transacciones para exportar.");
+            return;
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Guardar transacciones en CSV");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivo CSV", "*.csv"));
+        fileChooser.setInitialFileName("transacciones.csv");
+
+        Stage stage = (Stage) tbl_transacciones.getScene().getWindow();
+        File archivo = fileChooser.showSaveDialog(stage);
+
+        if (archivo == null) {
+            return;
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo))) {
+            writer.write("Tipo,Fecha,Activo,Unidades,Precio por moneda,Importe,Notas");
+            writer.newLine();
+
+            for (Transaccion transaccion : data) {
+                String fila = String.join(",",
+                        escaparCsv(transaccion.getTipo()),
+                        escaparCsv(transaccion.getFecha() != null ? transaccion.getFecha().format(formatter) : ""),
+                        escaparCsv(transaccion.getActivo()),
+                        String.valueOf(transaccion.getUnidades()),
+                        String.valueOf(transaccion.getPrecioPorMoneda()),
+                        String.valueOf(transaccion.getImporte()),
+                        escaparCsv(transaccion.getNotas())
+                );
+
+                writer.write(fila);
+                writer.newLine();
+            }
+
+            mostrarAlerta(Alert.AlertType.INFORMATION, "Exportación completada", "CSV exportado correctamente en:\n" + archivo.getAbsolutePath());
+        } catch (IOException e) {
+            mostrarAlerta(Alert.AlertType.ERROR, "Error al exportar", "No se pudo exportar el archivo CSV.");
+        }
+    }
+
+    private String escaparCsv(String valor) {
+        if (valor == null) {
+            return "\"\"";
+        }
+        String valorEscapado = valor.replace("\"", "\"\"");
+        return "\"" + valorEscapado + "\"";
+    }
+
+    private void mostrarAlerta(Alert.AlertType tipo, String titulo, String mensaje) {
+        Alert alerta = new Alert(tipo);
+        alerta.setTitle(titulo);
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensaje);
+        alerta.showAndWait();
+    }
+
 }
 
-
-// He terminado la ventana modal de actualizar me falta hacer la parte del exportar a CSV 
+//Arreglar errores en transacciones me salta error de llamadas, demasiadas llamadas a Coingecko si actualizo muchas cosas o añado varias transacciones, revisar
+//creo que es porque cada vez que llamo se llaman al top 250 de cryptos revisar bn el codigo a cver que te ha hecho la IA para optimizarlo, igual la solucion es que solo busque los
+//activos de tu tabla no todos , tengo que ver como lo hago bien 
+//Cuando deja de funcionar solo me muestra 800$ en la cartera
+//mirar tambien solo si meto btc comprado en 100k y ahora esta en 60 que me reste , que de momento solo me suma en lbl_saldo
+//no es lo mismo el saldo que  muestro en mi lbl_saldo que la base de costo y el beneficio historico si que puede ser en negativo

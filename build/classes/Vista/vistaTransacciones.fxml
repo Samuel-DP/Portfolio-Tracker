@@ -20,7 +20,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <Button layoutX="830.0" layoutY="68.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="150.0" style="-fx-background-color: #2256fb;" text="Exportar CSV" textFill="WHITE">
+      <Button fx:id="btn_exportar_csv" layoutX="830.0" layoutY="68.0" mnemonicParsing="false" onAction="#onExportarCSV" prefHeight="25.0" prefWidth="150.0" style="-fx-background-color: #2256fb;" text="Exportar CSV" textFill="WHITE">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
@@ -34,7 +34,7 @@
           <TableColumn fx:id="colFecha" prefWidth="170.0" text="Fecha" />
             <TableColumn fx:id="colActivos" prefWidth="170.0" text="Activos" />
             <TableColumn fx:id="colUnidades" prefWidth="170.0" text="Unidades" />
-            <TableColumn fx:id="colPrecioPorMoneda" prefWidth="170.0" text="Precio por moneda" />
+            <TableColumn fx:id="colPrecioPorMoneda" prefWidth="170.0" text="Precio por activo" />
             <TableColumn fx:id="colImporte" prefWidth="170.0" text="Importe" />
             <TableColumn fx:id="colNotas" minWidth="0.0" prefWidth="266.0" text="Notas" />
             <TableColumn fx:id="colAcciones" prefWidth="100.0" text="Acciones" />
@@ -57,12 +57,12 @@
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <Label layoutX="14.0" layoutY="30.0" prefHeight="42.0" prefWidth="55.0" text="20K" textFill="WHITE">
+            <Label fx:id="lbl_saldo" layoutX="14.0" layoutY="30.0" prefHeight="42.0" prefWidth="179.0" text="0K" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
             </Label>
-            <Button layoutX="140.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="45.0" style="-fx-background-color: #48536e;">
+            <Button layoutX="151.0" layoutY="7.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="7.0" style="-fx-background-color: #48536e;">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
