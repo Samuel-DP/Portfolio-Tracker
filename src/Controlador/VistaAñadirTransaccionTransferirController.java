@@ -2,6 +2,7 @@ package Controlador;
 
 import Controlador.Validaciones;
 import Controlador.VistaAñadirTransaccionController;
+import Modelo.PrecioActivoService;
 import Modelo.Transaccion;
 import java.net.URL;
 import java.time.LocalDate;
@@ -126,7 +127,10 @@ public class VistaAñadirTransaccionTransferirController implements Initializabl
 
         LocalDateTime fechaHora = LocalDateTime.of(fecha, horaActual);
 
-        Transaccion t = new Transaccion(tipo, fechaHora, activo, cantidad, notas);
+        double precioActual = PrecioActivoService.obtenerPrecioActual(activo);
+        double importe = cantidad * precioActual;
+
+        Transaccion t = new Transaccion(tipo, fechaHora, activo, cantidad, precioActual, importe, notas);
 
         parent.setResultadoAndClose(t);
 
