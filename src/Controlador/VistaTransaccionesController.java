@@ -8,8 +8,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -105,6 +109,7 @@ public class VistaTransaccionesController implements Initializable {
         boolean eliminado = TransaccionesDAO.eliminarTransaccion(usuarioId, transaccion.getId());
         if (eliminado) {
             data.remove(transaccion);
+            actualizarSaldoActual();
         }
     }
 
@@ -134,6 +139,7 @@ public class VistaTransaccionesController implements Initializable {
             if (guardada != null) {
                 data.add(0, guardada);
                 tbl_transacciones.refresh();
+                actualizarSaldoActual();
             }
         }
 
@@ -148,6 +154,7 @@ public class VistaTransaccionesController implements Initializable {
         }
 
         data.addAll(TransaccionesDAO.obtenerTransaccionesPorPortfolio(portfolioId));
+        actualizarSaldoActual();
     }
 
     private void configurarColumnaAcciones() {
@@ -246,11 +253,51 @@ public class VistaTransaccionesController implements Initializable {
                 data.set(indice, actualizada);
             }
             tbl_transacciones.refresh();
+            actualizarSaldoActual();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+     private void actualizarSaldoActual() {
+        double capitalTotal = 0;
+
+        for (Transaccion transaccion : data) {
+            if (transaccion == null || transaccion.getTipo() == null) {
+                continue;
+            }
+
+            String tipo = transaccion.getTipo().trim();
+            double importe = obtenerImporteSeguro(transaccion);
+
+            switch (tipo) {
+                case "COMPRA":
+                case "Transferencia entrante":
+                    capitalTotal += importe;
+                    break;
+                case "VENTA":
+                case "Transferencia saliente":
+                    capitalTotal -= importe;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(new Locale("es", "ES"));
+        lbl_saldo.setText(formatoMoneda.format(capitalTotal));
+    }
+
+    private double obtenerImporteSeguro(Transaccion transaccion) {
+        double importe = transaccion.getImporte();
+
+        if (Double.isNaN(importe) || Double.isInfinite(importe) || importe == 0) {
+            importe = transaccion.getUnidades() * transaccion.getPrecioPorMoneda();
+        }
+
+        return Math.abs(importe);
+    }
+    
     @FXML
     private void onExportarCSV(ActionEvent event) {
         if (data.isEmpty()) {
@@ -313,10 +360,3 @@ public class VistaTransaccionesController implements Initializable {
     }
 
 }
-
-//Arreglar errores en transacciones me salta error de llamadas, demasiadas llamadas a Coingecko si actualizo muchas cosas o añado varias transacciones, revisar
-//creo que es porque cada vez que llamo se llaman al top 250 de cryptos revisar bn el codigo a cver que te ha hecho la IA para optimizarlo, igual la solucion es que solo busque los
-//activos de tu tabla no todos , tengo que ver como lo hago bien 
-//Cuando deja de funcionar solo me muestra 800$ en la cartera
-//mirar tambien solo si meto btc comprado en 100k y ahora esta en 60 que me reste , que de momento solo me suma en lbl_saldo
-//no es lo mismo el saldo que  muestro en mi lbl_saldo que la base de costo y el beneficio historico si que puede ser en negativo

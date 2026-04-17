@@ -326,6 +326,12 @@ public class TransaccionesDAO {
 
     public static Integer obtenerPortfolioActualId() {
         List<PortfolioItem> portfolios = PortfolioService.getPortfolios();
+        
+         if (portfolios.isEmpty() && vGlobales.getUsuarioIdActual() != null) {
+            PortfolioService.loadForCurrentUser();
+            portfolios = PortfolioService.getPortfolios();
+        }
+        
         for (PortfolioItem portfolio : portfolios) {
             if (portfolio.isEsDefault()) {
                 return portfolio.getId();
