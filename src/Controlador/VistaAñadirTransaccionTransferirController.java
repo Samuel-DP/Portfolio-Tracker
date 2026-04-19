@@ -137,3 +137,9 @@ public class VistaAñadirTransaccionTransferirController implements Initializabl
     }
 
 }
+
+// El saldo en transacciones se actualiza al hacer una compra/venta ademas tmbn se actualiza al hacer transferencias entrantes y salientes con un servicio PrecioActivoService
+
+//Me  falta hacer que CADA MINUTO se me actualice el saldo actual de transacciones. 
+// Pero con la misma lógica de llamar solo a los activos que hay en mi tabla de transacciones para ver su precio actual . Nada de llamadas innecesarias.
+// Ya me lo ha hecho codex pero no lo he implementado mirar el proximo dia, esta en la ultima tarea DE Implementar ajuste de saldo por transferencias

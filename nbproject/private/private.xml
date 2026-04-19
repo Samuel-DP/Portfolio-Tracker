@@ -18,17 +18,10 @@
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaTransaccionCompraController.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaTransaccionVentaController.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaAñadirTransaccionTransferirController.java</file>
-            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/Validaciones.java</file>
-            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Modelo/vGlobales.java</file>
-            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Dao/ConexionDB.java</file>
-            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Modelo/ConfigDB.java</file>
-            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Dao/FavoritosDAO.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Dao/PortfoliosDAO.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaPortfolioController.java</file>
-            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Modelo/PortfolioService.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Dao/TransaccionesDAO.java</file>
-            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Modelo/Transaccion.java</file>
-            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaNuevaCarteraController.java</file>
+            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Modelo/PrecioActivoService.java</file>
         </group>
     </open-files>
 </project-private>

@@ -20,17 +20,15 @@
    <children>
       <Pane fx:id="contenidoPortfolio" prefHeight="644.0" prefWidth="1389.0" style="-fx-background-color: #3e4349;">
          <children>
-            <TableView blendMode="OVERLAY" layoutX="2.0" layoutY="462.0" prefHeight="168.0" prefWidth="1386.0">
+            <TableView fx:id="tbl_activos" blendMode="OVERLAY" layoutX="2.0" layoutY="462.0" prefHeight="168.0" prefWidth="1386.0">
                <columns>
-                  <TableColumn prefWidth="75.0" text="Nombre" />
-                  <TableColumn prefWidth="75.0" text="Precio" />
-                  <TableColumn prefWidth="75.0" text="1h%" />
-                  <TableColumn prefWidth="75.0" text="24h%" />
-                  <TableColumn prefWidth="75.0" text="7d%" />
-                  <TableColumn prefWidth="75.0" text="Inversiones" />
-                  <TableColumn prefWidth="189.0" text="Precio promedio de compra" />
-                  <TableColumn prefWidth="147.0" text="Ganacia/Pérdida" />
-                  <TableColumn prefWidth="147.0" text="Acciones" />
+                  <TableColumn fx:id="col_nombre" prefWidth="150.0" text="Nombre" />
+                  <TableColumn fx:id="col_precio" prefWidth="150.0" text="Precio" />
+                  <TableColumn fx:id="col_24h" prefWidth="150.0" text="24h%" />
+                  <TableColumn fx:id="col_inversiones" prefWidth="150.0" text="Inversiones" />
+                  <TableColumn fx:id="col_uds" prefWidth="150.0" text="Unidades" />
+                  <TableColumn fx:id="col_precio_prom" prefWidth="320.0" text="Precio promedio de compra" />
+                  <TableColumn fx:id="col_ganancia_perdida" prefWidth="320.0" text="Ganacia/Pérdida" />
                </columns>
             </TableView>
             <Accordion layoutX="90.0" layoutY="57.0" />
