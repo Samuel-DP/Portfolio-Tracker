@@ -1,8 +1,10 @@
 package Dao;
 
+import Modelo.ActivoPortfolioResumen;
 import Modelo.ConfigDB;
 import Modelo.PortfolioItem;
 import Modelo.PortfolioService;
+import Modelo.PrecioActivoService;
 import Modelo.Transaccion;
 import Modelo.vGlobales;
 import java.sql.Connection;
@@ -14,8 +16,12 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 public class TransaccionesDAO {
@@ -324,14 +330,160 @@ public class TransaccionesDAO {
         return valor.substring(0, ultimoEspacio).trim();
     }
 
+    public static List<ActivoPortfolioResumen> obtenerResumenActivosPortfolioActual() {
+        Integer portfolioId = obtenerPortfolioActualId();
+        if (portfolioId == null) {
+            return new ArrayList<>();
+        }
+
+        List<TransaccionActivoRow> transacciones = obtenerTransaccionesParaResumen(portfolioId);
+        Map<String, PosicionActivo> posiciones = construirPosicionesPorActivo(transacciones);
+        List<ActivoPortfolioResumen> resumen = new ArrayList<>();
+
+        for (PosicionActivo posicion : posiciones.values()) {
+            if (posicion.unidades <= 0) {
+                continue;
+            }
+
+            PrecioActivoService.CotizacionActivo cotizacion = PrecioActivoService.obtenerCotizacion(posicion.descripcionActivo);
+            double precioActual = cotizacion.getPrecioActual();
+            double inversion = posicion.costeAcumulado;
+            double valorActual = posicion.unidades * precioActual;
+            double gananciaPerdida = valorActual - inversion;
+            double precioPromedio = posicion.unidades > 0 ? inversion / posicion.unidades : 0;
+
+            resumen.add(new ActivoPortfolioResumen(
+                    posicion.descripcionActivo,
+                    formatearMoneda(precioActual),
+                    formatearPorcentaje(cotizacion.getCambioPorcentual24h()),
+                    formatearMoneda(inversion),
+                    formatearCantidad(posicion.unidades),
+                    formatearMoneda(precioPromedio),
+                    formatearMonedaConSigno(gananciaPerdida)
+            ));
+        }
+
+        return resumen;
+    }
+
+    private static List<TransaccionActivoRow> obtenerTransaccionesParaResumen(int portfolioId) {
+        List<TransaccionActivoRow> rows = new ArrayList<>();
+        String sql = "SELECT T.TIPO_TRANSACCION, T.TIPO_TRANSFERENCIA, T.CANTIDAD, T.PRECIO_UNITARIO, T.FECHA_TRANSACCION, A.NOMBRE, A.SIMBOLO "
+                + "FROM TRANSACCIONES T "
+                + "INNER JOIN ACTIVOS A ON A.ID = T.ACTIVO_ID "
+                + "WHERE T.PORTFOLIO_ID = ? "
+                + "ORDER BY T.FECHA_TRANSACCION ASC, T.ID ASC";
+
+        try (Connection conn = ConexionDB.getConexion(vGlobales.getCadena(), ConfigDB.getUser(), ConfigDB.getPassword()); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, portfolioId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String simbolo = rs.getString("SIMBOLO");
+                    String nombre = rs.getString("NOMBRE");
+                    String descripcionActivo = (nombre != null && !nombre.isBlank())
+                            ? (nombre + " " + simbolo)
+                            : simbolo;
+                    Timestamp fecha = rs.getTimestamp("FECHA_TRANSACCION");
+
+                    rows.add(new TransaccionActivoRow(
+                            descripcionActivo,
+                            mapearTipoTransaccionUI(rs.getString("TIPO_TRANSACCION"), rs.getString("TIPO_TRANSFERENCIA")),
+                            rs.getDouble("CANTIDAD"),
+                            rs.getDouble("PRECIO_UNITARIO"),
+                            fecha == null ? 0L : fecha.getTime()
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        rows.sort(Comparator.comparingLong(r -> r.fechaMillis));
+        return rows;
+    }
+
+    private static Map<String, PosicionActivo> construirPosicionesPorActivo(List<TransaccionActivoRow> transacciones) {
+        Map<String, PosicionActivo> posiciones = new LinkedHashMap<>();
+
+        for (TransaccionActivoRow t : transacciones) {
+            PosicionActivo posicion = posiciones.computeIfAbsent(t.descripcionActivo, PosicionActivo::new);
+
+            if ("COMPRA".equalsIgnoreCase(t.tipo)) {
+                posicion.unidades += t.cantidad;
+                posicion.costeAcumulado += (t.cantidad * t.precioUnitario);
+            } else if ("VENTA".equalsIgnoreCase(t.tipo)) {
+                if (posicion.unidades <= 0) {
+                    continue;
+                }
+
+                double cantidadVendida = Math.min(t.cantidad, posicion.unidades);
+                double precioPromedio = posicion.unidades > 0 ? posicion.costeAcumulado / posicion.unidades : 0;
+                posicion.costeAcumulado -= (cantidadVendida * precioPromedio);
+                posicion.unidades -= cantidadVendida;
+
+                if (posicion.unidades < 1e-8) {
+                    posicion.unidades = 0;
+                    posicion.costeAcumulado = 0;
+                }
+            }
+        }
+
+        return posiciones;
+    }
+
+    private static String formatearMoneda(double valor) {
+        return String.format(Locale.US, "$%,.2f", valor);
+    }
+
+    private static String formatearMonedaConSigno(double valor) {
+        return String.format(Locale.US, "%s$%,.2f", valor >= 0 ? "+" : "-", Math.abs(valor));
+    }
+
+    private static String formatearCantidad(double cantidad) {
+        return String.format(Locale.US, "%,.6f", cantidad).replaceAll("0+$", "").replaceAll("\\.$", "");
+    }
+
+    private static String formatearPorcentaje(double porcentaje) {
+        return String.format(Locale.US, "%+.2f%%", porcentaje);
+    }
+
+    private static class TransaccionActivoRow {
+
+        private final String descripcionActivo;
+        private final String tipo;
+        private final double cantidad;
+        private final double precioUnitario;
+        private final long fechaMillis;
+
+        private TransaccionActivoRow(String descripcionActivo, String tipo, double cantidad, double precioUnitario, long fechaMillis) {
+            this.descripcionActivo = descripcionActivo;
+            this.tipo = tipo;
+            this.cantidad = cantidad;
+            this.precioUnitario = precioUnitario;
+            this.fechaMillis = fechaMillis;
+        }
+    }
+
+    private static class PosicionActivo {
+
+        private final String descripcionActivo;
+        private double unidades;
+        private double costeAcumulado;
+
+        private PosicionActivo(String descripcionActivo) {
+            this.descripcionActivo = descripcionActivo;
+        }
+    }
+
     public static Integer obtenerPortfolioActualId() {
         List<PortfolioItem> portfolios = PortfolioService.getPortfolios();
-        
-         if (portfolios.isEmpty() && vGlobales.getUsuarioIdActual() != null) {
+
+        if (portfolios.isEmpty() && vGlobales.getUsuarioIdActual() != null) {
             PortfolioService.loadForCurrentUser();
             portfolios = PortfolioService.getPortfolios();
         }
-        
+
         for (PortfolioItem portfolio : portfolios) {
             if (portfolio.isEsDefault()) {
                 return portfolio.getId();
