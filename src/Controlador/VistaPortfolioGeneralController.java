@@ -67,6 +67,7 @@ public class VistaPortfolioGeneralController implements Initializable {
         col_uds.setCellValueFactory(new PropertyValueFactory<>("unidades"));
         col_precio_prom.setCellValueFactory(new PropertyValueFactory<>("precioPromedioCompra"));
         col_ganancia_perdida.setCellValueFactory(new PropertyValueFactory<>("gananciaPerdida"));
+        col_porcentVariacion.setCellValueFactory(new PropertyValueFactory<>("porcentVariacion"));
 
         tbl_activos.setItems(dataActivos);
     }
@@ -78,4 +79,6 @@ public class VistaPortfolioGeneralController implements Initializable {
 
 }
 
-
+// Me falta añadir que las transferencias entrantes me aparezcan en mi tabla de activos en Portfolio general  y que el precio promedio sea 00 y el % de variacion sea --
+// Tambien me falta añadir un % de variación en la tabla de activos.
+// Cambiar todo el formato de la tabla en vez de , usar .  como esta hecho todo en el resto de tablas y ver que hacer con $ si quitarlos o ponerlo en las tablas

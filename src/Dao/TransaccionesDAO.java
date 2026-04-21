@@ -341,25 +341,36 @@ public class TransaccionesDAO {
         List<ActivoPortfolioResumen> resumen = new ArrayList<>();
 
         for (PosicionActivo posicion : posiciones.values()) {
-            if (posicion.unidades <= 0) {
+            double unidadesTotales = posicion.getUnidadesTotales();
+            if (unidadesTotales <= 0) {
                 continue;
             }
 
             PrecioActivoService.CotizacionActivo cotizacion = PrecioActivoService.obtenerCotizacion(posicion.descripcionActivo);
             double precioActual = cotizacion.getPrecioActual();
-            double inversion = posicion.costeAcumulado;
-            double valorActual = posicion.unidades * precioActual;
-            double gananciaPerdida = valorActual - inversion;
-            double precioPromedio = posicion.unidades > 0 ? inversion / posicion.unidades : 0;
+            double dineroEntranteTransferencias = posicion.unidadesTransferenciaEntrante * precioActual;
+            double inversion = posicion.costeAcumuladoTrading + dineroEntranteTransferencias;
+            double valorActualTrading = posicion.unidadesTrading * precioActual;
+            double gananciaTrading = valorActualTrading - posicion.costeAcumuladoTrading;
+            double gananciaPerdida = posicion.unidadesTrading > 0
+                    ? gananciaTrading
+                    : dineroEntranteTransferencias;
+            double precioPromedio = posicion.unidadesTrading > 0
+                    ? posicion.costeAcumuladoTrading / posicion.unidadesTrading
+                    : 0;
+            Double porcentVariacion = precioPromedio > 0
+                    ? ((precioActual - precioPromedio) / precioPromedio) * 100
+                    : null;
 
             resumen.add(new ActivoPortfolioResumen(
                     posicion.descripcionActivo,
                     formatearMoneda(precioActual),
                     formatearPorcentaje(cotizacion.getCambioPorcentual24h()),
                     formatearMoneda(inversion),
-                    formatearCantidad(posicion.unidades),
+                    formatearCantidad(unidadesTotales),
                     formatearMoneda(precioPromedio),
-                    formatearMonedaConSigno(gananciaPerdida)
+                    formatearMonedaConSigno(gananciaPerdida),
+                    formatearPorcentajeOMarcador(porcentVariacion)
             ));
         }
 
@@ -410,23 +421,20 @@ public class TransaccionesDAO {
             PosicionActivo posicion = posiciones.computeIfAbsent(t.descripcionActivo, PosicionActivo::new);
 
             if ("COMPRA".equalsIgnoreCase(t.tipo)) {
-                posicion.unidades += t.cantidad;
-                posicion.costeAcumulado += (t.cantidad * t.precioUnitario);
+                posicion.unidadesTrading += t.cantidad;
+                posicion.costeAcumuladoTrading += (t.cantidad * t.precioUnitario);
             } else if ("VENTA".equalsIgnoreCase(t.tipo)) {
-                if (posicion.unidades <= 0) {
+                if (posicion.getUnidadesTotales() <= 0) {
                     continue;
                 }
 
-                double cantidadVendida = Math.min(t.cantidad, posicion.unidades);
-                double precioPromedio = posicion.unidades > 0 ? posicion.costeAcumulado / posicion.unidades : 0;
-                posicion.costeAcumulado -= (cantidadVendida * precioPromedio);
-                posicion.unidades -= cantidadVendida;
-
-                if (posicion.unidades < 1e-8) {
-                    posicion.unidades = 0;
-                    posicion.costeAcumulado = 0;
-                }
+                posicion.aplicarSalida(t.cantidad);
+            } else if ("Transferencia entrante".equalsIgnoreCase(t.tipo)) {
+                posicion.unidadesTransferenciaEntrante += t.cantidad;
+            } else if ("Transferencia saliente".equalsIgnoreCase(t.tipo)) {
+                posicion.aplicarSalida(t.cantidad);
             }
+
         }
 
         return posiciones;
@@ -446,6 +454,10 @@ public class TransaccionesDAO {
 
     private static String formatearPorcentaje(double porcentaje) {
         return String.format(Locale.US, "%+.2f%%", porcentaje);
+    }
+
+    private static String formatearPorcentajeOMarcador(Double porcentaje) {
+        return porcentaje == null ? "--%" : formatearPorcentaje(porcentaje);
     }
 
     private static class TransaccionActivoRow {
@@ -468,12 +480,48 @@ public class TransaccionesDAO {
     private static class PosicionActivo {
 
         private final String descripcionActivo;
-        private double unidades;
-        private double costeAcumulado;
+        private double unidadesTrading;
+        private double costeAcumuladoTrading;
+        private double unidadesTransferenciaEntrante;
 
         private PosicionActivo(String descripcionActivo) {
             this.descripcionActivo = descripcionActivo;
         }
+
+        private double getUnidadesTotales() {
+            return unidadesTrading + unidadesTransferenciaEntrante;
+        }
+
+        private void aplicarSalida(double cantidadSalida) {
+            if (cantidadSalida <= 0) {
+                return;
+            }
+
+            double restante = cantidadSalida;
+
+            double salidaTrading = Math.min(restante, unidadesTrading);
+            if (salidaTrading > 0) {
+                double precioPromedioTrading = unidadesTrading > 0 ? costeAcumuladoTrading / unidadesTrading : 0;
+                costeAcumuladoTrading -= (salidaTrading * precioPromedioTrading);
+                unidadesTrading -= salidaTrading;
+                restante -= salidaTrading;
+            }
+
+            if (restante > 0) {
+                double salidaTransferencia = Math.min(restante, unidadesTransferenciaEntrante);
+                unidadesTransferenciaEntrante -= salidaTransferencia;
+            }
+
+            if (unidadesTrading < 1e-8) {
+                unidadesTrading = 0;
+                costeAcumuladoTrading = 0;
+            }
+
+            if (unidadesTransferenciaEntrante < 1e-8) {
+                unidadesTransferenciaEntrante = 0;
+            }
+        }
+
     }
 
     public static Integer obtenerPortfolioActualId() {
