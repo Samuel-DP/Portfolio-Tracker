@@ -2,8 +2,12 @@ package Controlador;
 
 import Dao.TransaccionesDAO;
 import Modelo.ActivoPortfolioResumen;
+import Modelo.Transaccion;
 import java.net.URL;
+import java.text.NumberFormat;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -49,6 +53,10 @@ public class VistaPortfolioGeneralController implements Initializable {
     private PieChart grafico_donut;
     @FXML
     private Label lbl_peorActivo;
+    @FXML
+    private Pane prueba111;
+    @FXML
+    private Label lbl_baseDeCosto;
 
     @FXML
     private TableView<ActivoPortfolioResumen> tbl_activos;
@@ -94,6 +102,7 @@ public class VistaPortfolioGeneralController implements Initializable {
         dataActivos.clear();
         dataActivos.addAll(TransaccionesDAO.obtenerResumenActivosPortfolioActual());
         actualizarMejorYPeorActivo();
+        actualizarBaseDeCosto();
     }
 
     private void actualizarMejorYPeorActivo() {
@@ -175,8 +184,45 @@ public class VistaPortfolioGeneralController implements Initializable {
         return limpio.substring(ultimoEspacio + 1).trim();
     }
 
-}
+    private void actualizarBaseDeCosto() {
+        Integer portfolioId = TransaccionesDAO.obtenerPortfolioActualId();
+        if (portfolioId == null) {
+            lbl_baseDeCosto.setText(formatearMoneda(0));
+            return;
+        }
 
+        List<Transaccion> transacciones = TransaccionesDAO.obtenerTransaccionesPorPortfolio(portfolioId);
+        double baseDeCosto = 0;
+
+        for (Transaccion transaccion : transacciones) {
+            if (transaccion == null || transaccion.getTipo() == null) {
+                continue;
+            }
+
+            if (!"COMPRA".equalsIgnoreCase(transaccion.getTipo().trim())) {
+                continue;
+            }
+
+            double precio = Math.abs(transaccion.getPrecioPorMoneda());
+            double unidades = Math.abs(transaccion.getUnidades());
+
+            if (Double.isNaN(precio) || Double.isInfinite(precio)
+                    || Double.isNaN(unidades) || Double.isInfinite(unidades)) {
+                continue;
+            }
+
+            baseDeCosto += precio * unidades;
+        }
+
+        lbl_baseDeCosto.setText(formatearMoneda(baseDeCosto));
+    }
+
+    private String formatearMoneda(double valor) {
+        NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(new Locale("es", "ES"));
+        return formatoMoneda.format(valor);
+    }
+
+}
 
 // Cambiar todo el formato de las tablas en vez de . usar , Poner todas las tablas igual. Ver que hacer con $ si quitarlos o ponerlo en las tabla
 // Hacer las estadisticass del portfolio esta semana ya junto con sus ajustes en tiempo real de saldos

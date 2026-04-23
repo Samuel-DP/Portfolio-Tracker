@@ -51,6 +51,10 @@ public class VistaTransaccionesController implements Initializable {
     private Pane saldoActual;
     @FXML
     private Label lbl_saldo;
+    @FXML
+    private Pane prueba111;
+    @FXML
+    private Label lbl_baseDeCosto;
 
     @FXML
     private TableView<Transaccion> tbl_transacciones;
@@ -110,6 +114,7 @@ public class VistaTransaccionesController implements Initializable {
         if (eliminado) {
             data.remove(transaccion);
             actualizarSaldoActual();
+            actualizarBaseDeCosto();
         }
     }
 
@@ -140,6 +145,7 @@ public class VistaTransaccionesController implements Initializable {
                 data.add(0, guardada);
                 tbl_transacciones.refresh();
                 actualizarSaldoActual();
+                actualizarBaseDeCosto();
             }
         }
 
@@ -155,6 +161,7 @@ public class VistaTransaccionesController implements Initializable {
 
         data.addAll(TransaccionesDAO.obtenerTransaccionesPorPortfolio(portfolioId));
         actualizarSaldoActual();
+        actualizarBaseDeCosto();
     }
 
     private void configurarColumnaAcciones() {
@@ -254,12 +261,13 @@ public class VistaTransaccionesController implements Initializable {
             }
             tbl_transacciones.refresh();
             actualizarSaldoActual();
+            actualizarBaseDeCosto();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-     private void actualizarSaldoActual() {
+    private void actualizarSaldoActual() {
         double capitalTotal = 0;
 
         for (Transaccion transaccion : data) {
@@ -297,7 +305,35 @@ public class VistaTransaccionesController implements Initializable {
 
         return Math.abs(importe);
     }
-    
+
+    private void actualizarBaseDeCosto() {
+        double baseDeCosto = 0;
+
+        for (Transaccion transaccion : data) {
+            if (transaccion == null || transaccion.getTipo() == null) {
+                continue;
+            }
+
+            String tipo = transaccion.getTipo().trim();
+            if (!"COMPRA".equalsIgnoreCase(tipo)) {
+                continue;
+            }
+
+            double precio = Math.abs(transaccion.getPrecioPorMoneda());
+            double unidades = Math.abs(transaccion.getUnidades());
+
+            if (Double.isNaN(precio) || Double.isInfinite(precio)
+                    || Double.isNaN(unidades) || Double.isInfinite(unidades)) {
+                continue;
+            }
+
+            baseDeCosto += precio * unidades;
+        }
+
+        NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(new Locale("es", "ES"));
+        lbl_baseDeCosto.setText(formatoMoneda.format(baseDeCosto));
+    }
+
     @FXML
     private void onExportarCSV(ActionEvent event) {
         if (data.isEmpty()) {
@@ -360,5 +396,3 @@ public class VistaTransaccionesController implements Initializable {
     }
 
 }
-
-

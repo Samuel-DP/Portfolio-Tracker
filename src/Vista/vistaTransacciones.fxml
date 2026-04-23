@@ -59,7 +59,7 @@
             </Label>
             <Label fx:id="lbl_saldo" layoutX="14.0" layoutY="30.0" prefHeight="42.0" prefWidth="179.0" text="0K" textFill="WHITE">
                <font>
-                  <Font name="System Bold" size="24.0" />
+                  <Font name="System Bold" size="18.0" />
                </font>
             </Label>
             <Button layoutX="151.0" layoutY="7.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="7.0" style="-fx-background-color: #48536e;">
@@ -84,7 +84,7 @@
             </Label>
             <Label fx:id="lbl_baseDeCosto" layoutX="18.0" layoutY="33.0" prefHeight="35.0" prefWidth="192.0" text="0K" textFill="WHITE">
                <font>
-                  <Font name="System Bold" size="24.0" />
+                  <Font name="System Bold" size="18.0" />
                </font>
             </Label>
          </children>
