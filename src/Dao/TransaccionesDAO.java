@@ -342,7 +342,7 @@ public class TransaccionesDAO {
 
         for (PosicionActivo posicion : posiciones.values()) {
             double unidadesTotales = posicion.getUnidadesTotales();
-             boolean posicionCerrada = unidadesTotales <= 0 && posicion.tieneHistoricoTrading();
+            boolean posicionCerrada = unidadesTotales <= 0 && posicion.tieneHistoricoTrading();
             boolean posicionCerradaConResultado = posicionCerrada && posicion.tieneResultadoRealizado();
 
             if (unidadesTotales <= 0 && !posicionCerrada) {
@@ -363,6 +363,9 @@ public class TransaccionesDAO {
             boolean posicionTransferidaConHistorico = posicion.unidadesTrading <= 0
                     && posicion.unidadesTransferenciaEntrante > 0
                     && precioPromedio > 0;
+            boolean posicionSoloTransferenciaEntrante = posicion.unidadesTrading <= 0
+                    && posicion.unidadesTransferenciaEntrante > 0
+                    && !posicion.tieneHistoricoTrading();
             Double porcentVariacion;
             if (posicion.unidadesTrading > 0 && precioPromedio > 0) {
                 porcentVariacion = ((precioActual - precioPromedio) / precioPromedio) * 100;
@@ -377,9 +380,11 @@ public class TransaccionesDAO {
                     ? formatearMonedaConSigno(gananciaTrading)
                     : (posicionTransferidaConHistorico
                             ? formatearMonedaConSigno((precioActual - precioPromedio) * posicion.unidadesTransferenciaEntrante)
-                            : (posicionCerradaConResultado
-                                    ? formatearMonedaConSigno(posicion.getGananciaRealizadaTrading())
-                                    : "--"));
+                            : (posicionSoloTransferenciaEntrante
+                                    ? formatearMonedaConSigno(dineroEntranteTransferencias)
+                                    : (posicionCerradaConResultado
+                                            ? formatearMonedaConSigno(posicion.getGananciaRealizadaTrading())
+                                            : "--")));
 
             resumen.add(new ActivoPortfolioResumen(
                     posicion.descripcionActivo,
@@ -525,6 +530,9 @@ public class TransaccionesDAO {
 
             double salidaTrading = Math.min(restante, unidadesTrading);
             if (salidaTrading > 0) {
+                if (calcularResultadoRealizado) {
+                    tieneVentasRealizadas = true;
+                }
                 double precioPromedioTrading = unidadesTrading > 0 ? costeAcumuladoTrading / unidadesTrading : 0;
                 double costeSalidaTrading = salidaTrading * precioPromedioTrading;
                 costeAcumuladoTrading -= costeSalidaTrading;

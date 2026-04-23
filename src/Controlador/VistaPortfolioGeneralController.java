@@ -3,6 +3,7 @@ package Controlador;
 import Dao.TransaccionesDAO;
 import Modelo.ActivoPortfolioResumen;
 import java.net.URL;
+import java.util.Comparator;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -92,13 +93,91 @@ public class VistaPortfolioGeneralController implements Initializable {
     private void cargarActivosDesdeTransacciones() {
         dataActivos.clear();
         dataActivos.addAll(TransaccionesDAO.obtenerResumenActivosPortfolioActual());
+        actualizarMejorYPeorActivo();
+    }
+
+    private void actualizarMejorYPeorActivo() {
+        Comparator<ActivoPortfolioResumen> comparadorRendimiento = Comparator
+                .comparingDouble(this::extraerGananciaPerdidaNumerica)
+                .thenComparingDouble(this::extraerVariacionNumerica);
+
+        ActivoPortfolioResumen mejorActivo = dataActivos.stream()
+                .filter(activo -> activo != null)
+                .max(comparadorRendimiento)
+                .orElse(null);
+
+        ActivoPortfolioResumen peorActivo = dataActivos.stream()
+                .filter(activo -> activo != null)
+                .min(comparadorRendimiento)
+                .orElse(null);
+
+        lbl_mejorActivo.setText(formatearResumenActivo(mejorActivo));
+        lbl_peorActivo.setText(formatearResumenActivo(peorActivo));
+    }
+
+    private double extraerVariacionNumerica(ActivoPortfolioResumen activo) {
+        String valor = activo.getPorcentVariacion();
+        if (valor == null || valor.isBlank() || valor.contains("--")) {
+            return 0;
+        }
+
+        String limpio = valor.replace("%", "")
+                .replace(",", "")
+                .trim();
+
+        try {
+            return Double.parseDouble(limpio);
+        } catch (NumberFormatException ex) {
+            return 0;
+        }
+    }
+
+    private double extraerGananciaPerdidaNumerica(ActivoPortfolioResumen activo) {
+        String valor = activo.getGananciaPerdida();
+        if (valor == null || valor.isBlank() || valor.contains("--")) {
+            return 0;
+        }
+
+        String limpio = valor.replace("$", "")
+                .replace(",", "")
+                .trim();
+
+        try {
+            return Double.parseDouble(limpio);
+        } catch (NumberFormatException ex) {
+            return 0;
+        }
+    }
+
+    private String formatearResumenActivo(ActivoPortfolioResumen activo) {
+        if (activo == null) {
+            return "Sin datos";
+        }
+
+        return String.format("%s\n%s\n%s",
+                extraerTicker(activo.getNombre()),
+                activo.getPorcentVariacion(),
+                activo.getGananciaPerdida());
+    }
+
+    private String extraerTicker(String descripcionActivo) {
+        if (descripcionActivo == null || descripcionActivo.isBlank()) {
+            return "--";
+        }
+
+        String limpio = descripcionActivo.trim();
+        int ultimoEspacio = limpio.lastIndexOf(' ');
+
+        if (ultimoEspacio < 0 || ultimoEspacio == limpio.length() - 1) {
+            return limpio;
+        }
+
+        return limpio.substring(ultimoEspacio + 1).trim();
     }
 
 }
 
-// Cambiar todo el formato de las tablas en vez de . usar , Poner todas las tablas igual. Ver que hacer con $ si quitarlos o ponerlo en las tablas
-// Mejorar la logica de la tabla de activos, si vendo por completo un activo de transacciones se elimina el activo de esta tabla sin mostrarme las estadisticas que quiero, si he tenido ganancias o perdidas
-
-// hacer las estadisticas del portfolio esta semana ya junto con sus ajustes en tiempo real de saldos
-
+// Cambiar todo el formato de las tablas en vez de . usar , Poner todas las tablas igual. Ver que hacer con $ si quitarlos o ponerlo en las tabla
+// Hacer las estadisticass del portfolio esta semana ya junto con sus ajustes en tiempo real de saldos
+// Best performer worst performer revisar con distintos ejemplos
 
