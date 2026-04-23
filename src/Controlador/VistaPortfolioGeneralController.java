@@ -102,7 +102,7 @@ public class VistaPortfolioGeneralController implements Initializable {
         dataActivos.clear();
         dataActivos.addAll(TransaccionesDAO.obtenerResumenActivosPortfolioActual());
         actualizarMejorYPeorActivo();
-        actualizarBaseDeCosto();
+        actualizarResumenHistorico();
     }
 
     private void actualizarMejorYPeorActivo() {
@@ -184,37 +184,12 @@ public class VistaPortfolioGeneralController implements Initializable {
         return limpio.substring(ultimoEspacio + 1).trim();
     }
 
-    private void actualizarBaseDeCosto() {
-        Integer portfolioId = TransaccionesDAO.obtenerPortfolioActualId();
-        if (portfolioId == null) {
-            lbl_baseDeCosto.setText(formatearMoneda(0));
-            return;
-        }
-
-        List<Transaccion> transacciones = TransaccionesDAO.obtenerTransaccionesPorPortfolio(portfolioId);
-        double baseDeCosto = 0;
-
-        for (Transaccion transaccion : transacciones) {
-            if (transaccion == null || transaccion.getTipo() == null) {
-                continue;
-            }
-
-            if (!"COMPRA".equalsIgnoreCase(transaccion.getTipo().trim())) {
-                continue;
-            }
-
-            double precio = Math.abs(transaccion.getPrecioPorMoneda());
-            double unidades = Math.abs(transaccion.getUnidades());
-
-            if (Double.isNaN(precio) || Double.isInfinite(precio)
-                    || Double.isNaN(unidades) || Double.isInfinite(unidades)) {
-                continue;
-            }
-
-            baseDeCosto += precio * unidades;
-        }
-
-        lbl_baseDeCosto.setText(formatearMoneda(baseDeCosto));
+    private void actualizarResumenHistorico() {
+        TransaccionesDAO.BeneficioHistoricoResumen resumen = TransaccionesDAO.calcularBeneficioHistoricoPortfolioActual();
+        lbl_baseDeCosto.setText(formatearMoneda(resumen.getBaseCosto()));
+        lbl_beneficioHistorico.setText(String.format("%s %s",
+                formatearMonedaConSigno(resumen.getBeneficioHistorico()),
+                formatearPorcentajeConSigno(resumen.getPorcentajeRentabilidad())));
     }
 
     private String formatearMoneda(double valor) {
@@ -222,10 +197,21 @@ public class VistaPortfolioGeneralController implements Initializable {
         return formatoMoneda.format(valor);
     }
 
+    private String formatearMonedaConSigno(double valor) {
+        return String.format("%s%s", valor >= 0 ? "+" : "-", formatearMoneda(Math.abs(valor)));
+    }
+
+    private String formatearPorcentajeConSigno(double valor) {
+        return String.format("%+.2f%%", valor);
+    }
+
 }
 
 // Cambiar todo el formato de las tablas en vez de . usar , Poner todas las tablas igual. Ver que hacer con $ si quitarlos o ponerlo en las tabla
 // Hacer las estadisticass del portfolio esta semana ya junto con sus ajustes en tiempo real de saldos
-// Best performer worst performer revisar con distintos ejemplos
-// Añadir Base de costo 
+// Best performer worst performer revisar con distintos ejemplos. Hecho
+// Añadir Base de costo.  Hecho
+//beneficio historico . Hecho
+// Falta Hacer bien el saldo actual porque esta mal
+//Falta hacer tabla cache de activos porque gasto las llamadas de api y se dejan de ver datos de mis estadisticas.
 

@@ -401,6 +401,48 @@ public class TransaccionesDAO {
         return resumen;
     }
 
+    public static BeneficioHistoricoResumen calcularBeneficioHistoricoPortfolioActual() {
+        Integer portfolioId = obtenerPortfolioActualId();
+        if (portfolioId == null) {
+            return new BeneficioHistoricoResumen(0, 0, 0);
+        }
+
+        List<Transaccion> transacciones = obtenerTransaccionesPorPortfolio(portfolioId);
+        double baseCosto = calcularBaseCosto(transacciones);
+
+        List<TransaccionActivoRow> transaccionesActivos = obtenerTransaccionesParaResumen(portfolioId);
+        Map<String, PosicionActivo> posiciones = construirPosicionesPorActivo(transaccionesActivos);
+
+        double gananciaRealizada = 0;
+        double gananciaNoRealizada = 0;
+
+        for (PosicionActivo posicion : posiciones.values()) {
+            gananciaRealizada += posicion.getGananciaRealizadaTrading();
+
+            double unidadesMantenidas = posicion.getUnidadesTotales();
+            if (unidadesMantenidas <= 0) {
+                continue;
+            }
+
+            PrecioActivoService.CotizacionActivo cotizacion = PrecioActivoService.obtenerCotizacion(posicion.descripcionActivo);
+            double precioActual = cotizacion.getPrecioActual();
+            double precioPromedio = posicion.getPrecioPromedioHistoricoParaResultado();
+
+            if (precioPromedio > 0) {
+                gananciaNoRealizada += (precioActual - precioPromedio) * unidadesMantenidas;
+            } else {
+                // Para posiciones mantenidas sin coste histórico (p.ej. transferencia entrante),
+                // el mercado actual se considera ganancia no realizada completa.
+                gananciaNoRealizada += precioActual * unidadesMantenidas;
+            }
+        }
+
+        double beneficioHistorico = gananciaRealizada + gananciaNoRealizada;
+        double porcentajeRentabilidad = baseCosto > 0 ? (beneficioHistorico / baseCosto) * 100 : 0;
+
+        return new BeneficioHistoricoResumen(beneficioHistorico, porcentajeRentabilidad, baseCosto);
+    }
+
     private static List<TransaccionActivoRow> obtenerTransaccionesParaResumen(int portfolioId) {
         List<TransaccionActivoRow> rows = new ArrayList<>();
         String sql = "SELECT T.TIPO_TRANSACCION, T.TIPO_TRANSFERENCIA, T.CANTIDAD, T.PRECIO_UNITARIO, T.FECHA_TRANSACCION, A.NOMBRE, A.SIMBOLO "
@@ -482,6 +524,32 @@ public class TransaccionesDAO {
 
     private static String formatearPorcentajeOMarcador(Double porcentaje) {
         return porcentaje == null ? "--%" : formatearPorcentaje(porcentaje);
+    }
+
+    private static double calcularBaseCosto(List<Transaccion> transacciones) {
+        double baseDeCosto = 0;
+
+        for (Transaccion transaccion : transacciones) {
+            if (transaccion == null || transaccion.getTipo() == null) {
+                continue;
+            }
+
+            if (!"COMPRA".equalsIgnoreCase(transaccion.getTipo().trim())) {
+                continue;
+            }
+
+            double precio = Math.abs(transaccion.getPrecioPorMoneda());
+            double unidades = Math.abs(transaccion.getUnidades());
+
+            if (Double.isNaN(precio) || Double.isInfinite(precio)
+                    || Double.isNaN(unidades) || Double.isInfinite(unidades)) {
+                continue;
+            }
+
+            baseDeCosto += precio * unidades;
+        }
+
+        return baseDeCosto;
     }
 
     private static class TransaccionActivoRow {
@@ -629,4 +697,30 @@ public class TransaccionesDAO {
 
         return null;
     }
+
+    public static class BeneficioHistoricoResumen {
+
+        private final double beneficioHistorico;
+        private final double porcentajeRentabilidad;
+        private final double baseCosto;
+
+        public BeneficioHistoricoResumen(double beneficioHistorico, double porcentajeRentabilidad, double baseCosto) {
+            this.beneficioHistorico = beneficioHistorico;
+            this.porcentajeRentabilidad = porcentajeRentabilidad;
+            this.baseCosto = baseCosto;
+        }
+
+        public double getBeneficioHistorico() {
+            return beneficioHistorico;
+        }
+
+        public double getPorcentajeRentabilidad() {
+            return porcentajeRentabilidad;
+        }
+
+        public double getBaseCosto() {
+            return baseCosto;
+        }
+    }
+
 }
