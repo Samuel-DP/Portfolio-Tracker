@@ -8,6 +8,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.PieChart;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -31,6 +34,20 @@ public class VistaPortfolioGeneralController implements Initializable {
     private Pane prueba31;
     @FXML
     private Pane prueba4;
+    @FXML
+    private Label lbl_mejorActivo;
+    @FXML
+    private Label lbl_beneficioHistorico;
+    @FXML
+    private Label lbl_cambio24h;
+    @FXML
+    private Label lbl_saldoActual;
+    @FXML
+    private LineChart<?, ?> grafico_lineal;
+    @FXML
+    private PieChart grafico_donut;
+    @FXML
+    private Label lbl_peorActivo;
 
     @FXML
     private TableView<ActivoPortfolioResumen> tbl_activos;
@@ -79,6 +96,9 @@ public class VistaPortfolioGeneralController implements Initializable {
 
 }
 
-// Me falta añadir que las transferencias entrantes me aparezcan en mi tabla de activos en Portfolio general  y que el precio promedio sea 00 y el % de variacion sea --
-// Tambien me falta añadir un % de variación en la tabla de activos.
-// Cambiar todo el formato de la tabla en vez de , usar .  como esta hecho todo en el resto de tablas y ver que hacer con $ si quitarlos o ponerlo en las tablas
+// Cambiar todo el formato de las tablas en vez de . usar , Poner todas las tablas igual. Ver que hacer con $ si quitarlos o ponerlo en las tablas
+// Mejorar la logica de la tabla de activos, si vendo por completo un activo de transacciones se elimina el activo de esta tabla sin mostrarme las estadisticas que quiero, si he tenido ganancias o perdidas
+
+// hacer las estadisticas del portfolio esta semana ya junto con sus ajustes en tiempo real de saldos
+
+

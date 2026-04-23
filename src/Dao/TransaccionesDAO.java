@@ -342,7 +342,10 @@ public class TransaccionesDAO {
 
         for (PosicionActivo posicion : posiciones.values()) {
             double unidadesTotales = posicion.getUnidadesTotales();
-            if (unidadesTotales <= 0) {
+             boolean posicionCerrada = unidadesTotales <= 0 && posicion.tieneHistoricoTrading();
+            boolean posicionCerradaConResultado = posicionCerrada && posicion.tieneResultadoRealizado();
+
+            if (unidadesTotales <= 0 && !posicionCerrada) {
                 continue;
             }
 
@@ -352,15 +355,31 @@ public class TransaccionesDAO {
             double inversion = posicion.costeAcumuladoTrading + dineroEntranteTransferencias;
             double valorActualTrading = posicion.unidadesTrading * precioActual;
             double gananciaTrading = valorActualTrading - posicion.costeAcumuladoTrading;
-            double gananciaPerdida = posicion.unidadesTrading > 0
-                    ? gananciaTrading
-                    : dineroEntranteTransferencias;
+
             double precioPromedio = posicion.unidadesTrading > 0
                     ? posicion.costeAcumuladoTrading / posicion.unidadesTrading
-                    : 0;
-            Double porcentVariacion = precioPromedio > 0
-                    ? ((precioActual - precioPromedio) / precioPromedio) * 100
-                    : null;
+                    : posicion.getPrecioPromedioHistoricoCerrado();
+
+            boolean posicionTransferidaConHistorico = posicion.unidadesTrading <= 0
+                    && posicion.unidadesTransferenciaEntrante > 0
+                    && precioPromedio > 0;
+            Double porcentVariacion;
+            if (posicion.unidadesTrading > 0 && precioPromedio > 0) {
+                porcentVariacion = ((precioActual - precioPromedio) / precioPromedio) * 100;
+            } else if (posicionTransferidaConHistorico) {
+                porcentVariacion = ((precioActual - precioPromedio) / precioPromedio) * 100;
+            } else if (posicionCerradaConResultado && posicion.getCosteVendidoAcumulado() > 0) {
+                porcentVariacion = (posicion.getGananciaRealizadaTrading() / posicion.getCosteVendidoAcumulado()) * 100;
+            } else {
+                porcentVariacion = null;
+            }
+            String gananciaPerdidaTexto = posicion.unidadesTrading > 0
+                    ? formatearMonedaConSigno(gananciaTrading)
+                    : (posicionTransferidaConHistorico
+                            ? formatearMonedaConSigno((precioActual - precioPromedio) * posicion.unidadesTransferenciaEntrante)
+                            : (posicionCerradaConResultado
+                                    ? formatearMonedaConSigno(posicion.getGananciaRealizadaTrading())
+                                    : "--"));
 
             resumen.add(new ActivoPortfolioResumen(
                     posicion.descripcionActivo,
@@ -369,7 +388,7 @@ public class TransaccionesDAO {
                     formatearMoneda(inversion),
                     formatearCantidad(unidadesTotales),
                     formatearMoneda(precioPromedio),
-                    formatearMonedaConSigno(gananciaPerdida),
+                    gananciaPerdidaTexto,
                     formatearPorcentajeOMarcador(porcentVariacion)
             ));
         }
@@ -428,11 +447,11 @@ public class TransaccionesDAO {
                     continue;
                 }
 
-                posicion.aplicarSalida(t.cantidad);
+                posicion.aplicarSalida(t.cantidad, t.precioUnitario, true);
             } else if ("Transferencia entrante".equalsIgnoreCase(t.tipo)) {
                 posicion.unidadesTransferenciaEntrante += t.cantidad;
             } else if ("Transferencia saliente".equalsIgnoreCase(t.tipo)) {
-                posicion.aplicarSalida(t.cantidad);
+                posicion.aplicarSalida(t.cantidad, 0, false);
             }
 
         }
@@ -483,6 +502,11 @@ public class TransaccionesDAO {
         private double unidadesTrading;
         private double costeAcumuladoTrading;
         private double unidadesTransferenciaEntrante;
+        private double gananciaRealizadaTrading;
+        private double costeVendidoAcumulado;
+        private double costeSalidaTradingAcumulado;
+        private double unidadesSalidaTradingAcumuladas;
+        private boolean tieneVentasRealizadas;
 
         private PosicionActivo(String descripcionActivo) {
             this.descripcionActivo = descripcionActivo;
@@ -492,7 +516,7 @@ public class TransaccionesDAO {
             return unidadesTrading + unidadesTransferenciaEntrante;
         }
 
-        private void aplicarSalida(double cantidadSalida) {
+        private void aplicarSalida(double cantidadSalida, double precioSalidaUnitario, boolean calcularResultadoRealizado) {
             if (cantidadSalida <= 0) {
                 return;
             }
@@ -502,14 +526,29 @@ public class TransaccionesDAO {
             double salidaTrading = Math.min(restante, unidadesTrading);
             if (salidaTrading > 0) {
                 double precioPromedioTrading = unidadesTrading > 0 ? costeAcumuladoTrading / unidadesTrading : 0;
-                costeAcumuladoTrading -= (salidaTrading * precioPromedioTrading);
+                double costeSalidaTrading = salidaTrading * precioPromedioTrading;
+                costeAcumuladoTrading -= costeSalidaTrading;
+                costeSalidaTradingAcumulado += costeSalidaTrading;
+                unidadesSalidaTradingAcumuladas += salidaTrading;
+                if (calcularResultadoRealizado) {
+                    costeVendidoAcumulado += costeSalidaTrading;
+                    gananciaRealizadaTrading += (salidaTrading * precioSalidaUnitario) - costeSalidaTrading;
+                }
                 unidadesTrading -= salidaTrading;
                 restante -= salidaTrading;
             }
 
             if (restante > 0) {
                 double salidaTransferencia = Math.min(restante, unidadesTransferenciaEntrante);
+                if (calcularResultadoRealizado && salidaTransferencia > 0) {
+                    tieneVentasRealizadas = true;
+                    double precioReferencia = getPrecioPromedioHistoricoParaResultado();
+                    double costeSalidaTransferencia = salidaTransferencia * precioReferencia;
+                    costeVendidoAcumulado += costeSalidaTransferencia;
+                    gananciaRealizadaTrading += (salidaTransferencia * precioSalidaUnitario) - costeSalidaTransferencia;
+                }
                 unidadesTransferenciaEntrante -= salidaTransferencia;
+                restante -= salidaTransferencia;
             }
 
             if (unidadesTrading < 1e-8) {
@@ -520,6 +559,44 @@ public class TransaccionesDAO {
             if (unidadesTransferenciaEntrante < 1e-8) {
                 unidadesTransferenciaEntrante = 0;
             }
+        }
+
+        private boolean tieneHistoricoTrading() {
+            return unidadesTrading > 0
+                    || costeAcumuladoTrading > 0
+                    || costeVendidoAcumulado > 0
+                    || costeSalidaTradingAcumulado > 0
+                    || unidadesSalidaTradingAcumuladas > 0
+                    || tieneVentasRealizadas
+                    || Math.abs(gananciaRealizadaTrading) > 1e-8;
+        }
+
+        private double getGananciaRealizadaTrading() {
+            return gananciaRealizadaTrading;
+        }
+
+        private double getCosteVendidoAcumulado() {
+            return costeVendidoAcumulado;
+        }
+
+        private double getPrecioPromedioHistoricoCerrado() {
+            if (unidadesSalidaTradingAcumuladas <= 0) {
+                return 0;
+            }
+
+            return costeSalidaTradingAcumulado / unidadesSalidaTradingAcumuladas;
+        }
+
+        private double getPrecioPromedioHistoricoParaResultado() {
+            if (unidadesTrading > 0) {
+                return costeAcumuladoTrading / unidadesTrading;
+            }
+
+            return getPrecioPromedioHistoricoCerrado();
+        }
+
+        private boolean tieneResultadoRealizado() {
+            return tieneVentasRealizadas;
         }
 
     }
