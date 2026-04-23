@@ -177,7 +177,9 @@ public class VistaPortfolioGeneralController implements Initializable {
 
 }
 
+
 // Cambiar todo el formato de las tablas en vez de . usar , Poner todas las tablas igual. Ver que hacer con $ si quitarlos o ponerlo en las tabla
 // Hacer las estadisticass del portfolio esta semana ya junto con sus ajustes en tiempo real de saldos
 // Best performer worst performer revisar con distintos ejemplos
+// Añadir Base de costo 
 

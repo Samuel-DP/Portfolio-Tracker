@@ -12,7 +12,7 @@
 
 <Pane prefHeight="644.0" prefWidth="1389.0" style="-fx-background-color: #3e4349;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controlador.VistaTransaccionesController">
    <children>
-      <Button fx:id="btn_añadir_transaccion" layoutX="265.0" layoutY="68.0" mnemonicParsing="false" onAction="#OnAñadirTransacciones" prefHeight="25.0" prefWidth="150.0" style="-fx-background-color: #2256fb;" text="    Añadir transacción" textFill="WHITE">
+      <Button fx:id="btn_añadir_transaccion" layoutX="492.0" layoutY="68.0" mnemonicParsing="false" onAction="#OnAñadirTransacciones" prefHeight="25.0" prefWidth="150.0" style="-fx-background-color: #2256fb;" text="    Añadir transacción" textFill="WHITE">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
@@ -20,7 +20,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <Button fx:id="btn_exportar_csv" layoutX="830.0" layoutY="68.0" mnemonicParsing="false" onAction="#onExportarCSV" prefHeight="25.0" prefWidth="150.0" style="-fx-background-color: #2256fb;" text="Exportar CSV" textFill="WHITE">
+      <Button fx:id="btn_exportar_csv" layoutX="670.0" layoutY="68.0" mnemonicParsing="false" onAction="#onExportarCSV" prefHeight="25.0" prefWidth="150.0" style="-fx-background-color: #2256fb;" text="Exportar CSV" textFill="WHITE">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
@@ -40,12 +40,12 @@
             <TableColumn fx:id="colAcciones" prefWidth="100.0" text="Acciones" />
         </columns>
       </TableView>
-      <ImageView fitHeight="17.0" fitWidth="17.0" layoutX="271.0" layoutY="72.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="17.0" fitWidth="17.0" layoutX="498.0" layoutY="72.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../Imagenes/mas.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="17.0" fitWidth="17.0" layoutX="836.0" layoutY="72.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="17.0" fitWidth="17.0" layoutX="676.0" layoutY="72.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../Imagenes/exportacion-de-archivos.png" />
          </image>
@@ -75,18 +75,19 @@
                </graphic></Button>
          </children>
       </Pane>
-      <Button layoutX="1015.0" layoutY="68.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="150.0" style="-fx-background-color: #2256fb;" text="     Calcular impuestos" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-      </Button>
-      <ImageView fitHeight="17.0" fitWidth="17.0" layoutX="1023.0" layoutY="72.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../Imagenes/impuesto.png" />
-         </image>
-      </ImageView>
+      <Pane fx:id="prueba111" layoutX="253.0" layoutY="30.0" prefHeight="101.0" prefWidth="214.0" styleClass="prueba" stylesheets="@style.css">
+         <children>
+            <Label layoutX="17.0" layoutY="78.0" prefHeight="17.0" prefWidth="156.0" text="Base de costo" textFill="#d7d7d7">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <Label fx:id="lbl_baseDeCosto" layoutX="18.0" layoutY="33.0" prefHeight="35.0" prefWidth="192.0" text="0K" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
    </children>
 </Pane>
