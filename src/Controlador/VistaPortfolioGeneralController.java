@@ -5,6 +5,8 @@ import Modelo.ActivoPortfolioResumen;
 import Modelo.Transaccion;
 import java.net.URL;
 import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,6 +19,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -50,7 +53,7 @@ public class VistaPortfolioGeneralController implements Initializable {
     @FXML
     private Label lbl_saldoActual;
     @FXML
-    private LineChart<?, ?> grafico_lineal;
+    private LineChart<String, Number> grafico_lineal;
     @FXML
     private PieChart grafico_donut;
     @FXML
@@ -107,6 +110,7 @@ public class VistaPortfolioGeneralController implements Initializable {
         actualizarResumenHistorico();
         actualizarSaldoActual();
         actualizarGraficoDistribucionActivos();
+        actualizarGraficoLinealSaldo();
     }
 
     private void actualizarMejorYPeorActivo() {
@@ -253,6 +257,74 @@ public class VistaPortfolioGeneralController implements Initializable {
         double saldoActual = TransaccionesDAO.calcularSaldoActualPortfolioActual();
         lbl_saldoActual.setText(formatearMoneda(saldoActual));
     }
+    
+    private void actualizarGraficoLinealSaldo() {
+        grafico_lineal.getData().clear();
+        Integer portfolioId = TransaccionesDAO.obtenerPortfolioActualId();
+        if (portfolioId == null) {
+            return;
+        }
+
+        List<Transaccion> transacciones = TransaccionesDAO.obtenerTransaccionesPorPortfolio(portfolioId);
+        if (transacciones.isEmpty()) {
+            return;
+        }
+
+        transacciones.sort(Comparator.comparing(Transaccion::getFecha));
+        DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("dd/MM");
+        XYChart.Series<String, Number> serieSaldo = new XYChart.Series<>();
+        serieSaldo.setName("Saldo en cartera");
+
+        Map<LocalDate, Double> saldoPorFecha = new LinkedHashMap<>();
+        double saldoAcumulado = 0;
+
+        for (Transaccion transaccion : transacciones) {
+            if (transaccion == null || transaccion.getFecha() == null) {
+                continue;
+            }
+
+            saldoAcumulado += calcularImpactoEnSaldo(transaccion);
+            LocalDate fecha = transaccion.getFecha().toLocalDate();
+            saldoPorFecha.put(fecha, saldoAcumulado);
+        }
+
+        if (saldoPorFecha.isEmpty()) {
+            return;
+        }
+
+        double saldoActual = TransaccionesDAO.calcularSaldoActualPortfolioActual();
+        double ultimoSaldoHistorico = saldoAcumulado;
+        double factorAjuste = ultimoSaldoHistorico != 0 ? saldoActual / ultimoSaldoHistorico : 1;
+
+        for (Map.Entry<LocalDate, Double> entry : saldoPorFecha.entrySet()) {
+            double saldoAjustado = entry.getValue() * factorAjuste;
+            serieSaldo.getData().add(new XYChart.Data<>(entry.getKey().format(formatoFecha), saldoAjustado));
+        }
+
+        LocalDate ultimaFecha = saldoPorFecha.keySet().stream().reduce((first, second) -> second).orElse(LocalDate.now());
+        if (!ultimaFecha.equals(LocalDate.now())) {
+            serieSaldo.getData().add(new XYChart.Data<>(LocalDate.now().format(formatoFecha), saldoActual));
+        }
+
+        grafico_lineal.setAnimated(false);
+        grafico_lineal.setLegendVisible(false);
+        grafico_lineal.getData().add(serieSaldo);
+    }
+
+    private double calcularImpactoEnSaldo(Transaccion transaccion) {
+        String tipo = transaccion.getTipo();
+        double importe = Math.abs(transaccion.getImporte());
+
+        if ("COMPRA".equalsIgnoreCase(tipo) || "Transferencia entrante".equalsIgnoreCase(tipo)) {
+            return importe;
+        }
+
+        if ("VENTA".equalsIgnoreCase(tipo) || "Transferencia saliente".equalsIgnoreCase(tipo)) {
+            return -importe;
+        }
+
+        return 0;
+    }
 
     private String formatearMoneda(double valor) {
         NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(new Locale("es", "ES"));
@@ -269,11 +341,15 @@ public class VistaPortfolioGeneralController implements Initializable {
 
 }
 
-// Cambiar todo el formato de las tablas en vez de . usar , Poner todas las tablas igual. Ver que hacer con $ si quitarlos o ponerlo en las tabla
 // Hacer las estadisticass del portfolio esta semana ya junto con sus ajustes en tiempo real de saldoss
 // Best performer worst performer revisar con distintos ejemplos. Hecho
 // Añadir Base de costo.  Hecho
 //beneficio historico . Hecho
 // Falta Hacer bien el saldo actual. Hecho
-//Falta hacer tabla cache de activos porque gasto las llamadas de api y se dejan de ver datos de mis estadisticas.
+
+//TAREAS POR HACER:
+// Ajustar a timpo real el saldo o aunque sea una llamada de los activos que tengo en cartera. Quizas podira coger los datos de mis tablas de mercados¿?
+// Cambiar todo el formato de las tablas en vez de . usar , Poner todas las tablas igual. Ver que hacer con $ si quitarlos o ponerlo en las tabla
+// Falta hacer tabla cache de activos porque gasto las llamadas de api y se dejan de ver datos de mis estadisticas.IMPORTANTE!!!!
+// Grafico lineal del saldo en mi cartera, me he quedado haciendolo revisar!!
 
