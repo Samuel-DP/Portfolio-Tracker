@@ -6,8 +6,10 @@ import Modelo.Transaccion;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -104,6 +106,7 @@ public class VistaPortfolioGeneralController implements Initializable {
         actualizarMejorYPeorActivo();
         actualizarResumenHistorico();
         actualizarSaldoActual();
+        actualizarGraficoDistribucionActivos();
     }
 
     private void actualizarMejorYPeorActivo() {
@@ -185,6 +188,59 @@ public class VistaPortfolioGeneralController implements Initializable {
         return limpio.substring(ultimoEspacio + 1).trim();
     }
 
+    private void actualizarGraficoDistribucionActivos() {
+        ObservableList<PieChart.Data> datosPie = FXCollections.observableArrayList();
+        Map<String, Double> inversionesPorTicker = new LinkedHashMap<>();
+        double totalInversion = 0;
+
+        for (ActivoPortfolioResumen activo : dataActivos) {
+            if (activo == null) {
+                continue;
+            }
+
+            double inversion = extraerInversionNumerica(activo.getInversion());
+            if (inversion <= 0) {
+                continue;
+            }
+
+            String ticker = extraerTicker(activo.getNombre());
+            inversionesPorTicker.merge(ticker, inversion, Double::sum);
+            totalInversion += inversion;
+        }
+
+        if (totalInversion <= 0) {
+            grafico_donut.setData(datosPie);
+            return;
+        }
+
+        for (Map.Entry<String, Double> entry : inversionesPorTicker.entrySet()) {
+            double porcentaje = (entry.getValue() / totalInversion) * 100;
+            String etiqueta = String.format("%s  %.2f%%", entry.getKey(), porcentaje);
+            datosPie.add(new PieChart.Data(etiqueta, entry.getValue()));
+        }
+
+        grafico_donut.setData(datosPie);
+        grafico_donut.setLabelsVisible(false);
+        grafico_donut.setLegendVisible(true);
+    }
+
+    private double extraerInversionNumerica(String inversionTexto) {
+        if (inversionTexto == null || inversionTexto.isBlank()) {
+            return 0;
+        }
+
+        String limpio = inversionTexto.replaceAll("[^\\d.-]", "");
+        if (limpio.isBlank()) {
+            return 0;
+        }
+
+        try {
+            return Double.parseDouble(limpio);
+        } catch (NumberFormatException ex) {
+            return 0;
+        }
+    }
+
     private void actualizarResumenHistorico() {
         TransaccionesDAO.BeneficioHistoricoResumen resumen = TransaccionesDAO.calcularBeneficioHistoricoPortfolioActual();
         lbl_baseDeCosto.setText(formatearMoneda(resumen.getBaseCosto()));
@@ -214,10 +270,10 @@ public class VistaPortfolioGeneralController implements Initializable {
 }
 
 // Cambiar todo el formato de las tablas en vez de . usar , Poner todas las tablas igual. Ver que hacer con $ si quitarlos o ponerlo en las tabla
-// Hacer las estadisticass del portfolio esta semana ya junto con sus ajustes en tiempo real de saldos
+// Hacer las estadisticass del portfolio esta semana ya junto con sus ajustes en tiempo real de saldoss
 // Best performer worst performer revisar con distintos ejemplos. Hecho
 // Añadir Base de costo.  Hecho
 //beneficio historico . Hecho
-// Falta Hacer bien el saldo actual porque esta mal
+// Falta Hacer bien el saldo actual. Hecho
 //Falta hacer tabla cache de activos porque gasto las llamadas de api y se dejan de ver datos de mis estadisticas.
 
