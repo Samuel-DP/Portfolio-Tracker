@@ -268,42 +268,9 @@ public class VistaTransaccionesController implements Initializable {
     }
 
     private void actualizarSaldoActual() {
-        double capitalTotal = 0;
-
-        for (Transaccion transaccion : data) {
-            if (transaccion == null || transaccion.getTipo() == null) {
-                continue;
-            }
-
-            String tipo = transaccion.getTipo().trim();
-            double importe = obtenerImporteSeguro(transaccion);
-
-            switch (tipo) {
-                case "COMPRA":
-                case "Transferencia entrante":
-                    capitalTotal += importe;
-                    break;
-                case "VENTA":
-                case "Transferencia saliente":
-                    capitalTotal -= importe;
-                    break;
-                default:
-                    break;
-            }
-        }
-
+        double capitalTotal = TransaccionesDAO.calcularSaldoActualPortfolioActual();
         NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(new Locale("es", "ES"));
         lbl_saldo.setText(formatoMoneda.format(capitalTotal));
-    }
-
-    private double obtenerImporteSeguro(Transaccion transaccion) {
-        double importe = transaccion.getImporte();
-
-        if (Double.isNaN(importe) || Double.isInfinite(importe) || importe == 0) {
-            importe = transaccion.getUnidades() * transaccion.getPrecioPorMoneda();
-        }
-
-        return Math.abs(importe);
     }
 
     private void actualizarBaseDeCosto() {

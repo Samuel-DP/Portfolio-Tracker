@@ -5,13 +5,6 @@
         <group>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/portfoliotracker/PortfolioTracker.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/LoginController.java</file>
-            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaRegistroController.java</file>
-            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Dao/UsuarioDAO.java</file>
-            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VPrincipalController.java</file>
-            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaMercadosController.java</file>
-            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaAccionesController.java</file>
-            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaCryptoController.java</file>
-            <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaFavoritosController.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaPortfolioGeneralController.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaTransaccionesController.java</file>
             <file>file:/C:/Users/samue/Documents/NetBeansProjects/PortfolioTracker/src/Controlador/VistaAñadirTransaccionController.java</file>

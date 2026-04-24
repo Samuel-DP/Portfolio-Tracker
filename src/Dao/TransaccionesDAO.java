@@ -355,6 +355,7 @@ public class TransaccionesDAO {
             double inversion = posicion.costeAcumuladoTrading + dineroEntranteTransferencias;
             double valorActualTrading = posicion.unidadesTrading * precioActual;
             double gananciaTrading = valorActualTrading - posicion.costeAcumuladoTrading;
+            double gananciaTotal = gananciaTrading + posicion.getGananciaRealizadaTrading();
 
             double precioPromedio = posicion.unidadesTrading > 0
                     ? posicion.costeAcumuladoTrading / posicion.unidadesTrading
@@ -368,7 +369,9 @@ public class TransaccionesDAO {
                     && !posicion.tieneHistoricoTrading();
             Double porcentVariacion;
             if (posicion.unidadesTrading > 0 && precioPromedio > 0) {
-                porcentVariacion = ((precioActual - precioPromedio) / precioPromedio) * 100;
+                porcentVariacion = posicion.costeAcumuladoTrading > 0
+                        ? (gananciaTotal / posicion.costeAcumuladoTrading) * 100
+                        : ((precioActual - precioPromedio) / precioPromedio) * 100;
             } else if (posicionTransferidaConHistorico) {
                 porcentVariacion = ((precioActual - precioPromedio) / precioPromedio) * 100;
             } else if (posicionCerradaConResultado && posicion.getCosteVendidoAcumulado() > 0) {
@@ -377,7 +380,7 @@ public class TransaccionesDAO {
                 porcentVariacion = null;
             }
             String gananciaPerdidaTexto = posicion.unidadesTrading > 0
-                    ? formatearMonedaConSigno(gananciaTrading)
+                    ? formatearMonedaConSigno(gananciaTotal)
                     : (posicionTransferidaConHistorico
                             ? formatearMonedaConSigno((precioActual - precioPromedio) * posicion.unidadesTransferenciaEntrante)
                             : (posicionSoloTransferenciaEntrante
@@ -441,6 +444,29 @@ public class TransaccionesDAO {
         double porcentajeRentabilidad = baseCosto > 0 ? (beneficioHistorico / baseCosto) * 100 : 0;
 
         return new BeneficioHistoricoResumen(beneficioHistorico, porcentajeRentabilidad, baseCosto);
+    }
+
+    public static double calcularSaldoActualPortfolioActual() {
+        Integer portfolioId = obtenerPortfolioActualId();
+        if (portfolioId == null) {
+            return 0;
+        }
+
+        List<TransaccionActivoRow> transaccionesActivos = obtenerTransaccionesParaResumen(portfolioId);
+        Map<String, PosicionActivo> posiciones = construirPosicionesPorActivo(transaccionesActivos);
+        double saldoActual = 0;
+
+        for (PosicionActivo posicion : posiciones.values()) {
+            double unidadesMantenidas = posicion.getUnidadesTotales();
+            if (unidadesMantenidas <= 0) {
+                continue;
+            }
+
+            PrecioActivoService.CotizacionActivo cotizacion = PrecioActivoService.obtenerCotizacion(posicion.descripcionActivo);
+            saldoActual += unidadesMantenidas * cotizacion.getPrecioActual();
+        }
+
+        return saldoActual;
     }
 
     private static List<TransaccionActivoRow> obtenerTransaccionesParaResumen(int portfolioId) {

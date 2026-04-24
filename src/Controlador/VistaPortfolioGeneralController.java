@@ -103,6 +103,7 @@ public class VistaPortfolioGeneralController implements Initializable {
         dataActivos.addAll(TransaccionesDAO.obtenerResumenActivosPortfolioActual());
         actualizarMejorYPeorActivo();
         actualizarResumenHistorico();
+        actualizarSaldoActual();
     }
 
     private void actualizarMejorYPeorActivo() {
@@ -190,6 +191,11 @@ public class VistaPortfolioGeneralController implements Initializable {
         lbl_beneficioHistorico.setText(String.format("%s %s",
                 formatearMonedaConSigno(resumen.getBeneficioHistorico()),
                 formatearPorcentajeConSigno(resumen.getPorcentajeRentabilidad())));
+    }
+
+    private void actualizarSaldoActual() {
+        double saldoActual = TransaccionesDAO.calcularSaldoActualPortfolioActual();
+        lbl_saldoActual.setText(formatearMoneda(saldoActual));
     }
 
     private String formatearMoneda(double valor) {
