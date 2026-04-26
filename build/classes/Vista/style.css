@@ -6,12 +6,3 @@
     -fx-background-radius: 20px;
     -fx-border-style: solid;
 }
-
-/* Ejes de gráficos en blanco para mejor contraste */
-.chart .axis .tick-label {
-    -fx-fill: white;
-}
-
-.chart .axis-label {
-    -fx-text-fill: white;
-}

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
@@ -94,7 +95,7 @@
                   </ImageView>
                </children>
             </Pane>
-            <Pane fx:id="prueba3" layoutX="36.0" layoutY="161.0" prefHeight="269.0" prefWidth="661.0" styleClass="prueba" stylesheets="@style.css">
+            <Pane fx:id="prueba3" layoutX="36.0" layoutY="161.0" prefHeight="269.0" prefWidth="661.0" styleClass="prueba">
                <children>
                   <LineChart fx:id="grafico_lineal" layoutX="11.0" layoutY="35.0" prefHeight="230.0" prefWidth="627.0">
                      <xAxis>
@@ -110,6 +111,10 @@
                      </font>
                   </Label>
                </children>
+               <stylesheets>
+                  <URL value="@style.css" />
+                  <URL value="@GraficoLineal.css" />
+               </stylesheets>
             </Pane>
             <Pane fx:id="prueba31" layoutX="732.0" layoutY="161.0" prefHeight="269.0" prefWidth="484.0" styleClass="prueba" stylesheets="@style.css">
                <children>

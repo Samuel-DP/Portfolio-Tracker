@@ -40,6 +40,8 @@ public class PrecioActivoService {
             return CotizacionActivo.vacia();
         }
 
+        CotizacionActivo cacheMercado = CacheMercadoService.obtenerCotizacion(simbolo);
+        
         long ahora = System.currentTimeMillis();
         CacheCotizacion cache = CACHE_COTIZACIONES.get(simbolo);
         if (cache != null && (ahora - cache.timestampMs) < CACHE_TTL_MS) {
@@ -52,10 +54,22 @@ public class PrecioActivoService {
 
         try {
             CotizacionActivo cotizacion = obtenerCotizacionDesdeApi(simbolo);
-            CACHE_COTIZACIONES.put(simbolo, new CacheCotizacion(cotizacion, System.currentTimeMillis()));
-            return cotizacion;
+            if (cotizacion.getPrecioActual() > 0) {
+                CacheMercadoService.guardarCotizacion(simbolo, cotizacion.getPrecioActual(), cotizacion.getCambioPorcentual24h());
+                CACHE_COTIZACIONES.put(simbolo, new CacheCotizacion(cotizacion, System.currentTimeMillis()));
+                return cotizacion;
+            }
+
+            CotizacionActivo respaldo = cacheMercado.getPrecioActual() > 0
+                    ? cacheMercado
+                    : (cache != null ? cache.cotizacion : CotizacionActivo.vacia());
+            CACHE_COTIZACIONES.put(simbolo, new CacheCotizacion(respaldo, System.currentTimeMillis()));
+            return respaldo;
         } catch (Exception e) {
-            return cache != null ? cache.cotizacion : CotizacionActivo.vacia();
+            if (cache != null && cache.cotizacion.getPrecioActual() > 0) {
+                return cache.cotizacion;
+            }
+            return cacheMercado;
         } finally {
             CARGANDO_SIMBOLOS.remove(simbolo);
         }

@@ -1,1 +1,20 @@
+.chart {
+    -fx-text-fill: white;
+}
 
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+.axis {
+    -fx-tick-label-fill: white; /* números de los ejes */
+    -fx-label-fill: white;      /* título de los ejes */
+}
+
+.chart-legend {
+    -fx-text-fill: white;
+}
+
+.chart-title {
+    -fx-text-fill: white;
+}

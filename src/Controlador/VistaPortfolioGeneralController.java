@@ -341,15 +341,12 @@ public class VistaPortfolioGeneralController implements Initializable {
 
 }
 
-// Hacer las estadisticass del portfolio esta semana ya junto con sus ajustes en tiempo real de saldoss
-// Best performer worst performer revisar con distintos ejemplos. Hecho
-// Añadir Base de costo.  Hecho
-//beneficio historico . Hecho
-// Falta Hacer bien el saldo actual. Hecho
 
 //TAREAS POR HACER:
-// Ajustar a timpo real el saldo o aunque sea una llamada de los activos que tengo en cartera. Quizas podira coger los datos de mis tablas de mercados¿?
-// Cambiar todo el formato de las tablas en vez de . usar , Poner todas las tablas igual. Ver que hacer con $ si quitarlos o ponerlo en las tabla
-// Falta hacer tabla cache de activos porque gasto las llamadas de api y se dejan de ver datos de mis estadisticas.IMPORTANTE!!!!
-// Grafico lineal del saldo en mi cartera, me he quedado haciendolo revisar!!
+// Ajustar a timpo real el saldo o aunque sea una llamada de los activos que tengo en cartera. Quizas podira coger los datos de mis tablas de mercados¿? HECHO 
+// Cambiar todo el formato de las tablas en vez de . usar , Poner todas las tablas igual. Ver que hacer con $ si quitarlos o ponerlo en las tabla. FALTA
+// Falta hacer tabla cache de activos porque gasto las llamadas de api y se dejan de ver datos de mis estadisticas.IMPORTANTE!!!! HECHO
+
+// Grafico lineal del saldo en mi cartera, me he quedado haciendolo revisar!! FALTA HACERLO  BIEN
+//OCULTAR DESOCULTAR ACTIVOS Y AJUSTAR EL FORMATO DE LOS NUMEROS A TODO IGUAL
 

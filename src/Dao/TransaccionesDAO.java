@@ -350,7 +350,7 @@ public class TransaccionesDAO {
             }
 
             PrecioActivoService.CotizacionActivo cotizacion = PrecioActivoService.obtenerCotizacion(posicion.descripcionActivo);
-            double precioActual = cotizacion.getPrecioActual();
+            double precioActual = resolverPrecioActual(posicion, cotizacion);
             double dineroEntranteTransferencias = posicion.unidadesTransferenciaEntrante * precioActual;
             double inversion = posicion.costeAcumuladoTrading + dineroEntranteTransferencias;
             double valorActualTrading = posicion.unidadesTrading * precioActual;
@@ -428,7 +428,7 @@ public class TransaccionesDAO {
             }
 
             PrecioActivoService.CotizacionActivo cotizacion = PrecioActivoService.obtenerCotizacion(posicion.descripcionActivo);
-            double precioActual = cotizacion.getPrecioActual();
+            double precioActual = resolverPrecioActual(posicion, cotizacion);
             double precioPromedio = posicion.getPrecioPromedioHistoricoParaResultado();
 
             if (precioPromedio > 0) {
@@ -463,7 +463,8 @@ public class TransaccionesDAO {
             }
 
             PrecioActivoService.CotizacionActivo cotizacion = PrecioActivoService.obtenerCotizacion(posicion.descripcionActivo);
-            saldoActual += unidadesMantenidas * cotizacion.getPrecioActual();
+            double precioActual = resolverPrecioActual(posicion, cotizacion);
+            saldoActual += unidadesMantenidas * precioActual;
         }
 
         return saldoActual;
@@ -511,6 +512,7 @@ public class TransaccionesDAO {
 
         for (TransaccionActivoRow t : transacciones) {
             PosicionActivo posicion = posiciones.computeIfAbsent(t.descripcionActivo, PosicionActivo::new);
+            posicion.actualizarPrecioReferencia(t.precioUnitario);
 
             if ("COMPRA".equalsIgnoreCase(t.tipo)) {
                 posicion.unidadesTrading += t.cantidad;
@@ -530,6 +532,15 @@ public class TransaccionesDAO {
         }
 
         return posiciones;
+    }
+
+    private static double resolverPrecioActual(PosicionActivo posicion, PrecioActivoService.CotizacionActivo cotizacion) {
+        double precioApi = cotizacion == null ? 0 : cotizacion.getPrecioActual();
+        if (precioApi > 0) {
+            return precioApi;
+        }
+
+        return posicion.getPrecioReferenciaFallback();
     }
 
     private static String formatearMoneda(double valor) {
@@ -606,6 +617,7 @@ public class TransaccionesDAO {
         private double costeSalidaTradingAcumulado;
         private double unidadesSalidaTradingAcumuladas;
         private boolean tieneVentasRealizadas;
+        private double ultimoPrecioConocido;
 
         private PosicionActivo(String descripcionActivo) {
             this.descripcionActivo = descripcionActivo;
@@ -613,6 +625,12 @@ public class TransaccionesDAO {
 
         private double getUnidadesTotales() {
             return unidadesTrading + unidadesTransferenciaEntrante;
+        }
+
+        private void actualizarPrecioReferencia(double precioUnitario) {
+            if (precioUnitario > 0) {
+                ultimoPrecioConocido = precioUnitario;
+            }
         }
 
         private void aplicarSalida(double cantidadSalida, double precioSalidaUnitario, boolean calcularResultadoRealizado) {
@@ -699,6 +717,19 @@ public class TransaccionesDAO {
 
         private boolean tieneResultadoRealizado() {
             return tieneVentasRealizadas;
+        }
+
+        private double getPrecioReferenciaFallback() {
+            if (ultimoPrecioConocido > 0) {
+                return ultimoPrecioConocido;
+            }
+
+            double precioHistorico = getPrecioPromedioHistoricoParaResultado();
+            if (precioHistorico > 0) {
+                return precioHistorico;
+            }
+
+            return 0;
         }
 
     }

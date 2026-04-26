@@ -1,5 +1,6 @@
 package Controlador;
 
+import Modelo.CacheMercadoService;
 import Modelo.Crypto;
 import Modelo.Stock;
 import Modelo.vGlobales;
@@ -190,6 +191,7 @@ public class VistaAccionesController implements Initializable {
 
                     // QUOTE (precio y %)
                     QuoteData q = getQuote(client, t);
+                    CacheMercadoService.guardarCotizacion(t, q.price, q.change24h);
 
                     lista.add(new Stock(
                             t,

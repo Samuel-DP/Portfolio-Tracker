@@ -1,5 +1,6 @@
 package Controlador;
 
+import Modelo.CacheMercadoService;
 import Modelo.Crypto;
 import Modelo.Favoritos;
 import java.net.URI;
@@ -253,6 +254,7 @@ public class VistaCryptoController implements Initializable {
             double volume24h = obj.optDouble("total_volume", 0);
             double supply = obj.optDouble("circulating_supply", 0);
 
+            CacheMercadoService.guardarCotizacion(symbol, price, change24h);
             lista.add(new Crypto(symbol, name, price, change1h, change24h, change7d, marketCap, volume24h, supply));
         }
 
