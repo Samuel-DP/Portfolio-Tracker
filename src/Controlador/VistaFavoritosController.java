@@ -9,6 +9,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,7 +49,7 @@ public class VistaFavoritosController implements Initializable {
     private TableColumn<Favoritos, Double> colMarketCap;
 
     private final ObservableList<Favoritos> data = FXCollections.observableArrayList();
-    
+
     private static final String FINNHUB_KEY = vGlobales.getApiKey();
     private static final String FINNHUB_BASE = "https://finnhub.io/api/v1";
 
@@ -75,6 +76,7 @@ public class VistaFavoritosController implements Initializable {
         col24h.setCellValueFactory(new PropertyValueFactory<>("porcentaje24h"));
         colMarketCap.setCellValueFactory(new PropertyValueFactory<>("marketCap"));
 
+        aplicarFormatoPrecio(colPrecio);
         aplicarFormatoPorcentaje(col24h);
         aplicarFormatoAbreviado(colMarketCap);
 
@@ -302,6 +304,20 @@ public class VistaFavoritosController implements Initializable {
                     } else {
                         setStyle("-fx-text-fill: #ec3c41;");
                     }
+                }
+            }
+        });
+    }
+
+    private void aplicarFormatoPrecio(TableColumn<Favoritos, Double> columna) {
+        columna.setCellFactory(col -> new TableCell<Favoritos, Double>() {
+            @Override
+            protected void updateItem(Double value, boolean empty) {
+                super.updateItem(value, empty);
+                if (empty || value == null) {
+                    setText(null);
+                } else {
+                    setText(String.format(Locale.forLanguageTag("es-ES"), "%,.2f", value));
                 }
             }
         });

@@ -5,6 +5,8 @@ import Modelo.ActivoPortfolioResumen;
 import Modelo.PrecioActivoService;
 import Modelo.Transaccion;
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -23,10 +25,12 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 
 public class VistaPortfolioGeneralController implements Initializable {
 
@@ -86,6 +90,16 @@ public class VistaPortfolioGeneralController implements Initializable {
 
     private final ObservableList<ActivoPortfolioResumen> dataActivos = FXCollections.observableArrayList();
 
+    private static final Locale LOCALE_ES = Locale.forLanguageTag("es-ES");
+    private static final DecimalFormat FORMATO_NUMERICO_ES;
+
+    static {
+        DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(LOCALE_ES);
+        symbols.setGroupingSeparator('.');
+        symbols.setDecimalSeparator(',');
+        FORMATO_NUMERICO_ES = new DecimalFormat("#,##0.00", symbols);
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         configurarTablaActivos();
@@ -102,7 +116,81 @@ public class VistaPortfolioGeneralController implements Initializable {
         col_ganancia_perdida.setCellValueFactory(new PropertyValueFactory<>("gananciaPerdida"));
         col_porcentVariacion.setCellValueFactory(new PropertyValueFactory<>("porcentVariacion"));
 
+        aplicarFormatoNumerico(col_precio, false, false);
+        aplicarFormatoNumerico(col_24h, true, true);
+        aplicarFormatoNumerico(col_inversiones, false, false);
+        aplicarFormatoNumerico(col_uds, false, false);
+        aplicarFormatoNumerico(col_precio_prom, false, false);
+        aplicarFormatoNumerico(col_ganancia_perdida, false, true);
+        aplicarFormatoNumerico(col_porcentVariacion, true, true);
+
         tbl_activos.setItems(dataActivos);
+    }
+
+    private void aplicarFormatoNumerico(TableColumn<ActivoPortfolioResumen, String> columna, boolean esPorcentaje, boolean colorearSigno) {
+        columna.setCellFactory(col -> new TableCell<ActivoPortfolioResumen, String>() {
+            @Override
+            protected void updateItem(String value, boolean empty) {
+                super.updateItem(value, empty);
+                if (empty || value == null || value.isBlank()) {
+                    setText(null);
+                    setStyle("");
+                    return;
+                }
+
+                Double numero = extraerNumeroFlexible(value);
+                if (numero == null) {
+                    setText(value);
+                    setStyle("");
+                    return;
+                }
+
+                String texto = FORMATO_NUMERICO_ES.format(numero);
+                if (esPorcentaje) {
+                    texto += "%";
+                }
+                setText(texto);
+
+                if (colorearSigno) {
+                    if (numero >= 0) {
+                        setStyle("-fx-text-fill: #17b070;");
+                    } else {
+                        setStyle("-fx-text-fill: #ec3c41;");
+                    }
+                } else {
+                    setStyle("");
+                }
+            }
+        });
+    }
+
+    private Double extraerNumeroFlexible(String textoOriginal) {
+        String limpio = textoOriginal.replace("%", "")
+                .replace("$", "")
+                .replace("€", "")
+                .replaceAll("\\s+", "")
+                .trim();
+
+        if (limpio.isBlank() || limpio.contains("--")) {
+            return null;
+        }
+
+        int idxComa = limpio.lastIndexOf(',');
+        int idxPunto = limpio.lastIndexOf('.');
+        char decimalSep = idxComa > idxPunto ? ',' : '.';
+
+        if (decimalSep == ',') {
+            limpio = limpio.replace(".", "");
+            limpio = limpio.replace(",", ".");
+        } else {
+            limpio = limpio.replace(",", "");
+        }
+
+        try {
+            return Double.parseDouble(limpio);
+        } catch (NumberFormatException ex) {
+            return null;
+        }
     }
 
     private void cargarActivosDesdeTransacciones() {
@@ -130,8 +218,31 @@ public class VistaPortfolioGeneralController implements Initializable {
                 .min(comparadorRendimiento)
                 .orElse(null);
 
-        lbl_mejorActivo.setText(formatearResumenActivo(mejorActivo));
-        lbl_peorActivo.setText(formatearResumenActivo(peorActivo));
+        aplicarResumenEnLabel(lbl_mejorActivo, mejorActivo);
+        aplicarResumenEnLabel(lbl_peorActivo, peorActivo);
+    }
+
+    private void aplicarResumenEnLabel(Label label, ActivoPortfolioResumen activo) {
+        if (activo == null) {
+            label.setText("Sin datos");
+            label.setTextFill(Color.BLACK);
+            return;
+        }
+
+        Double variacion = extraerNumeroFlexible(activo.getPorcentVariacion());
+        Double gananciaPerdida = extraerNumeroFlexible(activo.getGananciaPerdida());
+
+        String variacionFmt = variacion == null ? "--" : FORMATO_NUMERICO_ES.format(variacion) + "%";
+        String gananciaFmt = gananciaPerdida == null ? "--" : "$" + FORMATO_NUMERICO_ES.format(gananciaPerdida);
+
+        label.setText(String.format("%s\n%s\n%s", extraerTicker(activo.getNombre()), variacionFmt, gananciaFmt));
+        if (gananciaPerdida != null && gananciaPerdida >= 0) {
+            label.setTextFill(Color.web("#17b070"));
+        } else if (gananciaPerdida != null) {
+            label.setTextFill(Color.web("#ec3c41"));
+        } else {
+            label.setTextFill(Color.BLACK);
+        }
     }
 
     private double extraerVariacionNumerica(ActivoPortfolioResumen activo) {
@@ -253,6 +364,11 @@ public class VistaPortfolioGeneralController implements Initializable {
         lbl_beneficioHistorico.setText(String.format("%s %s",
                 formatearMonedaConSigno(resumen.getBeneficioHistorico()),
                 formatearPorcentajeConSigno(resumen.getPorcentajeRentabilidad())));
+        if (resumen.getBeneficioHistorico() >= 0) {
+            lbl_beneficioHistorico.setTextFill(Color.web("#17b070"));
+        } else {
+            lbl_beneficioHistorico.setTextFill(Color.web("#ec3c41"));
+        }
     }
 
     private void actualizarSaldoActual() {
@@ -296,7 +412,7 @@ public class VistaPortfolioGeneralController implements Initializable {
 
             double valorTotal = calcularValorTotalCartera(unidadesPorActivo, ultimoPrecioPorActivo);
             LocalDate fecha = transaccion.getFecha().toLocalDate();
-            
+
             if (valorTotal <= 0.000001d) {
                 valorPorFecha.clear();
                 unidadesPorActivo.clear();
@@ -305,7 +421,7 @@ public class VistaPortfolioGeneralController implements Initializable {
                 continue;
             }
 
-            valorPorFecha.put(fecha, valorTotal);  
+            valorPorFecha.put(fecha, valorTotal);
         }
 
         if (valorPorFecha.isEmpty()) {
@@ -373,8 +489,7 @@ public class VistaPortfolioGeneralController implements Initializable {
     }
 
     private String formatearMoneda(double valor) {
-        NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(new Locale("es", "ES"));
-        return formatoMoneda.format(valor);
+         return "$" + FORMATO_NUMERICO_ES.format(valor);
     }
 
     private String formatearMonedaConSigno(double valor) {
@@ -382,15 +497,15 @@ public class VistaPortfolioGeneralController implements Initializable {
     }
 
     private String formatearPorcentajeConSigno(double valor) {
-        return String.format("%+.2f%%", valor);
+        return String.format(LOCALE_ES, "%+.2f%%", valor);
     }
 
 }
 
 //TAREAS POR HACER:
-// Cambiar todo el formato de las tablas en vez de . usar , Poner todas las tablas igual. Ver que hacer con $ si quitarlos o ponerlo en las tabla. FALTA
-// Falta hacer tabla cache de activos porque gasto las llamadas de api y se dejan de ver datos de mis estadisticas.IMPORTANTE!!!! HECHO
-// Grafico lineal del saldo en mi cartera, me he quedado haciendolo bien!! FALTA HACERLO  BIEN
+// Grafico lineal del saldo en mi cartera, HECHO
+// Cambiar  todo el formato de las tablas en vez de . usar , Poner todas las tablas igual. FALTA
+//Ajustar formato en transacciones 
 // CREACION DE DISTINTOS PORTFOLIOS, POR DEFECTO TODO A 0
 //OCULTAR DESOCULTAR ACTIVOS Y AJUSTAR EL FORMATO DE LOS NUMEROS A TODO IGUAL
 

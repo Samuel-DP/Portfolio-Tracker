@@ -9,6 +9,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -67,6 +68,7 @@ public class VistaCryptoController implements Initializable {
         colVolumen.setCellValueFactory(new PropertyValueFactory<>("volume24h"));
         colSupply.setCellValueFactory(new PropertyValueFactory<>("circulatingSupply"));
 
+        aplicarFormatoPrecio(colPrecio);
         aplicarFormatoPorcentaje(col1h);
         aplicarFormatoPorcentaje(col24h);
         aplicarFormatoPorcentaje(col7d);
@@ -278,6 +280,20 @@ public class VistaCryptoController implements Initializable {
                     } else {
                         setStyle("-fx-text-fill: #ec3c41;"); // rojo
                     }
+                }
+            }
+        });
+    }
+    
+     private void aplicarFormatoPrecio(TableColumn<Crypto, Double> columna) {
+        columna.setCellFactory(col -> new TableCell<Crypto, Double>() {
+            @Override
+            protected void updateItem(Double value, boolean empty) {
+                super.updateItem(value, empty);
+                if (empty || value == null) {
+                    setText(null);
+                } else {
+                    setText(String.format(Locale.forLanguageTag("es-ES"), "%,.2f", value));
                 }
             }
         });

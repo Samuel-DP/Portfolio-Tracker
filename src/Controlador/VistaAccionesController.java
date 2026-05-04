@@ -20,6 +20,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.URI;
 import java.time.Duration;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -55,6 +56,7 @@ public class VistaAccionesController implements Initializable {
         colAcc24h.setCellValueFactory(new PropertyValueFactory<>("change24h"));
         colAccMarketCap.setCellValueFactory(new PropertyValueFactory<>("marketCap"));
 
+        aplicarFormatoPrecio(colPrecioAccion);
         aplicarFormatoPorcentaje(colAcc24h);
         aplicarFormatoAbreviado(colAccMarketCap);
 
@@ -75,7 +77,7 @@ public class VistaAccionesController implements Initializable {
                             row.getTicker(),
                             row.getCompany(),
                             row.getPrice(),
-                            row.getChange24h(), 
+                            row.getChange24h(),
                             row.getMarketCap(),
                             true
                     );
@@ -335,6 +337,20 @@ public class VistaAccionesController implements Initializable {
                     } else {
                         setStyle("-fx-text-fill: #ec3c41;"); // rojo
                     }
+                }
+            }
+        });
+    }
+
+    private void aplicarFormatoPrecio(TableColumn<Stock, Double> columna) {
+        columna.setCellFactory(col -> new TableCell<Stock, Double>() {
+            @Override
+            protected void updateItem(Double value, boolean empty) {
+                super.updateItem(value, empty);
+                if (empty || value == null) {
+                    setText(null);
+                } else {
+                    setText(String.format(Locale.forLanguageTag("es-ES"), "%,.2f", value));
                 }
             }
         });
