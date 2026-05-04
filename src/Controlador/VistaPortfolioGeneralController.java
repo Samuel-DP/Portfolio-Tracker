@@ -2,12 +2,14 @@ package Controlador;
 
 import Dao.TransaccionesDAO;
 import Modelo.ActivoPortfolioResumen;
+import Modelo.PrecioActivoService;
 import Modelo.Transaccion;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -257,7 +259,7 @@ public class VistaPortfolioGeneralController implements Initializable {
         double saldoActual = TransaccionesDAO.calcularSaldoActualPortfolioActual();
         lbl_saldoActual.setText(formatearMoneda(saldoActual));
     }
-    
+
     private void actualizarGraficoLinealSaldo() {
         grafico_lineal.getData().clear();
         Integer portfolioId = TransaccionesDAO.obtenerPortfolioActualId();
@@ -272,58 +274,102 @@ public class VistaPortfolioGeneralController implements Initializable {
 
         transacciones.sort(Comparator.comparing(Transaccion::getFecha));
         DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("dd/MM");
-        XYChart.Series<String, Number> serieSaldo = new XYChart.Series<>();
-        serieSaldo.setName("Saldo en cartera");
+        XYChart.Series<String, Number> serieValorCartera = new XYChart.Series<>();
+        serieValorCartera.setName("Valor cartera");
 
-        Map<LocalDate, Double> saldoPorFecha = new LinkedHashMap<>();
-        double saldoAcumulado = 0;
+        Map<String, Double> unidadesPorActivo = new HashMap<>();
+        Map<String, Double> ultimoPrecioPorActivo = new HashMap<>();
+        Map<LocalDate, Double> valorPorFecha = new LinkedHashMap<>();
 
         for (Transaccion transaccion : transacciones) {
             if (transaccion == null || transaccion.getFecha() == null) {
                 continue;
             }
 
-            saldoAcumulado += calcularImpactoEnSaldo(transaccion);
+            String activo = transaccion.getActivo();
+            if (activo == null || activo.isBlank()) {
+                continue;
+            }
+
+            actualizarUnidadesSegunTipo(transaccion, activo, unidadesPorActivo);
+            ultimoPrecioPorActivo.put(activo, Math.abs(transaccion.getPrecioPorMoneda()));
+
+            double valorTotal = calcularValorTotalCartera(unidadesPorActivo, ultimoPrecioPorActivo);
             LocalDate fecha = transaccion.getFecha().toLocalDate();
-            saldoPorFecha.put(fecha, saldoAcumulado);
+            
+            if (valorTotal <= 0.000001d) {
+                valorPorFecha.clear();
+                unidadesPorActivo.clear();
+                ultimoPrecioPorActivo.clear();
+                valorPorFecha.put(fecha, 0.0);
+                continue;
+            }
+
+            valorPorFecha.put(fecha, valorTotal);  
         }
 
-        if (saldoPorFecha.isEmpty()) {
+        if (valorPorFecha.isEmpty()) {
             return;
         }
 
-        double saldoActual = TransaccionesDAO.calcularSaldoActualPortfolioActual();
-        double ultimoSaldoHistorico = saldoAcumulado;
-        double factorAjuste = ultimoSaldoHistorico != 0 ? saldoActual / ultimoSaldoHistorico : 1;
-
-        for (Map.Entry<LocalDate, Double> entry : saldoPorFecha.entrySet()) {
-            double saldoAjustado = entry.getValue() * factorAjuste;
-            serieSaldo.getData().add(new XYChart.Data<>(entry.getKey().format(formatoFecha), saldoAjustado));
+        for (Map.Entry<LocalDate, Double> entry : valorPorFecha.entrySet()) {
+            serieValorCartera.getData().add(new XYChart.Data<>(entry.getKey().format(formatoFecha), entry.getValue()));
         }
 
-        LocalDate ultimaFecha = saldoPorFecha.keySet().stream().reduce((first, second) -> second).orElse(LocalDate.now());
-        if (!ultimaFecha.equals(LocalDate.now())) {
-            serieSaldo.getData().add(new XYChart.Data<>(LocalDate.now().format(formatoFecha), saldoActual));
+        LocalDate ultimaFechaHistorica = valorPorFecha.keySet().stream().reduce((first, second) -> second).orElse(LocalDate.now());
+        LocalDate hoy = LocalDate.now();
+        if (!ultimaFechaHistorica.equals(hoy)) {
+            double valorActual = calcularValorActualConPreciosDeMercado(unidadesPorActivo, ultimoPrecioPorActivo);
+            serieValorCartera.getData().add(new XYChart.Data<>(hoy.format(formatoFecha), valorActual));
         }
 
         grafico_lineal.setAnimated(false);
         grafico_lineal.setLegendVisible(false);
-        grafico_lineal.getData().add(serieSaldo);
+        grafico_lineal.getData().add(serieValorCartera);
     }
 
-    private double calcularImpactoEnSaldo(Transaccion transaccion) {
+    private void actualizarUnidadesSegunTipo(Transaccion transaccion, String activo, Map<String, Double> unidadesPorActivo) {
         String tipo = transaccion.getTipo();
-        double importe = Math.abs(transaccion.getImporte());
+        double unidadesActuales = unidadesPorActivo.getOrDefault(activo, 0.0);
+        double unidadesTransaccion = Math.abs(transaccion.getUnidades());
 
         if ("COMPRA".equalsIgnoreCase(tipo) || "Transferencia entrante".equalsIgnoreCase(tipo)) {
-            return importe;
+            unidadesPorActivo.put(activo, unidadesActuales + unidadesTransaccion);
+            return;
         }
 
         if ("VENTA".equalsIgnoreCase(tipo) || "Transferencia saliente".equalsIgnoreCase(tipo)) {
-            return -importe;
+            unidadesPorActivo.put(activo, Math.max(0, unidadesActuales - unidadesTransaccion));
+        }
+    }
+
+    private double calcularValorTotalCartera(Map<String, Double> unidadesPorActivo, Map<String, Double> precioPorActivo) {
+        double total = 0;
+
+        for (Map.Entry<String, Double> entry : unidadesPorActivo.entrySet()) {
+            double unidades = entry.getValue();
+            if (unidades <= 0) {
+                continue;
+            }
+
+            double precio = precioPorActivo.getOrDefault(entry.getKey(), 0.0);
+            total += unidades * precio;
         }
 
-        return 0;
+        return total;
+    }
+
+    private double calcularValorActualConPreciosDeMercado(Map<String, Double> unidadesPorActivo, Map<String, Double> ultimoPrecioPorActivo) {
+        Map<String, Double> preciosActuales = new HashMap<>(ultimoPrecioPorActivo);
+
+        for (String activo : unidadesPorActivo.keySet()) {
+            double precioActual = PrecioActivoService.obtenerPrecioActual(activo);
+            if (precioActual > 0) {
+                preciosActuales.put(activo, precioActual);
+            }
+        }
+
+        return calcularValorTotalCartera(unidadesPorActivo, preciosActuales);
     }
 
     private String formatearMoneda(double valor) {
@@ -341,12 +387,10 @@ public class VistaPortfolioGeneralController implements Initializable {
 
 }
 
-
 //TAREAS POR HACER:
-// Ajustar a timpo real el saldo o aunque sea una llamada de los activos que tengo en cartera. Quizas podira coger los datos de mis tablas de mercados¿? HECHO 
 // Cambiar todo el formato de las tablas en vez de . usar , Poner todas las tablas igual. Ver que hacer con $ si quitarlos o ponerlo en las tabla. FALTA
 // Falta hacer tabla cache de activos porque gasto las llamadas de api y se dejan de ver datos de mis estadisticas.IMPORTANTE!!!! HECHO
-
-// Grafico lineal del saldo en mi cartera, me he quedado haciendolo revisar!! FALTA HACERLO  BIEN
+// Grafico lineal del saldo en mi cartera, me he quedado haciendolo bien!! FALTA HACERLO  BIEN
+// CREACION DE DISTINTOS PORTFOLIOS, POR DEFECTO TODO A 0
 //OCULTAR DESOCULTAR ACTIVOS Y AJUSTAR EL FORMATO DE LOS NUMEROS A TODO IGUAL
 
