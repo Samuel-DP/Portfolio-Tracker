@@ -504,8 +504,7 @@ public class VistaPortfolioGeneralController implements Initializable {
 
 //TAREAS POR HACER:
 // Grafico lineal del saldo en mi cartera, HECHO
-// Cambiar  todo el formato de las tablas en vez de . usar , Poner todas las tablas igual. FALTA
-//Ajustar formato en transacciones 
-// CREACION DE DISTINTOS PORTFOLIOS, POR DEFECTO TODO A 0
-//OCULTAR DESOCULTAR ACTIVOS Y AJUSTAR EL FORMATO DE LOS NUMEROS A TODO IGUAL
+// Cambiar  todo el formato de las tablas en vez de . usar , Poner todas las tablas igual. Hecho
+
+// CREACION DE DISTINTOS PORTFOLIOS, POR DEFECTO TODO A 0  ultimo punto por hacer
 

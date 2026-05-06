@@ -5,9 +5,11 @@ import Controlador.VistaAñadirTransaccionController;
 import Modelo.PrecioActivoService;
 import Modelo.Transaccion;
 import java.net.URL;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -41,8 +43,13 @@ public class VistaAñadirTransaccionTransferirController implements Initializabl
     @FXML
     private Label lbl_errorTransaccion;
 
+    private final NumberFormat formatoEs = NumberFormat.getNumberInstance(new Locale("es", "ES"));
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+        formatoEs.setMinimumFractionDigits(0);
+        formatoEs.setMaximumFractionDigits(8);
 
         ObservableList<String> activosDisponibles = FXCollections.observableArrayList(
                 "Bitcoin BTC", "Ethereum ETH", "Tether USDT", "XRP XRP", "BNB BNB", "USDC USDC", "Solana SOL", "TRON TRX",
@@ -102,7 +109,7 @@ public class VistaAñadirTransaccionTransferirController implements Initializabl
         cb_moneda.setValue(transaccion.getActivo());
         cb_moneda.getEditor().setText(transaccion.getActivo());
         cb_transferencia.setValue(transaccion.getTipo());
-        txt_cantidad.setText(String.valueOf(transaccion.getUnidades()));
+        txt_cantidad.setText(formatoEs.format(transaccion.getUnidades()));
         dp_fecha.setValue(transaccion.getFecha().toLocalDate());
         txt_notas.setText(transaccion.getNotas());
     }
@@ -118,8 +125,8 @@ public class VistaAñadirTransaccionTransferirController implements Initializabl
         String activo = cb_moneda.getValue();
         String tipo = cb_transferencia.getValue();
         String cantidadNormalizada = v.normalizarDecimal(txt_cantidad.getText());
-        txt_cantidad.setText(cantidadNormalizada);
         double cantidad = Double.parseDouble(cantidadNormalizada);
+        txt_cantidad.setText(formatoEs.format(cantidad));
         String notas = txt_notas.getText();
 
         LocalTime horaActual = LocalTime.now();
@@ -139,6 +146,5 @@ public class VistaAñadirTransaccionTransferirController implements Initializabl
 }
 
 // El saldo en transacciones se actualiza al hacer una compra/venta ademas tmbn se actualiza al hacer transferencias entrantes y salientes con un servicio PrecioActivoService
-
 //Me  falta hacer que CADA MINUTO se me actualice el saldo actual de transacciones. 
 // Pero con la misma lógica de llamar solo a los activos que hay en mi tabla de transacciones para ver su precio actual . Nada de llamadas innecesarias.

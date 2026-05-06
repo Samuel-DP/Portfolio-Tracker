@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.URL?>
-<?import javafx.scene.Cursor?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Accordion?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
@@ -25,7 +21,7 @@
                <columns>
                   <TableColumn fx:id="col_nombre" prefWidth="150.0" text="Nombre" />
                   <TableColumn fx:id="col_precio" prefWidth="150.0" text="Precio" />
-                  <TableColumn fx:id="col_24h" prefWidth="150.0" text="24h%" />
+                  <TableColumn fx:id="col_24h" prefWidth="150.0" text="24 h %" />
                   <TableColumn fx:id="col_inversiones" prefWidth="150.0" text="Inversiones" />
                   <TableColumn fx:id="col_uds" prefWidth="150.0" text="Unidades" />
                   <TableColumn fx:id="col_precio_prom" prefWidth="240.0" text="Precio promedio de compra" />
@@ -35,11 +31,6 @@
             </TableView>
             <Accordion layoutX="90.0" layoutY="57.0" />
             <Label layoutX="20.0" layoutY="125.0" prefHeight="17.0" prefWidth="84.0" textFill="#d7d7d7">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Label>
-            <Label layoutX="14.0" layoutY="437.0" prefHeight="17.0" prefWidth="84.0" text="Activos" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
@@ -70,7 +61,7 @@
                         <Font name="System Bold" size="11.0" />
                      </font>
                   </Label>
-                  <Label fx:id="lbl_beneficioHistorico" layoutX="17.0" layoutY="21.0" prefHeight="78.0" prefWidth="187.0" text="+ 0K  +X %" textFill="WHITE" wrapText="true">
+                  <Label fx:id="lbl_beneficioHistorico" layoutX="10.0" layoutY="23.0" prefHeight="78.0" prefWidth="187.0" text="+ 0K  +X %" textFill="WHITE" wrapText="true">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
@@ -84,15 +75,11 @@
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
-                  <Button layoutX="140.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="45.0" style="-fx-background-color: #48536e;" />
-                  <ImageView fitHeight="25.0" fitWidth="37.0" layoutX="150.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../Imagenes/ojo.png" />
-                     </image>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </ImageView>
+                  <Label layoutX="14.0" layoutY="6.0" prefHeight="17.0" prefWidth="156.0" text="Saldo actual" textFill="#d7d7d7">
+                     <font>
+                        <Font name="System Bold" size="11.0" />
+                     </font>
+                  </Label>
                </children>
             </Pane>
             <Pane fx:id="prueba3" layoutX="36.0" layoutY="161.0" prefHeight="269.0" prefWidth="661.0" styleClass="prueba">

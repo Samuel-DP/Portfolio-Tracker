@@ -13,7 +13,7 @@
             <TableColumn fx:id="colSimbolTicker" prefWidth="230.0" text="Simbolo/Ticker" />
             <TableColumn fx:id="colNombre" minWidth="0.0" prefWidth="230.0" text="Nombre/Empresa" />
             <TableColumn fx:id="colPrecio" minWidth="0.0" prefWidth="230.0" text="Precio" />
-            <TableColumn fx:id="col24h" minWidth="0.0" prefWidth="230.0" text="\%24h" />
+            <TableColumn fx:id="col24h" minWidth="0.0" prefWidth="230.0" text="24 h %" />
             <TableColumn fx:id="colMarketCap" minWidth="0.0" prefWidth="292.0" text="Market Cap" />
          </columns>
       </TableView>

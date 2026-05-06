@@ -101,6 +101,28 @@ public class VistaTransaccionesController implements Initializable {
 
         cargarTransaccionesDesdeDB();
 
+        NumberFormat formatoNumerico = NumberFormat.getNumberInstance(new Locale("es", "ES"));
+        formatoNumerico.setMinimumFractionDigits(0);
+        formatoNumerico.setMaximumFractionDigits(8);
+
+        colUnidades.setCellFactory(col -> crearCeldaNumerica(formatoNumerico));
+        colPrecioPorMoneda.setCellFactory(col -> crearCeldaNumerica(formatoNumerico));
+        colImporte.setCellFactory(col -> crearCeldaNumerica(formatoNumerico));
+
+    }
+
+    private TableCell<Transaccion, Double> crearCeldaNumerica(NumberFormat formato) {
+        return new TableCell<Transaccion, Double>() {
+            @Override
+            protected void updateItem(Double item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || Double.isNaN(item) || Double.isInfinite(item)) {
+                    setText(null);
+                } else {
+                    setText(formato.format(item));
+                }
+            }
+        };
     }
 
     private void eliminarTransaccion(Transaccion transaccion) {
@@ -267,10 +289,16 @@ public class VistaTransaccionesController implements Initializable {
         }
     }
 
+    private String formatearMonedaEsConDolar(double valor) {
+        NumberFormat formatoNumeroEs = NumberFormat.getNumberInstance(new Locale("es", "ES"));
+        formatoNumeroEs.setMinimumFractionDigits(2);
+        formatoNumeroEs.setMaximumFractionDigits(2);
+        return "$" + formatoNumeroEs.format(valor);
+    }
+
     private void actualizarSaldoActual() {
         double capitalTotal = TransaccionesDAO.calcularSaldoActualPortfolioActual();
-        NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(new Locale("es", "ES"));
-        lbl_saldo.setText(formatoMoneda.format(capitalTotal));
+        lbl_saldo.setText(formatearMonedaEsConDolar(capitalTotal));
     }
 
     private void actualizarBaseDeCosto() {
@@ -297,8 +325,7 @@ public class VistaTransaccionesController implements Initializable {
             baseDeCosto += precio * unidades;
         }
 
-        NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(new Locale("es", "ES"));
-        lbl_baseDeCosto.setText(formatoMoneda.format(baseDeCosto));
+        lbl_baseDeCosto.setText(formatearMonedaEsConDolar(baseDeCosto));
     }
 
     @FXML

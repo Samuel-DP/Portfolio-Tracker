@@ -57,15 +57,15 @@ public class Validaciones {
         try {
             unidades = Double.parseDouble(normalizarDecimal(cTxt));
         } catch (NumberFormatException e) {
-            mostrarError(lbl_error, "⚠ Cantidad inválida (ej: 1.5)");
+            mostrarError(lbl_error, "⚠ Cantidad inválida (ej: 1,5)");
             marcarError(txt_cantidad);
             return false;
         }
 
         try {
-            precio = Double.parseDouble(normalizarDecimal(cTxt));
+            precio = Double.parseDouble(normalizarDecimal(pTxt));
         } catch (NumberFormatException e) {
-            mostrarError(lbl_error, "⚠ Precio inválido (ej: 2500)");
+            mostrarError(lbl_error, "⚠ Precio inválido (ej: 2500,50)");
             marcarError(txt_precio);
             return false;
         }
@@ -128,7 +128,7 @@ public class Validaciones {
         try {
             cantidad = Double.parseDouble(normalizarDecimal(cTxt));
         } catch (NumberFormatException e) {
-            mostrarError(lbl_error, "⚠ Cantidad inválida (ej: 1.5)");
+            mostrarError(lbl_error, "⚠ Cantidad inválida (ej: 1,5)");
             marcarError(txt_cantidad);
             return false;
         }

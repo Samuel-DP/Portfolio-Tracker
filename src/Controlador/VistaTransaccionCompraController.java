@@ -2,10 +2,13 @@ package Controlador;
 
 import Modelo.Transaccion;
 import java.net.URL;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.function.UnaryOperator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -17,6 +20,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 
 public class VistaTransaccionCompraController implements Initializable {
 
@@ -40,8 +44,14 @@ public class VistaTransaccionCompraController implements Initializable {
     @FXML
     private Label lbl_errorTransaccion;
 
+    private final NumberFormat formatoEs = NumberFormat.getNumberInstance(new Locale("es", "ES"));
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+        formatoEs.setMinimumFractionDigits(0);
+        formatoEs.setMaximumFractionDigits(8);
+        configurarEntradaDecimalEs(txt_precio);
 
         ObservableList<String> activosDisponibles = FXCollections.observableArrayList(
                 "Bitcoin BTC", "Ethereum ETH", "Tether USDT", "XRP XRP", "BNB BNB", "USDC USDC", "Solana SOL", "TRON TRX",
@@ -91,6 +101,17 @@ public class VistaTransaccionCompraController implements Initializable {
 
     }
 
+    private void configurarEntradaDecimalEs(TextField campo) {
+        UnaryOperator<TextFormatter.Change> filtro = cambio -> {
+            String nuevoTexto = cambio.getControlNewText();
+            if (nuevoTexto.matches("\\d*(,\\d{0,8})?")) {
+                return cambio;
+            }
+            return null;
+        };
+        campo.setTextFormatter(new TextFormatter<>(filtro));
+    }
+
     public void setParentController(VistaAñadirTransaccionController parent) {
         this.parent = parent;
     }
@@ -103,8 +124,8 @@ public class VistaTransaccionCompraController implements Initializable {
         cb_moneda.setValue(transaccion.getActivo());
         cb_moneda.getEditor().setText(transaccion.getActivo());
         dp_fecha.setValue(transaccion.getFecha().toLocalDate());
-        txt_cantidad.setText(String.valueOf(transaccion.getUnidades()));
-        txt_precio.setText(String.valueOf(transaccion.getPrecioPorMoneda()));
+        txt_cantidad.setText(formatoEs.format(transaccion.getUnidades()));
+        txt_precio.setText(formatoEs.format(transaccion.getPrecioPorMoneda()));
         txt_notas.setText(transaccion.getNotas());
         recalcularTotal();
     }
@@ -120,11 +141,11 @@ public class VistaTransaccionCompraController implements Initializable {
         String activo = cb_moneda.getValue();
         String cantidadNormalizada = v.normalizarDecimal(txt_cantidad.getText());
         String precioNormalizado = v.normalizarDecimal(txt_precio.getText());
-        txt_cantidad.setText(cantidadNormalizada);
-        txt_precio.setText(precioNormalizado);
 
         double unidades = Double.parseDouble(cantidadNormalizada);
         double precioPorMoneda = Double.parseDouble(precioNormalizado);
+        txt_cantidad.setText(formatoEs.format(unidades));
+        txt_precio.setText(formatoEs.format(precioPorMoneda));
         String notas = txt_notas.getText();
 
         LocalTime horaActual = LocalTime.now();
@@ -155,7 +176,7 @@ public class VistaTransaccionCompraController implements Initializable {
 
             double total = cantidad * precio;
 
-            txt_total_gastado.setText(String.format("%.2f €", total));
+            txt_total_gastado.setText(formatoEs.format(total) + " $");
 
         } catch (NumberFormatException e) {
             // Si el usuario está escribiendo y aún no es un número válido
