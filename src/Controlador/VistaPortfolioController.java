@@ -15,6 +15,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -48,7 +49,7 @@ public class VistaPortfolioController implements Initializable {
     private ScrollPane scrollPortfolios;
     @FXML
     private VBox vboxPortfolios;
-    
+
     private static final Image ICONO_ELIMINAR = new Image(
             Objects.requireNonNull(VistaPortfolioController.class.getResourceAsStream("/Imagenes/basura.png")));
 
@@ -94,22 +95,32 @@ public class VistaPortfolioController implements Initializable {
     private void refrescarVistaPortfolios() {
         vboxPortfolios.getChildren().clear();
 
+        PortfolioItem portfolioActual = PortfolioService.getPortfolioActual();
+
         for (PortfolioItem portfolio : PortfolioService.getPortfolios()) {
             HBox filaPortfolio = new HBox(4);
 
             Button botonPortfolio = new Button(portfolio.getEtiquetaCompleta());
             botonPortfolio.setPrefHeight(25.0);
-            botonPortfolio.setStyle("-fx-background-color: #2256fb;");
+            String estiloBoton = "-fx-background-color: #2256fb;";
+            if (portfolioActual != null && portfolioActual.getId() == portfolio.getId()) {
+                estiloBoton = "-fx-background-color: #0c3ccf; -fx-font-weight: bold;";
+            }
+
+            botonPortfolio.setStyle(estiloBoton);
             botonPortfolio.setTextFill(javafx.scene.paint.Color.WHITE);
             botonPortfolio.setWrapText(true);
             botonPortfolio.setMaxWidth(Double.MAX_VALUE);
+            botonPortfolio.setCursor(Cursor.HAND);
             HBox.setHgrow(botonPortfolio, Priority.ALWAYS);
+            botonPortfolio.setOnAction(e -> seleccionarPortfolio(portfolio));
 
             if (!portfolio.isEsDefault()) {
                 Button btnEliminar = new Button();
                 btnEliminar.setPrefHeight(25.0);
                 btnEliminar.setPrefWidth(25.0);
                 btnEliminar.setStyle("-fx-background-color: #3e4349;");
+                btnEliminar.setCursor(Cursor.HAND);
                 ImageView iconoEliminar = new ImageView(ICONO_ELIMINAR);
                 iconoEliminar.setFitWidth(12.0);
                 iconoEliminar.setFitHeight(12.0);
@@ -122,6 +133,25 @@ public class VistaPortfolioController implements Initializable {
             }
 
             vboxPortfolios.getChildren().add(filaPortfolio);
+        }
+    }
+
+    private void seleccionarPortfolio(PortfolioItem portfolio) {
+        if (portfolio == null) {
+            return;
+        }
+
+        boolean seleccionado = PortfolioService.setPortfolioActual(portfolio.getId());
+        if (!seleccionado) {
+            return;
+        }
+
+        refrescarVistaPortfolios();
+
+        try {
+            cargarVistaGeneral();
+        } catch (IOException ex) {
+            Logger.getLogger(VistaPortfolioController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

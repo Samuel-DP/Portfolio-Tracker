@@ -735,6 +735,10 @@ public class TransaccionesDAO {
     }
 
     public static Integer obtenerPortfolioActualId() {
+        Integer portfolioActualId = PortfolioService.getPortfolioActualId();
+        if (portfolioActualId != null) {
+            return portfolioActualId;
+        }
         List<PortfolioItem> portfolios = PortfolioService.getPortfolios();
 
         if (portfolios.isEmpty() && vGlobales.getUsuarioIdActual() != null) {
@@ -744,11 +748,13 @@ public class TransaccionesDAO {
 
         for (PortfolioItem portfolio : portfolios) {
             if (portfolio.isEsDefault()) {
+                 PortfolioService.setPortfolioActual(portfolio.getId());
                 return portfolio.getId();
             }
         }
 
         if (!portfolios.isEmpty()) {
+            PortfolioService.setPortfolioActual(portfolios.get(0).getId());
             return portfolios.get(0).getId();
         }
 

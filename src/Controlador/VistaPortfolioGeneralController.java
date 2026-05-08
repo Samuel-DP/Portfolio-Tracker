@@ -506,5 +506,5 @@ public class VistaPortfolioGeneralController implements Initializable {
 // Grafico lineal del saldo en mi cartera, HECHO
 // Cambiar  todo el formato de las tablas en vez de . usar , Poner todas las tablas igual. Hecho
 
-// CREACION DE DISTINTOS PORTFOLIOS, POR DEFECTO TODO A 0  ultimo punto por hacer
+// CREACION DE DISTINTOS PORTFOLIOS, POR DEFECTO TODO A 0  ultimo punto por hacerrrr
 
