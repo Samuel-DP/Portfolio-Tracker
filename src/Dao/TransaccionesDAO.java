@@ -369,8 +369,9 @@ public class TransaccionesDAO {
                     && !posicion.tieneHistoricoTrading();
             Double porcentVariacion;
             if (posicion.unidadesTrading > 0 && precioPromedio > 0) {
-                porcentVariacion = posicion.costeAcumuladoTrading > 0
-                        ? (gananciaTotal / posicion.costeAcumuladoTrading) * 100
+                double baseCostoRentabilidad = posicion.costeAcumuladoTrading + posicion.getCosteVendidoAcumulado();
+                porcentVariacion = baseCostoRentabilidad > 0
+                        ? (gananciaTotal / baseCostoRentabilidad) * 100
                         : ((precioActual - precioPromedio) / precioPromedio) * 100;
             } else if (posicionTransferidaConHistorico) {
                 porcentVariacion = ((precioActual - precioPromedio) / precioPromedio) * 100;
@@ -748,7 +749,7 @@ public class TransaccionesDAO {
 
         for (PortfolioItem portfolio : portfolios) {
             if (portfolio.isEsDefault()) {
-                 PortfolioService.setPortfolioActual(portfolio.getId());
+                PortfolioService.setPortfolioActual(portfolio.getId());
                 return portfolio.getId();
             }
         }
