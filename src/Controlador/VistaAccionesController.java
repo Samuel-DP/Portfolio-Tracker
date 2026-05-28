@@ -174,7 +174,7 @@ public class VistaAccionesController implements Initializable {
             protected ObservableList<Stock> call() throws Exception {
 
                 if (FINNHUB_KEY == null || FINNHUB_KEY.isBlank()) {
-                    throw new RuntimeException("FINNHUB_KEY no está configurada en variables de entorno.");
+                    throw new RuntimeException("La variable de entorno FINNHUB_KEY no esta configurada.");
                 }
 
                 String[] tickers = {"AAPL", "MSFT", "AMZN", "GOOGL", "TSLA", "NVDA", "RACE", "BLK",
