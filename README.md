@@ -1,26 +1,35 @@
 # Portfolio Tracker
 
-Aplicacion de escritorio desarrollada en JavaFX para gestionar carteras de inversion, registrar operaciones y consultar informacion de mercado de acciones y criptomonedas.
+Aplicación de escritorio desarrollada en JavaFX para gestionar carteras de inversión, registrar operaciones que realicemos en los mercados financieros, obtener estadísticas sobre ellas y analizar si nuestra toma de decisiones resulta rentable a lo largo del tiempo.
 
-El proyecto esta pensado como una herramienta personal para centralizar portfolios, transacciones, favoritos y precios de mercado, usando una base de datos SQL Server y APIs externas.
+El proyecto está pensado como una herramienta personal para centralizar portfolios, transacciones, favoritos y precios de mercado, combinando datos guardados en SQL Server con información obtenida desde APIs externas como Finnhub y CoinGecko.
 
-## Caracteristicas
+Además de registrar operaciones, la aplicación ofrece una visión analítica de la cartera mediante estadísticas, gráficos y resúmenes calculados a partir de las transacciones realizadas. Entre otras métricas, permite consultar la evolución del saldo de la cartera, la distribución porcentual de activos, la base de costo, el rendimiento de cada posición y los activos con mejor y peor comportamiento.
 
-- Registro e inicio de sesion de usuarios.
+## Características
+
+- Registro e inicio de sesión de usuarios.
 - Almacenamiento de credenciales con hash mediante BCrypt.
-- Gestion de portfolios por usuario.
-- Registro de transacciones de compra, venta y transferencia.
+- Gestión de portfolios por usuario.
+- Registro de transacciones de compra, venta y transferencia en mercados financieros.
+- Cálculo de estadísticas a partir de las transacciones realizadas.
+- Gráfico lineal para visualizar la evolución del saldo de la cartera.
+- Gráfico tipo donut para mostrar la distribución porcentual de los activos en cartera.
+- Métricas de portfolio como base de costo, rendimiento, mejor activo y peor activo.
+- Tabla resumen de activos mantenidos en cartera, incluyendo estadísticas calculadas por posición.
 - Consulta de acciones mediante Finnhub.
 - Consulta de criptomonedas mediante CoinGecko.
 - Vista de favoritos para seguir activos seleccionados.
+- Interfaz diseñada con JavaFX, FXML, CSS y Scene Builder.
 - Persistencia de datos en SQL Server.
-- Separacion por capas: controladores JavaFX, modelos y DAOs.
-- Configuracion sensible mediante variables de entorno.
+- Separación por capas: controladores JavaFX, modelos y DAOs.
+- Configuración sensible mediante variables de entorno.
 
-## Tecnologias
+## Tecnologías
 
 - Java 23
 - JavaFX
+- Scene Builder
 - FXML y CSS
 - SQL Server
 - JDBC
@@ -36,8 +45,8 @@ El proyecto esta pensado como una herramienta personal para centralizar portfoli
 src/
 +-- Controlador/       # Controladores JavaFX de las vistas
 +-- Dao/               # Acceso a datos y consultas SQL
-+-- Imagenes/          # Recursos graficos de la aplicacion
-+-- Modelo/            # Entidades, servicios y configuracion
++-- Imagenes/          # Recursos graficos de la aplicación
++-- Modelo/            # Entidades, servicios y configuración
 +-- Vista/             # Archivos FXML y hojas de estilo CSS
 +-- portfoliotracker/  # Clase principal de arranque
 ```
@@ -48,17 +57,17 @@ La clase principal es:
 portfoliotracker.PortfolioTracker
 ```
 
-## Configuracion
+## Configuración
 
-La aplicacion no guarda credenciales ni claves API directamente en el codigo. Para ejecutarla correctamente hay que definir estas variables de entorno:
+La aplicación no guarda credenciales ni claves API directamente en el código. Para ejecutarla correctamente hay que definir estas variables de entorno:
 
-| Variable | Descripcion |
+| Variable | Descripción |
 | --- | --- |
 | `DB_HOST` | Host o IP del servidor SQL Server |
 | `DB_PORT` | Puerto de SQL Server |
 | `DB_NAME` | Nombre de la base de datos |
 | `DB_USER` | Usuario de la base de datos |
-| `DB_PASSWORD` | Password de la base de datos |
+| `DB_PASSWORD` | Contraseña de la base de datos |
 | `FINNHUB_KEY` | Clave API de Finnhub |
 
 Ejemplo en PowerShell para variables de usuario:
@@ -72,11 +81,13 @@ Ejemplo en PowerShell para variables de usuario:
 [Environment]::SetEnvironmentVariable("FINNHUB_KEY", "tu_api_key", "User")
 ```
 
-Despues de crear o modificar variables de entorno, cierra y vuelve a abrir NetBeans o la terminal desde la que ejecutes la aplicacion.
+Después de crear o modificar variables de entorno, cierra y vuelve a abrir NetBeans o la terminal desde la que ejecutes la aplicación.
 
 ## Base de datos
 
-El proyecto usa SQL Server mediante JDBC. La aplicacion espera una base de datos con tablas para usuarios, portfolios, activos, transacciones, favoritos y cotizaciones/cache de mercado.
+El proyecto usa SQL Server mediante JDBC. La aplicación espera una base de datos con tablas para usuarios, portfolios, activos, transacciones, favoritos y cotizaciones/cache de mercado.
+
+El script SQL de creación de la base de datos se añadirá en una futura versión del proyecto.
 
 Tablas principales usadas por el codigo:
 
@@ -86,9 +97,9 @@ Tablas principales usadas por el codigo:
 - `TRANSACCIONES`
 - `FAVORITOS`
 
-> Nota: si clonas este proyecto desde cero, necesitaras crear la base de datos y las tablas antes de ejecutar la aplicacion.
+> Nota: si clonas este proyecto desde cero, necesitarás crear la base de datos y las tablas antes de ejecutar la aplicación.
 
-## Ejecucion
+## Ejecución
 
 ### Desde NetBeans
 
@@ -99,7 +110,7 @@ Tablas principales usadas por el codigo:
    - Microsoft JDBC Driver for SQL Server
    - org.json
    - jBCrypt
-4. Crea las variables de entorno indicadas en la seccion de configuracion.
+4. Crea las variables de entorno indicadas en la sección de configuración.
 5. Ejecuta el proyecto desde NetBeans.
 
 ### Desde Ant
@@ -116,7 +127,7 @@ ant run
 
 ### Finnhub
 
-Se usa para obtener informacion de acciones, perfiles de empresas y cotizaciones.
+Se usa para obtener información de acciones, perfiles de empresas y cotizaciones.
 
 La clave se lee desde:
 
@@ -126,7 +137,7 @@ System.getenv("FINNHUB_KEY")
 
 ### CoinGecko
 
-Se usa para obtener informacion de mercado de criptomonedas. Actualmente no requiere clave API en esta configuracion.
+Se usa para obtener información de mercado de criptomonedas. Actualmente no requiere clave API en esta configuración.
 
 ## Seguridad
 
@@ -139,20 +150,21 @@ Se usa para obtener informacion de mercado de criptomonedas. Actualmente no requ
 
 Proyecto en desarrollo. Funcionalidades principales implementadas:
 
-- Autenticacion de usuarios.
-- Gestion de carteras.
-- Gestion de transacciones.
+- Autenticación de usuarios.
+- Gestión de carteras.
+- Gestión de transacciones.
+- Panel de estadísticas con gráficos de evolución, distribución de activos y métricas de rendimiento.
 - Consulta de acciones y criptomonedas.
 - Favoritos.
 - Persistencia en SQL Server.
 
 Mejoras previstas:
 
-- Script SQL de creacion de base de datos.
+- Script SQL de creación de base de datos.
 - Limpieza del repositorio para excluir archivos generados.
 - Tests unitarios para servicios y DAOs.
 - Capturas de pantalla de la interfaz.
-- Empaquetado mas sencillo para distribucion.
+- Empaquetado más sencillo para distribución.
 
 ## Autor
 
