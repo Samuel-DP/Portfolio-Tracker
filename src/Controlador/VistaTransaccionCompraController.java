@@ -187,5 +187,4 @@ public class VistaTransaccionCompraController implements Initializable {
 
 }
 
-// Me he quedado validando los errores en transacciones. tengo que mirar porque si selecciono desde mi comboBox se me cambia el color de los textfield en transacciones
 

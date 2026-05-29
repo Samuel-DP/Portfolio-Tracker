@@ -127,5 +127,4 @@ public class PortfoliosDAO {
     }
 }
 
-// Me gustaria implemetar el poder eliminar portfolios tambien de la DB y de mi menu vertical, para mañana 
 
