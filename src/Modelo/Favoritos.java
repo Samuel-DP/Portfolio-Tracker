@@ -1,7 +1,6 @@
 
 package Modelo;
 
-
 public class Favoritos {
     
     private String tipo;

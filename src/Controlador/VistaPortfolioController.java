@@ -2,10 +2,8 @@ package Controlador;
 
 import Modelo.PortfolioItem;
 import Modelo.PortfolioService;
-import Modelo.vGlobales;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;

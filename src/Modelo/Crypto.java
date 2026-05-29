@@ -1,7 +1,6 @@
 
 package Modelo;
 
-
 public class Crypto {
     
     private final String symbol;
