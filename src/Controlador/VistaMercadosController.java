@@ -53,9 +53,6 @@ public class VistaMercadosController implements Initializable {
        Parent vistaCrypto = FXMLLoader.load(getClass().getResource("/Vista/vistaCrypto.fxml"));
        contenidoMercados.getChildren().setAll(vistaCrypto);
        
-    }
-
-
-    
+    }  
 
 }

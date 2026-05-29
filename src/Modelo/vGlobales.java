@@ -1,7 +1,6 @@
 
 package Modelo;
 
-
 public class vGlobales {
     
     private static Integer usuarioIdActual;
