@@ -10,6 +10,7 @@ El proyecto está pensado como una herramienta personal para realizar un seguimi
 - Almacenamiento de credenciales con hash mediante BCrypt.
 - Gestión de portfolios por usuario.
 - Registro de transacciones de compra, venta y transferencia en mercados financieros.
+- Exportación de transacciones a CSV.
 - Cálculo de estadísticas a partir de las transacciones realizadas.
 - Gráfico lineal para visualizar la evolución del saldo de la cartera.
 - Gráfico tipo donut para mostrar la distribución porcentual de los activos en cartera.
@@ -22,6 +23,44 @@ El proyecto está pensado como una herramienta personal para realizar un seguimi
 - Persistencia de datos en SQL Server.
 - Separación por capas: controladores JavaFX, modelos y DAOs.
 - Configuración sensible mediante variables de entorno.
+
+## Capturas
+
+### Login
+
+![Login](docs/screenshots/01-login.png)
+
+### Registro
+
+![Registro](docs/screenshots/02-registro.png)
+
+### Criptomonedas
+
+![Criptomonedas](docs/screenshots/03-cryptos.png)
+
+### Acciones
+
+![Acciones](docs/screenshots/04-acciones.png)
+
+### Favoritos
+
+![Favoritos](docs/screenshots/05-favoritos.png)
+
+### Portfolio
+
+![Portfolio](docs/screenshots/06-portfolio.png)
+
+### Transacciones
+
+![Transacciones](docs/screenshots/07-transacciones.png)
+
+### Añadir transacciones
+
+![Añadir transacciones](docs/screenshots/08-anadir-transacciones.png)
+
+### Nuevo portfolio
+
+![Nuevo portfolio](docs/screenshots/09-nuevo-portfolio.png)
 
 ## Tecnologías
 
