@@ -1,10 +1,8 @@
 # Portfolio Tracker
 
-Aplicación de escritorio desarrollada en JavaFX para gestionar carteras de inversión, registrar operaciones que realicemos en los mercados financieros, obtener estadísticas sobre ellas y analizar si nuestra toma de decisiones resulta rentable a lo largo del tiempo.
+Aplicación de escritorio desarrollada en JavaFX para gestionar carteras de inversión, registrar operaciones realizadas en los mercados financieros, obtener estadísticas sobre ellas y analizar si nuestra toma de decisiones resulta rentable en el tiempo.
 
-El proyecto está pensado como una herramienta personal para centralizar portfolios, transacciones, favoritos y precios de mercado, combinando datos guardados en SQL Server con información obtenida desde APIs externas como Finnhub y CoinGecko.
-
-Además de registrar operaciones, la aplicación ofrece una visión analítica de la cartera mediante estadísticas, gráficos y resúmenes calculados a partir de las transacciones realizadas. Entre otras métricas, permite consultar la evolución del saldo de la cartera, la distribución porcentual de activos, la base de costo, el rendimiento de cada posición y los activos con mejor y peor comportamiento.
+El proyecto está pensado como una herramienta personal para realizar un seguimiento de nuestras inversiones, centralizando portfolios, transacciones, favoritos y precios de mercado, combinando datos guardados en SQL Server con información obtenida desde APIs externas como Finnhub y CoinGecko.
 
 ## Características
 
@@ -49,6 +47,8 @@ src/
 +-- Modelo/            # Entidades, servicios y configuración
 +-- Vista/             # Archivos FXML y hojas de estilo CSS
 +-- portfoliotracker/  # Clase principal de arranque
+database/
++-- schema.sql         # Script de creación de tablas para SQL Server
 ```
 
 La clase principal es:
@@ -85,9 +85,18 @@ Después de crear o modificar variables de entorno, cierra y vuelve a abrir NetB
 
 ## Base de datos
 
-El proyecto usa SQL Server mediante JDBC. La aplicación espera una base de datos con tablas para usuarios, portfolios, activos, transacciones, favoritos y cotizaciones/cache de mercado.
+El proyecto usa SQL Server mediante JDBC. El script de creación de tablas está disponible en:
 
-El script SQL de creación de la base de datos se añadirá en una futura versión del proyecto.
+```text
+database/schema.sql
+```
+
+Para preparar la base de datos desde cero:
+
+1. Crea una base de datos en SQL Server, por ejemplo `PortfolioTracker`.
+2. Ejecuta `database/schema.sql` sobre esa base de datos.
+3. Configura las variables de entorno indicadas en la sección de configuración.
+4. Inicia la aplicación y registra un usuario desde la interfaz.
 
 Tablas principales usadas por el codigo:
 
@@ -97,7 +106,9 @@ Tablas principales usadas por el codigo:
 - `TRANSACCIONES`
 - `FAVORITOS`
 
-> Nota: si clonas este proyecto desde cero, necesitarás crear la base de datos y las tablas antes de ejecutar la aplicación.
+No se incluyen datos seed obligatorios. Los usuarios, portfolios, activos, transacciones y favoritos se crean desde la propia aplicación. Al iniciar sesión, si el usuario no tiene portfolios, la aplicación crea automáticamente un portfolio por defecto.
+
+> Nota: si clonas este proyecto desde cero, necesitas crear la base de datos y ejecutar `database/schema.sql` antes de usar la aplicación.
 
 ## Ejecución
 
@@ -145,26 +156,6 @@ Se usa para obtener información de mercado de criptomonedas. Actualmente no req
 - Las credenciales de base de datos se cargan desde variables de entorno.
 - Las passwords de usuario se almacenan con hash BCrypt.
 - No deben subirse claves API, passwords, archivos `nbproject/private/`, builds generados ni archivos `.class` al repositorio.
-
-## Estado del proyecto
-
-Proyecto en desarrollo. Funcionalidades principales implementadas:
-
-- Autenticación de usuarios.
-- Gestión de carteras.
-- Gestión de transacciones.
-- Panel de estadísticas con gráficos de evolución, distribución de activos y métricas de rendimiento.
-- Consulta de acciones y criptomonedas.
-- Favoritos.
-- Persistencia en SQL Server.
-
-Mejoras previstas:
-
-- Script SQL de creación de base de datos.
-- Limpieza del repositorio para excluir archivos generados.
-- Tests unitarios para servicios y DAOs.
-- Capturas de pantalla de la interfaz.
-- Empaquetado más sencillo para distribución.
 
 ## Autor
 
