@@ -1,25 +1,25 @@
-# Base de datos
+# Database
 
-Esta carpeta contiene el esquema SQL Server necesario para ejecutar Portfolio Tracker.
+This folder contains the SQL Server schema required to run Portfolio Tracker.
 
-## Archivos
+## Files
 
-- `schema.sql`: crea las tablas de la aplicación, relaciones, restricciones únicas y validaciones.
+- `schema.sql`: creates the application tables, relationships, unique constraints, and validations.
 
-## Preparación
+## Setup
 
-1. Crea una base de datos en SQL Server, por ejemplo `PortfolioTracker`.
-2. Abre `schema.sql` en SQL Server Management Studio, Azure Data Studio u otro cliente SQL Server.
-3. Selecciona la base de datos creada.
-4. Ejecuta el script.
-5. Configura las variables de entorno de la aplicación:
+1. Create a database in SQL Server, for example `PortfolioTracker`.
+2. Open `schema.sql` in SQL Server Management Studio, Azure Data Studio, or another SQL Server client.
+3. Select the database you created.
+4. Run the script.
+5. Configure the application environment variables:
 
 ```powershell
 [Environment]::SetEnvironmentVariable("DB_HOST", "localhost", "User")
 [Environment]::SetEnvironmentVariable("DB_PORT", "1433", "User")
 [Environment]::SetEnvironmentVariable("DB_NAME", "PortfolioTracker", "User")
-[Environment]::SetEnvironmentVariable("DB_USER", "tu_usuario", "User")
-[Environment]::SetEnvironmentVariable("DB_PASSWORD", "tu_password", "User")
+[Environment]::SetEnvironmentVariable("DB_USER", "your_user", "User")
+[Environment]::SetEnvironmentVariable("DB_PASSWORD", "your_password", "User")
 ```
 
-No se necesitan seeds obligatorios. Los usuarios, portfolios, activos, transacciones y favoritos se crean desde la aplicación mientras se usa.
+No required seed data is needed. Users, portfolios, assets, transactions, and favorites are created from the application while it is being used.
