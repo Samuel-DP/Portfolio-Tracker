@@ -1,73 +1,73 @@
 # Portfolio Tracker
 
-Aplicación de escritorio desarrollada en JavaFX para gestionar carteras de inversión, registrar operaciones realizadas en los mercados financieros, obtener estadísticas sobre ellas y analizar si nuestra toma de decisiones resulta rentable en el tiempo.
+Desktop application developed with JavaFX to manage investment portfolios, record transactions made in financial markets, obtain statistics from those transactions, and analyze whether our decision-making remains profitable over time.
 
-El proyecto está pensado como una herramienta personal para realizar un seguimiento de nuestras inversiones, centralizando portfolios, transacciones, favoritos y precios de mercado, combinando datos guardados en SQL Server con información obtenida desde APIs externas como Finnhub y CoinGecko.
+The project is designed as a personal tool for tracking investments by centralizing portfolios, transactions, favorites, and market prices. It combines data stored in SQL Server with information obtained from external APIs such as Finnhub and CoinGecko.
 
-## Características
+## Features
 
-- Registro e inicio de sesión de usuarios.
-- Almacenamiento de credenciales con hash mediante BCrypt.
-- Gestión de portfolios por usuario.
-- Registro de transacciones de compra, venta y transferencia en mercados financieros.
-- Exportación de transacciones a CSV.
-- Cálculo de estadísticas a partir de las transacciones realizadas.
-- Gráfico lineal para visualizar la evolución del saldo de la cartera.
-- Gráfico tipo donut para mostrar la distribución porcentual de los activos en cartera.
-- Métricas de portfolio como base de costo, rendimiento, mejor activo y peor activo.
-- Tabla resumen de activos mantenidos en cartera, incluyendo estadísticas calculadas por posición.
-- Consulta de acciones mediante Finnhub.
-- Consulta de criptomonedas mediante CoinGecko.
-- Vista de favoritos para seguir activos seleccionados.
-- Interfaz diseñada con JavaFX, FXML, CSS y Scene Builder.
-- Persistencia de datos en SQL Server.
-- Separación por capas: controladores JavaFX, modelos y DAOs.
-- Configuración sensible mediante variables de entorno.
+- User registration and login.
+- Credential storage with BCrypt hashing.
+- Portfolio management by user.
+- Recording of buy, sell, and transfer transactions in financial markets.
+- Transaction export to CSV.
+- Statistics calculated from completed transactions.
+- Line chart to visualize the evolution of the portfolio balance.
+- Donut chart to show the percentage distribution of assets in the portfolio.
+- Portfolio metrics such as cost basis, performance, best asset and worst asset.
+- Summary table of assets held in the portfolio, including calculated statistics by position.
+- Stock lookup through Finnhub.
+- Cryptocurrency lookup through CoinGecko.
+- Favorites view to track selected assets.
+- Interface designed with JavaFX, FXML, CSS, and Scene Builder.
+- Data persistence in SQL Server.
+- Layered structure: JavaFX controllers, models, and DAOs.
+- Sensitive configuration through environment variables.
 
-## Capturas
+## Screenshots
 
 ### Login
 
 ![Login](docs/screenshots/01-login.png)
 
-### Registro
+### Registration
 
-![Registro](docs/screenshots/02-registro.png)
+![Registration](docs/screenshots/02-registro.png)
 
-### Criptomonedas
+### Cryptocurrencies
 
-![Criptomonedas](docs/screenshots/03-cryptos.png)
+![Cryptocurrencies](docs/screenshots/03-cryptos.png)
 
-### Acciones
+### Stocks
 
-![Acciones](docs/screenshots/04-acciones.png)
+![Stocks](docs/screenshots/04-acciones.png)
 
-### Favoritos
+### Favorites
 
-![Favoritos](docs/screenshots/05-favoritos.png)
+![Favorites](docs/screenshots/05-favoritos.png)
 
 ### Portfolio
 
 ![Portfolio](docs/screenshots/06-portfolio.png)
 
-### Transacciones
+### Transactions
 
-![Transacciones](docs/screenshots/07-transacciones.png)
+![Transactions](docs/screenshots/07-transacciones.png)
 
-### Añadir transacciones
+### Add Transactions
 
-![Añadir transacciones](docs/screenshots/08-anadir-transacciones.png)
+![Add Transactions](docs/screenshots/08-anadir-transacciones.png)
 
-### Nuevo portfolio
+### New Portfolio
 
-![Nuevo portfolio](docs/screenshots/09-nuevo-portfolio.png)
+![New Portfolio](docs/screenshots/09-nuevo-portfolio.png)
 
-## Tecnologías
+## Technologies
 
 - Java 23
 - JavaFX
 - Scene Builder
-- FXML y CSS
+- FXML and CSS
 - SQL Server
 - JDBC
 - Finnhub API
@@ -76,68 +76,68 @@ El proyecto está pensado como una herramienta personal para realizar un seguimi
 - jBCrypt
 - NetBeans / Ant
 
-## Estructura del proyecto
+## Project Structure
 
 ```text
 src/
-+-- Controlador/       # Controladores JavaFX de las vistas
-+-- Dao/               # Acceso a datos y consultas SQL
-+-- Imagenes/          # Recursos graficos de la aplicación
-+-- Modelo/            # Entidades, servicios y configuración
-+-- Vista/             # Archivos FXML y hojas de estilo CSS
-+-- portfoliotracker/  # Clase principal de arranque
++-- Controlador/       # JavaFX controllers for the views
++-- Dao/               # Data access and SQL queries
++-- Imagenes/          # Graphic resources for the application
++-- Modelo/            # Entities, services, and configuration
++-- Vista/             # FXML files and CSS stylesheets
++-- portfoliotracker/  # Main startup class
 database/
-+-- schema.sql         # Script de creación de tablas para SQL Server
++-- schema.sql         # Table creation script for SQL Server
 ```
 
-La clase principal es:
+The main class is:
 
 ```text
 portfoliotracker.PortfolioTracker
 ```
 
-## Configuración
+## Configuration
 
-La aplicación no guarda credenciales ni claves API directamente en el código. Para ejecutarla correctamente hay que definir estas variables de entorno:
+The application does not store credentials or API keys directly in the code. To run it correctly, define the following environment variables:
 
-| Variable | Descripción |
+| Variable | Description |
 | --- | --- |
-| `DB_HOST` | Host o IP del servidor SQL Server |
-| `DB_PORT` | Puerto de SQL Server |
-| `DB_NAME` | Nombre de la base de datos |
-| `DB_USER` | Usuario de la base de datos |
-| `DB_PASSWORD` | Contraseña de la base de datos |
-| `FINNHUB_KEY` | Clave API de Finnhub |
+| `DB_HOST` | SQL Server host or IP address |
+| `DB_PORT` | SQL Server port |
+| `DB_NAME` | Database name |
+| `DB_USER` | Database user |
+| `DB_PASSWORD` | Database password |
+| `FINNHUB_KEY` | Finnhub API key |
 
-Ejemplo en PowerShell para variables de usuario:
+PowerShell example for user variables:
 
 ```powershell
 [Environment]::SetEnvironmentVariable("DB_HOST", "localhost", "User")
 [Environment]::SetEnvironmentVariable("DB_PORT", "1433", "User")
 [Environment]::SetEnvironmentVariable("DB_NAME", "PortfolioTracker", "User")
-[Environment]::SetEnvironmentVariable("DB_USER", "tu_usuario", "User")
-[Environment]::SetEnvironmentVariable("DB_PASSWORD", "tu_password", "User")
-[Environment]::SetEnvironmentVariable("FINNHUB_KEY", "tu_api_key", "User")
+[Environment]::SetEnvironmentVariable("DB_USER", "your_user", "User")
+[Environment]::SetEnvironmentVariable("DB_PASSWORD", "your_password", "User")
+[Environment]::SetEnvironmentVariable("FINNHUB_KEY", "your_api_key", "User")
 ```
 
-Después de crear o modificar variables de entorno, cierra y vuelve a abrir NetBeans o la terminal desde la que ejecutes la aplicación.
+After creating or modifying environment variables, close and reopen NetBeans or the terminal from which you run the application.
 
-## Base de datos
+## Database
 
-El proyecto usa SQL Server mediante JDBC. El script de creación de tablas está disponible en:
+The project uses SQL Server through JDBC. The table creation script is available at:
 
 ```text
 database/schema.sql
 ```
 
-Para preparar la base de datos desde cero:
+To prepare the database from scratch:
 
-1. Crea una base de datos en SQL Server, por ejemplo `PortfolioTracker`.
-2. Ejecuta `database/schema.sql` sobre esa base de datos.
-3. Configura las variables de entorno indicadas en la sección de configuración.
-4. Inicia la aplicación y registra un usuario desde la interfaz.
+1. Create a database in SQL Server, for example `PortfolioTracker`.
+2. Run `database/schema.sql` against that database.
+3. Configure the environment variables listed in the configuration section.
+4. Start the application and register a user from the interface.
 
-Tablas principales usadas por el codigo:
+Main tables used by the code:
 
 - `USUARIOS`
 - `PORTFOLIOS`
@@ -145,27 +145,27 @@ Tablas principales usadas por el codigo:
 - `TRANSACCIONES`
 - `FAVORITOS`
 
-No se incluyen datos seed obligatorios. Los usuarios, portfolios, activos, transacciones y favoritos se crean desde la propia aplicación. Al iniciar sesión, si el usuario no tiene portfolios, la aplicación crea automáticamente un portfolio por defecto.
+No required seed data is included. Users, portfolios, assets, transactions, and favorites are created from the application itself. When a user logs in, if they do not have any portfolios, the application automatically creates a default portfolio.
 
-> Nota: si clonas este proyecto desde cero, necesitas crear la base de datos y ejecutar `database/schema.sql` antes de usar la aplicación.
+> Note: if you clone this project from scratch, you need to create the database and run `database/schema.sql` before using the application.
 
-## Ejecución
+## Running the Application
 
-### Desde NetBeans
+### From NetBeans
 
-1. Clona el repositorio.
-2. Abre el proyecto en NetBeans.
-3. Configura las librerias necesarias:
+1. Clone the repository.
+2. Open the project in NetBeans.
+3. Configure the required libraries:
    - JavaFX
    - Microsoft JDBC Driver for SQL Server
    - org.json
    - jBCrypt
-4. Crea las variables de entorno indicadas en la sección de configuración.
-5. Ejecuta el proyecto desde NetBeans.
+4. Create the environment variables listed in the configuration section.
+5. Run the project from NetBeans.
 
-### Desde Ant
+### From Ant
 
-Si tienes Ant configurado en el sistema:
+If you have Ant configured on your system:
 
 ```bash
 ant clean
@@ -173,13 +173,13 @@ ant jar
 ant run
 ```
 
-## APIs externas
+## External APIs
 
 ### Finnhub
 
-Se usa para obtener información de acciones, perfiles de empresas y cotizaciones.
+Used to obtain stock information, company profiles, and quotes.
 
-La clave se lee desde:
+The key is read from:
 
 ```java
 System.getenv("FINNHUB_KEY")
@@ -187,15 +187,15 @@ System.getenv("FINNHUB_KEY")
 
 ### CoinGecko
 
-Se usa para obtener información de mercado de criptomonedas. Actualmente no requiere clave API en esta configuración.
+Used to obtain cryptocurrency market information. It currently does not require an API key in this configuration.
 
-## Seguridad
+## Security
 
-- La clave de Finnhub se carga desde variable de entorno.
-- Las credenciales de base de datos se cargan desde variables de entorno.
-- Las passwords de usuario se almacenan con hash BCrypt.
-- No deben subirse claves API, passwords, archivos `nbproject/private/`, builds generados ni archivos `.class` al repositorio.
+- The Finnhub key is loaded from an environment variable.
+- Database credentials are loaded from environment variables.
+- User passwords are stored with BCrypt hashing.
+- API keys, passwords, `nbproject/private/` files, generated builds, and `.class` files must not be committed to the repository.
 
-## Autor
+## Author
 
-Desarrollado por Samuel.
+Developed by Samuel.
